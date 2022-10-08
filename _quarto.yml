@@ -5,6 +5,7 @@ project:
     - "*.qmd"
   resources:
     - "slides/"
+    - "img/"
 
 website:
   title: "learnBayes"

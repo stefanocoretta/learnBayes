@@ -61,7 +61,7 @@ class: right
 <br>
 <br>
 
-![](img/One_Ring_inscription.svg.png)
+![](../../img/One_Ring_inscription.svg.png)
 
 .f2[
 One **model** to rule them all.<br>
@@ -420,7 +420,7 @@ as.array(brm_2) %>%
 # MCMC chain divergences
 
 .center[
-![](img/trace_c.png)
+![](../../img/trace_c.png)
 ]
 
 ???
@@ -574,7 +574,7 @@ brm_1_shrunk %>%
 
 # We don't talk about Priors, no no no...
 
-![](../img/We_Dont_Talk_About_Bruno.jpg)
+![](../../../img/We_Dont_Talk_About_Bruno.jpg)
 
 ---
 
