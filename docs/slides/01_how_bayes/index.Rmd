@@ -1,0 +1,583 @@
+---
+title: "Intro to Bayesian (Linear Models) for Speech and Language Scientists"
+subtitle: "Day 1"
+author: "Stefano Coretta"
+institute: ""
+date: "2022/10/25"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css:
+      - xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "../macros.js"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, out.height = "500px", dpi = 300,
+  fig.align = "center", fig.width = 7, fig.height = 5
+)
+knitr::opts_knit$set(root.dir = here::here())
+
+library(tidyverse)
+theme_set(theme_light())
+
+library(xaringanExtra)
+use_xaringan_extra(c("panelset", "tachyons", "freezeframe"))
+
+library(xaringanthemer)
+style_mono_light(
+  base_color = "#23395b",
+  text_font_google = google_font("Lato", "400", "700", "400i", "700i"),
+  header_font_google = google_font("Montserrat", "400", "700", "400i", "700i"),
+  code_font_google = google_font("Source Code Pro", "400", "700")
+)
+
+library(lme4)
+library(ggeffects)
+library(brms)
+library(cmdstanr)
+library(tidybayes)
+library(bayesplot)
+
+options(htmltools.dir.version = FALSE)
+```
+
+
+```{r mald, echo=FALSE}
+mald <- readRDS("./data/mald.rds")
+```
+
+class: right
+
+
+<br>
+<br>
+<br>
+<br>
+
+![](img/One_Ring_inscription.svg.png)
+
+.f2[
+One **model** to rule them all.<br>
+One **model** to find them.<br>
+One **model** to bring them all<br>
+And in the darkness bind them.
+]
+
+--
+
+.f5[(No, I couln't translate 'model' into Black Speech, alas...)]
+
+---
+
+class: center middle
+
+# Now enter The Linear Model
+
+<iframe src="https://giphy.com/embed/l4FGCymGGNTZVZwtO" width="480" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p>
+
+---
+
+class: center middle
+
+# Now enter The Bayesian Linear Model
+
+<iframe src="https://giphy.com/embed/3ov9jG4eqz9k3XXsU8" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p>
+
+---
+
+# All about the Bayes
+
+- Within the **NHST (Frequentist) framework**, the main analysis output is:
+
+  - **Point estimates** of predictors' parameters (with standard error).
+  - **P-values**.
+
+--
+
+- Within the **Bayesian framework**, the main analysis output is:
+
+  - **Probability distributions** of predictors' parameters.
+
+---
+
+# An example
+
+[Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (Tucker et al. 2019):
+
+- **MALD data set**: 521 subjects, RTs and accuracy.
+
+- Subset of MALD: 30 subjects, 100 observations each.
+
+--
+
+```{r mald-print}
+mald
+```
+
+
+---
+
+# A frequentist linear model
+
+```{r lm-1}
+lm_1 <- lmer(
+  log(RT) ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (1 | Subject),
+  data = mald
+)
+```
+
+---
+
+# A frequentist linear model
+
+```{r lm-1-sum, echo=FALSE}
+summary(lm_1, correlation= FALSE)
+```
+
+---
+
+# A frequentist linear model
+
+```{r lm-1-pred, echo=FALSE, message=FALSE}
+ggpredict(lm_1, terms = c("PhonLev", "IsWord")) %>%
+  plot()
+```
+
+---
+
+# Increase model complexity
+
+**Try it yourself!** Does it work?
+
+```{r lm-2, eval=FALSE}
+lm_2 <- lmer(
+  log(RT) ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald
+)
+```
+
+--
+
+```{r lm-2-run, echo=FALSE}
+lm_2 <- lmer(
+  log(RT) ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald
+)
+```
+
+---
+
+class: center middle inverse
+
+.f1[Let's go Bayesian!]
+
+---
+
+# A Bayesian linear model
+
+```{r brm-1, eval=FALSE}
+brm_1 <- brm(
+  RT ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald,
+  # Let's use a lognormal fam, rather than log the RT values
+  family = lognormal()
+)
+```
+
+```{r brm-1-run, echo=FALSE}
+brm_1 <- brm(
+  RT ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald,
+  # Let's use a lognormal family, rather than log the RT values
+  family = lognormal(),
+  # Technical stuff
+  backend = "cmdstanr",
+  cores = 4,
+  threads = threading(2),
+  file = "data/rds/brm_1"
+)
+```
+
+---
+
+# A Bayesian linear model
+
+.medium[
+```{r brm-1-sum, echo=FALSE, warning=FALSE}
+brm_1
+```
+]
+
+---
+
+# A Bayesian linear model
+
+```{r brm-1-cond, echo=FALSE}
+conditional_effects(brm_1, effects = "PhonLev:IsWord")
+```
+
+---
+
+# Let's start small
+
+**Try it yourself!**
+
+```{r brm-2}
+brm_2 <- brm(
+  RT ~
+    IsWord,
+  data = mald,
+  family = lognormal(),
+  # Save model output to file
+  file = "./data/rds/brm_2.rds"
+)
+```
+
+---
+
+class: center middle reverse
+
+.f1[[MCMC what?](https://chi-feng.github.io/mcmc-demo/app.html)]
+
+???
+
+More on MCMC: http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/
+
+---
+
+# Let's start small
+
+.pull-left[
+```{r brm-2-explain, eval=FALSE}
+brm_2 <- brm(
+  RT ~
+    IsWord,
+  data = mald,
+  # Probability distribution
+  # of the OUTCOME
+  family = lognormal(),
+  # TECHNICAL STUFF
+  # Save model output
+  # to file
+  file = "./data/rds/brm_2.rds",
+  # Number of chains
+  chains = 4, 
+  # Number of iterations per
+  # chain
+  iter = 2000,
+  # Number of cores to use
+  cores = 4
+)
+```
+]
+
+--
+
+.pull-right[
+- `chains`: Number of MCMC chains to be run.
+
+- `iter`: Number of iterations per MCMC chain.
+
+- `cores`: Number of cores to use for running the MCMC chains.
+
+  - You can find out how many cores your laptop has with `parallel::detectCores()`
+]
+
+---
+
+# Let's start small
+
+How do I interpret the output summary?
+
+.big[
+```{r brm-2-sum}
+brm_2
+```
+]
+
+---
+
+# Quick plot
+
+```{r brm-2-plot}
+plot(brm_2)
+```
+
+---
+
+# Get variables
+
+To list all variable names in a model, use:
+
+```{r brm-2-vars}
+variables(brm_2)
+```
+
+---
+
+# Get MCMC draws
+
+You can easily extract the MCMC draws:
+
+```{r brm-2-draws}
+brm_2 %>%
+  gather_draws(`b_.*`, regex = TRUE)
+```
+
+
+
+---
+
+# Posterior distributions
+
+Now you can plot the draws using ggplot2.
+
+```{r brm-2-int-g}
+g_1 <- brm_2 %>%
+  gather_draws(b_Intercept) %>%
+  ggplot(aes(.value)) +
+  stat_halfeye(fill = "#214d65") +
+  scale_x_continuous(breaks = seq(6, 7, by = 0.01)) +
+  labs(title = "Intercept")
+```
+
+---
+
+# Posterior distributions
+
+```{r brm-2-int, echo=FALSE}
+g_1
+```
+
+
+
+---
+
+# Posterior distributions
+
+```{r brm-2-isword-g}
+g_2 <- brm_2 %>%
+  gather_draws(b_IsWordFALSE) %>%
+  ggplot(aes(.value)) +
+  stat_halfeye(fill = "#624B27") +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.01)) +
+  labs(title = "Effect of IsWord = FALSE")
+```
+
+---
+
+# Posterior distributions
+
+```{r brm-2-isword, echo=FALSE}
+g_2
+```
+
+---
+
+class: center middle inverse
+
+.f1[DIAGNOSTICS]
+
+---
+
+# MCMC chains diagnostics
+
+```{r brm-2-chain-1, message=FALSE}
+as.array(brm_2) %>%
+  mcmc_trace("b_IsWordFALSE", np = nuts_params(brm_2))
+```
+
+
+---
+
+# MCMC chain divergences
+
+.center[
+![](img/trace_c.png)
+]
+
+???
+
+Picture from <https://www.rdatagen.net/post/diagnosing-and-dealing-with-estimation-issues-in-the-bayesian-meta-analysis/>.
+
+---
+
+# $\hat{R}$ and Effective Sample Size
+
+.medium[
+```{r brm-2-diag}
+brm_2
+```
+]
+
+---
+
+# Posterior predictive checks
+
+```{r brm-2-pp}
+pp_check(brm_2, ndraws = 100)
+```
+
+---
+
+class: center middle inverse
+
+.f1[Level up!]
+
+---
+
+# Interactions and group-level effects
+
+```{r brm-1-bis}
+brm_1 <- brm(
+  RT ~
+    PhonLev +
+    IsWord +
+    # Interaction
+    PhonLev:IsWord +
+    # Group-level effects
+    (PhonLev + IsWord | Subject),
+  data = mald,
+  family = lognormal(),
+  # Technical stuff
+  backend = "cmdstanr",
+  cores = 4,
+  threads = threading(2),
+  file = "data/rds/brm_1"
+)
+```
+
+---
+
+# Interactions and group-level effects
+
+.medium[
+```{r brm-1-bis-sum, echo=FALSE, warning=FALSE}
+brm_1
+```
+]
+
+---
+
+# Interactions
+
+```{r brm-1-bis-cond}
+conditional_effects(brm_1, effects = "PhonLev:IsWord")
+```
+
+---
+
+# Interactions
+
+```{r brm-1-bis-cond-2, eval=FALSE}
+conditional_effects(
+  brm_1, effects = "PhonLev:IsWord",
+  spaghetti = TRUE, ndraws = 100
+) %>%
+  plot(spaghetti_args = c(size = 2, alpha = 1))
+```
+
+---
+
+# Interactions
+
+```{r brm-1-bis-cond-3, echo=FALSE}
+conditional_effects(
+  brm_1, effects = "PhonLev:IsWord",
+  spaghetti = TRUE, ndraws = 100
+) %>%
+  plot(spaghetti_args = c(size = 2, alpha = 1))
+```
+
+---
+
+# Group-level effects
+
+```{r shrunk, echo=FALSE}
+brm_1_shrunk <- brm_1 %>%
+  spread_draws(b_IsWordFALSE, b_PhonLev, r_Subject[Subject,term]) %>%
+  mean_qi() %>%
+  mutate(source = "meta-analysis")
+
+original <- mald %>%
+  group_by(Subject) %>%
+  mutate(
+    mean_RT = mean(log(RT)),
+    sd_RT = sd(log(RT)),
+    lower = mean_RT - 1.96 * sd_RT,
+    upper = mean_RT + 1.96 * sd_RT
+  )
+```
+
+```{r brm-1-shrunk-intercept, echo=FALSE}
+brm_1_shrunk %>%
+  filter(term == "Intercept") %>%
+  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(size = 4) +
+  geom_errorbarh(aes(xmin = r_Subject.lower, xmax = r_Subject.upper)) +
+  geom_point(data = original, aes(mean_RT - mean(log(RT)), Subject), colour = "red", size = 3) +
+  labs(
+    title = "By-subject conditional mean for Intercept",
+    x = "Conditional mean",
+    y = "Subject",
+    caption = str_wrap("The red dots mark the by-subject mean log(RT) from the raw data.")
+  )
+```
+
+---
+
+# Group-level effects
+
+```{r brm-1-shrunk-isword, echo=FALSE}
+brm_1_shrunk %>%
+  filter(term == "IsWordFALSE") %>%
+  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(size = 4) +
+  geom_errorbarh(aes(xmin = r_Subject.lower, xmax = r_Subject.upper)) +
+  labs(
+    title = "By-subject conditional mean for IsWord = FALSE",
+    x = "Conditional mean (log-odds)",
+    y = "Subject"
+  )
+```
+
+---
+
+# We don't talk about Priors, no no no...
+
+![](../img/We_Dont_Talk_About_Bruno.jpg)
+
+---
+
+class: middle center inverse
+
+.f1[QUESTIONS?]

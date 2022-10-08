@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Intro to Bayesian (Linear Models) for Speech and Language Scientists</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stefano Coretta" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/freezeframe/freezeframe.min.js"></script>
+    <script src="libs/xaringanExtra-freezeframe/freezeframe-init.js"></script>
+    <script id="xaringanExtra-freezeframe-options" type="application/json">{"selector":"img[src$=\"gif\"]","trigger":"click","overlay":false,"responsive":true,"warnings":true}</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Intro to Bayesian (Linear Models) for Speech and Language Scientists
+]
+.subtitle[
+## Day 1
+]
+.author[
+### Stefano Coretta
+]
+.date[
+### 2022/10/25
+]
+
+---
+
+
+
+
+
+
+
+class: right
+
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+![](img/One_Ring_inscription.svg.png)
+
+.f2[
+One **model** to rule them all.&lt;br&gt;
+One **model** to find them.&lt;br&gt;
+One **model** to bring them all&lt;br&gt;
+And in the darkness bind them.
+]
+
+--
+
+.f5[(No, I couln't translate 'model' into Black Speech, alas...)]
+
+---
+
+class: center middle
+
+# Now enter The Linear Model
+
+&lt;iframe src="https://giphy.com/embed/l4FGCymGGNTZVZwtO" width="480" height="200" frameBorder="0" class="giphy-embed" allowFullScreen&gt;&lt;/iframe&gt;&lt;p&gt;
+
+---
+
+class: center middle
+
+# Now enter The Bayesian Linear Model
+
+&lt;iframe src="https://giphy.com/embed/3ov9jG4eqz9k3XXsU8" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen&gt;&lt;/iframe&gt;&lt;p&gt;
+
+---
+
+# All about the Bayes
+
+- Within the **NHST (Frequentist) framework**, the main analysis output is:
+
+  - **Point estimates** of predictors' parameters (with standard error).
+  - **P-values**.
+
+--
+
+- Within the **Bayesian framework**, the main analysis output is:
+
+  - **Probability distributions** of predictors' parameters.
+
+---
+
+# An example
+
+[Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (Tucker et al. 2019):
+
+- **MALD data set**: 521 subjects, RTs and accuracy.
+
+- Subset of MALD: 30 subjects, 100 observations each.
+
+--
+
+
+```r
+mald
+```
+
+```
+## # A tibble: 3,000 × 7
+##    Subject Item         IsWord PhonLev    RT ACC   RT_log
+##    &lt;chr&gt;   &lt;chr&gt;        &lt;fct&gt;    &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt;  &lt;dbl&gt;
+##  1 15345   nihnaxr      FALSE     5.84   945 TRUE    6.85
+##  2 15345   skaep        FALSE     6.03  1046 FALSE   6.95
+##  3 15345   grandparents TRUE     10.3    797 TRUE    6.68
+##  4 15345   sehs         FALSE     5.88  2134 TRUE    7.67
+##  5 15345   cousin       TRUE      5.78   597 TRUE    6.39
+##  6 15345   blowup       TRUE      6.03   716 TRUE    6.57
+##  7 15345   hhehrnzmaxn  FALSE     7.30  1985 TRUE    7.59
+##  8 15345   mantic       TRUE      6.21  1591 TRUE    7.37
+##  9 15345   notable      TRUE      6.82   620 TRUE    6.43
+## 10 15345   prowthihviht FALSE     7.68  1205 TRUE    7.09
+## # … with 2,990 more rows
+```
+
+
+---
+
+# A frequentist linear model
+
+
+```r
+lm_1 &lt;- lmer(
+  log(RT) ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (1 | Subject),
+  data = mald
+)
+```
+
+---
+
+# A frequentist linear model
+
+
+```
+## Linear mixed model fit by REML ['lmerMod']
+## Formula: log(RT) ~ PhonLev + IsWord + PhonLev:IsWord + (1 | Subject)
+##    Data: mald
+## 
+## REML criterion at convergence: 647.9
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -8.0939 -0.6469 -0.1746  0.4883  4.1256 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  Subject  (Intercept) 0.007429 0.08619 
+##  Residual             0.070268 0.26508 
+## Number of obs: 3000, groups:  Subject, 30
+## 
+## Fixed effects:
+##                      Estimate Std. Error t value
+## (Intercept)          6.617326   0.040724 162.493
+## PhonLev              0.032973   0.005235   6.298
+## IsWordFALSE          0.189964   0.053634   3.542
+## PhonLev:IsWordFALSE -0.010166   0.007437  -1.367
+```
+
+---
+
+# A frequentist linear model
+
+&lt;img src="index_files/figure-html/lm-1-pred-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Increase model complexity
+
+**Try it yourself!** Does it work?
+
+
+```r
+lm_2 &lt;- lmer(
+  log(RT) ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald
+)
+```
+
+--
+
+
+```
+## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to
+## converge with max|grad| = 0.0969421 (tol = 0.002, component 1)
+```
+
+---
+
+class: center middle inverse
+
+.f1[Let's go Bayesian!]
+
+---
+
+# A Bayesian linear model
+
+
+```r
+brm_1 &lt;- brm(
+  RT ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald,
+  # Let's use a lognormal fam, rather than log the RT values
+  family = lognormal()
+)
+```
+
+
+
+---
+
+# A Bayesian linear model
+
+.medium[
+
+```
+##  Family: lognormal 
+##   Links: mu = identity; sigma = identity 
+## Formula: RT ~ PhonLev + IsWord + PhonLev:IsWord + (PhonLev + IsWord | Subject) 
+##    Data: mald (Number of observations: 3000) 
+##   Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+##          total post-warmup draws = 4000
+## 
+## Group-Level Effects: 
+## ~Subject (Number of levels: 30) 
+##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)                  0.09      0.03     0.05     0.15 1.00     1358     1422
+## sd(PhonLev)                    0.01      0.00     0.00     0.01 1.01      485     1324
+## sd(IsWordFALSE)                0.09      0.02     0.06     0.12 1.00     1888     3027
+## cor(Intercept,PhonLev)        -0.38      0.46    -0.94     0.69 1.00     2407     2576
+## cor(Intercept,IsWordFALSE)     0.25      0.29    -0.31     0.79 1.01      610     1005
+## cor(PhonLev,IsWordFALSE)      -0.34      0.43    -0.95     0.65 1.01      332      633
+## 
+## Population-Level Effects: 
+##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept               6.62      0.04     6.54     6.70 1.00     2922     2840
+## PhonLev                 0.03      0.01     0.02     0.04 1.00     3584     2629
+## IsWordFALSE             0.19      0.06     0.08     0.30 1.00     3063     2707
+## PhonLev:IsWordFALSE    -0.01      0.01    -0.02     0.00 1.00     3247     2770
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma     0.26      0.00     0.26     0.27 1.00     6576     2644
+## 
+## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+```
+]
+
+---
+
+# A Bayesian linear model
+
+&lt;img src="index_files/figure-html/brm-1-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Let's start small
+
+**Try it yourself!**
+
+
+```r
+brm_2 &lt;- brm(
+  RT ~
+    IsWord,
+  data = mald,
+  family = lognormal(),
+  # Save model output to file
+  file = "./data/rds/brm_2.rds"
+)
+```
+
+---
+
+class: center middle reverse
+
+.f1[[MCMC what?](https://chi-feng.github.io/mcmc-demo/app.html)]
+
+???
+
+More on MCMC: http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/
+
+---
+
+# Let's start small
+
+.pull-left[
+
+```r
+brm_2 &lt;- brm(
+  RT ~
+    IsWord,
+  data = mald,
+  # Probability distribution
+  # of the OUTCOME
+  family = lognormal(),
+  # TECHNICAL STUFF
+  # Save model output
+  # to file
+  file = "./data/rds/brm_2.rds",
+  # Number of chains
+  chains = 4, 
+  # Number of iterations per
+  # chain
+  iter = 2000,
+  # Number of cores to use
+  cores = 4
+)
+```
+]
+
+--
+
+.pull-right[
+- `chains`: Number of MCMC chains to be run.
+
+- `iter`: Number of iterations per MCMC chain.
+
+- `cores`: Number of cores to use for running the MCMC chains.
+
+  - You can find out how many cores your laptop has with `parallel::detectCores()`
+]
+
+---
+
+# Let's start small
+
+How do I interpret the output summary?
+
+.big[
+
+```r
+brm_2
+```
+
+```
+##  Family: lognormal 
+##   Links: mu = identity; sigma = identity 
+## Formula: RT ~ IsWord 
+##    Data: mald (Number of observations: 3000) 
+##   Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+##          total post-warmup draws = 4000
+## 
+## Population-Level Effects: 
+##             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept       6.85      0.01     6.84     6.86 1.00     4186     2843
+## IsWordFALSE     0.12      0.01     0.10     0.14 1.00     3947     2679
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma     0.28      0.00     0.27     0.29 1.00     3550     3114
+## 
+## Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+```
+]
+
+---
+
+# Quick plot
+
+
+```r
+plot(brm_2)
+```
+
+&lt;img src="index_files/figure-html/brm-2-plot-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Get variables
+
+To list all variable names in a model, use:
+
+
+```r
+variables(brm_2)
+```
+
+```
+## [1] "b_Intercept"   "b_IsWordFALSE" "sigma"         "lprior"        "lp__"
+```
+
+---
+
+# Get MCMC draws
+
+You can easily extract the MCMC draws:
+
+
+```r
+brm_2 %&gt;%
+  gather_draws(`b_.*`, regex = TRUE)
+```
+
+```
+## # A tibble: 8,000 × 5
+## # Groups:   .variable [2]
+##    .chain .iteration .draw .variable   .value
+##     &lt;int&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;
+##  1      1          1     1 b_Intercept   6.85
+##  2      1          2     2 b_Intercept   6.84
+##  3      1          3     3 b_Intercept   6.85
+##  4      1          4     4 b_Intercept   6.85
+##  5      1          5     5 b_Intercept   6.85
+##  6      1          6     6 b_Intercept   6.85
+##  7      1          7     7 b_Intercept   6.85
+##  8      1          8     8 b_Intercept   6.85
+##  9      1          9     9 b_Intercept   6.84
+## 10      1         10    10 b_Intercept   6.85
+## # … with 7,990 more rows
+```
+
+
+
+---
+
+# Posterior distributions
+
+Now you can plot the draws using ggplot2.
+
+
+```r
+g_1 &lt;- brm_2 %&gt;%
+  gather_draws(b_Intercept) %&gt;%
+  ggplot(aes(.value)) +
+  stat_halfeye(fill = "#214d65") +
+  scale_x_continuous(breaks = seq(6, 7, by = 0.01)) +
+  labs(title = "Intercept")
+```
+
+---
+
+# Posterior distributions
+
+&lt;img src="index_files/figure-html/brm-2-int-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+# Posterior distributions
+
+
+```r
+g_2 &lt;- brm_2 %&gt;%
+  gather_draws(b_IsWordFALSE) %&gt;%
+  ggplot(aes(.value)) +
+  stat_halfeye(fill = "#624B27") +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.01)) +
+  labs(title = "Effect of IsWord = FALSE")
+```
+
+---
+
+# Posterior distributions
+
+&lt;img src="index_files/figure-html/brm-2-isword-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: center middle inverse
+
+.f1[DIAGNOSTICS]
+
+---
+
+# MCMC chains diagnostics
+
+
+```r
+as.array(brm_2) %&gt;%
+  mcmc_trace("b_IsWordFALSE", np = nuts_params(brm_2))
+```
+
+&lt;img src="index_files/figure-html/brm-2-chain-1-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# MCMC chain divergences
+
+.center[
+![](img/trace_c.png)
+]
+
+???
+
+Picture from &lt;https://www.rdatagen.net/post/diagnosing-and-dealing-with-estimation-issues-in-the-bayesian-meta-analysis/&gt;.
+
+---
+
+# `\(\hat{R}\)` and Effective Sample Size
+
+.medium[
+
+```r
+brm_2
+```
+
+```
+##  Family: lognormal 
+##   Links: mu = identity; sigma = identity 
+## Formula: RT ~ IsWord 
+##    Data: mald (Number of observations: 3000) 
+##   Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+##          total post-warmup draws = 4000
+## 
+## Population-Level Effects: 
+##             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept       6.85      0.01     6.84     6.86 1.00     4186     2843
+## IsWordFALSE     0.12      0.01     0.10     0.14 1.00     3947     2679
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma     0.28      0.00     0.27     0.29 1.00     3550     3114
+## 
+## Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+```
+]
+
+---
+
+# Posterior predictive checks
+
+
+```r
+pp_check(brm_2, ndraws = 100)
+```
+
+&lt;img src="index_files/figure-html/brm-2-pp-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: center middle inverse
+
+.f1[Level up!]
+
+---
+
+# Interactions and group-level effects
+
+
+```r
+brm_1 &lt;- brm(
+  RT ~
+    PhonLev +
+    IsWord +
+    # Interaction
+    PhonLev:IsWord +
+    # Group-level effects
+    (PhonLev + IsWord | Subject),
+  data = mald,
+  family = lognormal(),
+  # Technical stuff
+  backend = "cmdstanr",
+  cores = 4,
+  threads = threading(2),
+  file = "data/rds/brm_1"
+)
+```
+
+---
+
+# Interactions and group-level effects
+
+.medium[
+
+```
+##  Family: lognormal 
+##   Links: mu = identity; sigma = identity 
+## Formula: RT ~ PhonLev + IsWord + PhonLev:IsWord + (PhonLev + IsWord | Subject) 
+##    Data: mald (Number of observations: 3000) 
+##   Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+##          total post-warmup draws = 4000
+## 
+## Group-Level Effects: 
+## ~Subject (Number of levels: 30) 
+##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)                  0.09      0.03     0.05     0.15 1.00     1358     1422
+## sd(PhonLev)                    0.01      0.00     0.00     0.01 1.01      485     1324
+## sd(IsWordFALSE)                0.09      0.02     0.06     0.12 1.00     1888     3027
+## cor(Intercept,PhonLev)        -0.38      0.46    -0.94     0.69 1.00     2407     2576
+## cor(Intercept,IsWordFALSE)     0.25      0.29    -0.31     0.79 1.01      610     1005
+## cor(PhonLev,IsWordFALSE)      -0.34      0.43    -0.95     0.65 1.01      332      633
+## 
+## Population-Level Effects: 
+##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept               6.62      0.04     6.54     6.70 1.00     2922     2840
+## PhonLev                 0.03      0.01     0.02     0.04 1.00     3584     2629
+## IsWordFALSE             0.19      0.06     0.08     0.30 1.00     3063     2707
+## PhonLev:IsWordFALSE    -0.01      0.01    -0.02     0.00 1.00     3247     2770
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma     0.26      0.00     0.26     0.27 1.00     6576     2644
+## 
+## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+```
+]
+
+---
+
+# Interactions
+
+
+```r
+conditional_effects(brm_1, effects = "PhonLev:IsWord")
+```
+
+&lt;img src="index_files/figure-html/brm-1-bis-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Interactions
+
+
+```r
+conditional_effects(
+  brm_1, effects = "PhonLev:IsWord",
+  spaghetti = TRUE, ndraws = 100
+) %&gt;%
+  plot(spaghetti_args = c(size = 2, alpha = 1))
+```
+
+---
+
+# Interactions
+
+&lt;img src="index_files/figure-html/brm-1-bis-cond-3-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Group-level effects
+
+
+
+&lt;img src="index_files/figure-html/brm-1-shrunk-intercept-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Group-level effects
+
+&lt;img src="index_files/figure-html/brm-1-shrunk-isword-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# We don't talk about Priors, no no no...
+
+![](../img/We_Dont_Talk_About_Bruno.jpg)
+
+---
+
+class: middle center inverse
+
+.f1[QUESTIONS?]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="../macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

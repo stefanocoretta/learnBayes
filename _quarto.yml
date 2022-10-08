@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+  resources:
+    - "slides/"
+
+website:
+  title: "learnBayes"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: setup.qmd
+        text: Set-up
+      - text: Slides
+        menu:
+          - href: "slides/01_how_bayes/"
+            text: "Day 1"
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+callout-icon: false
+

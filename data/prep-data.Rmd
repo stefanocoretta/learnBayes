@@ -1,0 +1,33 @@
+---
+title: "Prepare data"
+author: "Stefano Coretta"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = here::here())
+library(tidyverse)
+```
+
+```{r}
+load("data/MALD1_1_AllData.Rda")
+
+set.seed(943874)
+subj <- sample(unique(dat$Subject), 30)
+
+mald <- dat %>%
+  filter(Subject %in% subj, RT > 0) %>%
+  select(Subject, Item, IsWord, PhonLev, RT, ACC) %>%
+  mutate(
+    IsWord = factor(IsWord, levels = c("TRUE", "FALSE")),
+    RT_log = log(RT)
+  ) %>%
+  group_by(Subject) %>%
+  slice_sample(n = 100) %>%
+  ungroup()
+
+saveRDS(mald, "data/mald.rds")
+```
+
