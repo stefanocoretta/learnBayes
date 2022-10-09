@@ -8,6 +8,8 @@ output:
   xaringan::moon_reader:
     lib_dir: libs
     css:
+      - default
+      - "../custom.css"
       - xaringan-themer.css
     nature:
       highlightStyle: github
@@ -19,7 +21,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo = TRUE, out.height = "500px", dpi = 300,
+  echo = TRUE, out.height = "400px", dpi = 300,
   fig.align = "center", fig.width = 7, fig.height = 5
 )
 knitr::opts_knit$set(root.dir = here::here())
@@ -72,13 +74,13 @@ And in the darkness bind them.
 
 --
 
-.f5[(No, I couln't translate 'model' into Black Speech, alas...)]
+.f5[(No, I couldn't translate 'model' into Black Speech, alas...)]
 
 ---
 
 class: center middle
 
-# Now enter The Linear Model
+.f2[Now enter The Linear Model]
 
 <iframe src="https://giphy.com/embed/l4FGCymGGNTZVZwtO" width="480" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p>
 
@@ -86,7 +88,7 @@ class: center middle
 
 class: center middle
 
-# Now enter The Bayesian Linear Model
+.f2[Now enter The Bayesian Linear Model]
 
 <iframe src="https://giphy.com/embed/3ov9jG4eqz9k3XXsU8" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p>
 
@@ -94,16 +96,24 @@ class: center middle
 
 # All about the Bayes
 
-- Within the **NHST (Frequentist) framework**, the main analysis output is:
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt5[
 
-  - **Point estimates** of predictors' parameters (with standard error).
-  - **P-values**.
+Within the **NHST (Frequentist) framework**, the main analysis output is:
+
+- **Point estimates** of predictors' parameters (with standard error).
+- **P-values**.
+
+]
 
 --
 
-- Within the **Bayesian framework**, the main analysis output is:
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt5[
 
-  - **Probability distributions** of predictors' parameters.
+Within the **Bayesian framework**, the main analysis output is:
+
+- **Probability distributions** of predictors' parameters.
+
+]
 
 ---
 
@@ -124,7 +134,11 @@ mald
 
 ---
 
+layout: true
+
 # A frequentist linear model
+
+---
 
 ```{r lm-1}
 lm_1 <- lmer(
@@ -139,15 +153,11 @@ lm_1 <- lmer(
 
 ---
 
-# A frequentist linear model
-
 ```{r lm-1-sum, echo=FALSE}
 summary(lm_1, correlation= FALSE)
 ```
 
 ---
-
-# A frequentist linear model
 
 ```{r lm-1-pred, echo=FALSE, message=FALSE}
 ggpredict(lm_1, terms = c("PhonLev", "IsWord")) %>%
@@ -155,6 +165,8 @@ ggpredict(lm_1, terms = c("PhonLev", "IsWord")) %>%
 ```
 
 ---
+
+layout: false
 
 # Increase model complexity
 
@@ -192,7 +204,11 @@ class: center middle inverse
 
 ---
 
+layout: true
+
 # A Bayesian linear model
+
+---
 
 ```{r brm-1, eval=FALSE}
 brm_1 <- brm(
@@ -202,7 +218,8 @@ brm_1 <- brm(
     PhonLev:IsWord +
     (PhonLev + IsWord | Subject),
   data = mald,
-  # Let's use a lognormal fam, rather than log the RT values
+  # Let's use a log-normal family for RT, 
+  # rather than log the RT values.
   family = lognormal()
 )
 ```
@@ -215,7 +232,8 @@ brm_1 <- brm(
     PhonLev:IsWord +
     (PhonLev + IsWord | Subject),
   data = mald,
-  # Let's use a lognormal family, rather than log the RT values
+  # Let's use a log-normal family for RT, 
+  # rather than log the RT values.
   family = lognormal(),
   # Technical stuff
   backend = "cmdstanr",
@@ -227,8 +245,6 @@ brm_1 <- brm(
 
 ---
 
-# A Bayesian linear model
-
 .medium[
 ```{r brm-1-sum, echo=FALSE, warning=FALSE}
 brm_1
@@ -237,13 +253,13 @@ brm_1
 
 ---
 
-# A Bayesian linear model
-
 ```{r brm-1-cond, echo=FALSE}
 conditional_effects(brm_1, effects = "PhonLev:IsWord")
 ```
 
 ---
+
+layout: false
 
 # Let's start small
 
@@ -255,6 +271,8 @@ brm_2 <- brm(
     IsWord,
   data = mald,
   family = lognormal(),
+  # Use cmdstanr
+  backend = "cmdstanr",
   # Save model output to file
   file = "./data/rds/brm_2.rds"
 )
@@ -266,31 +284,38 @@ class: center middle reverse
 
 .f1[[MCMC what?](https://chi-feng.github.io/mcmc-demo/app.html)]
 
+Markov Chain Monte Carlo
+
 ???
 
 More on MCMC: http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/
 
 ---
 
+layout: true
+
 # Let's start small
+
+---
 
 .pull-left[
 ```{r brm-2-explain, eval=FALSE}
 brm_2 <- brm(
-  RT ~
-    IsWord,
+  RT ~ IsWord,
   data = mald,
+  
   # Probability distribution
   # of the OUTCOME
   family = lognormal(),
+  
   # TECHNICAL STUFF
-  # Save model output
-  # to file
+  # Use cmdstanr
+  backend = "cmdstanr"
+  # Save model output to file
   file = "./data/rds/brm_2.rds",
   # Number of chains
   chains = 4, 
-  # Number of iterations per
-  # chain
+  # Number of iterations per chain
   iter = 2000,
   # Number of cores to use
   cores = 4
@@ -301,6 +326,8 @@ brm_2 <- brm(
 --
 
 .pull-right[
+- `formula`, `data` and `family` should be familiar.
+
 - `chains`: Number of MCMC chains to be run.
 
 - `iter`: Number of iterations per MCMC chain.
@@ -312,8 +339,6 @@ brm_2 <- brm(
 
 ---
 
-# Let's start small
-
 How do I interpret the output summary?
 
 .big[
@@ -324,6 +349,8 @@ brm_2
 
 ---
 
+layout: false
+
 # Quick plot
 
 ```{r brm-2-plot}
@@ -332,9 +359,9 @@ plot(brm_2)
 
 ---
 
-# Get variables
+# Get parameters (variables)
 
-To list all variable names in a model, use:
+To list all the names of the parameters in a model, use:
 
 ```{r brm-2-vars}
 variables(brm_2)
@@ -355,7 +382,11 @@ brm_2 %>%
 
 ---
 
+layout: true
+
 # Posterior distributions
+
+---
 
 Now you can plot the draws using ggplot2.
 
@@ -370,8 +401,6 @@ g_1 <- brm_2 %>%
 
 ---
 
-# Posterior distributions
-
 ```{r brm-2-int, echo=FALSE}
 g_1
 ```
@@ -379,8 +408,6 @@ g_1
 
 
 ---
-
-# Posterior distributions
 
 ```{r brm-2-isword-g}
 g_2 <- brm_2 %>%
@@ -393,14 +420,13 @@ g_2 <- brm_2 %>%
 
 ---
 
-# Posterior distributions
-
 ```{r brm-2-isword, echo=FALSE}
 g_2
 ```
 
 ---
 
+layout: false
 class: center middle inverse
 
 .f1[DIAGNOSTICS]
@@ -420,7 +446,7 @@ as.array(brm_2) %>%
 # MCMC chain divergences
 
 .center[
-![](../../img/trace_c.png)
+![:scale 60%](../../img/trace_c.png)
 ]
 
 ???
@@ -572,7 +598,7 @@ brm_1_shrunk %>%
 
 ---
 
-# We don't talk about Priors, no no no...
+# We didn't talk about priors, no no no...
 
 ![](../../../img/We_Dont_Talk_About_Bruno.jpg)
 
