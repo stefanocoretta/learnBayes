@@ -13,7 +13,9 @@ library(tidyverse)
 
 ```{r}
 load("data/MALD1_1_AllData.Rda")
+```
 
+```{r}
 set.seed(943874)
 subj <- sample(unique(dat$Subject), 30)
 
@@ -22,7 +24,9 @@ mald <- dat %>%
   select(Subject, Item, IsWord, PhonLev, RT, ACC) %>%
   mutate(
     IsWord = factor(IsWord, levels = c("TRUE", "FALSE")),
-    RT_log = log(RT)
+    RT_log = log(RT),
+    ACC = ifelse(ACC, "correct", "incorrect"),
+    ACC = factor(ACC, levels = c("correct", "incorrect"))
   ) %>%
   group_by(Subject) %>%
   slice_sample(n = 100) %>%

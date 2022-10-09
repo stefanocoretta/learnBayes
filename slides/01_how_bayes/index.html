@@ -5,12 +5,14 @@
     <meta charset="utf-8" />
     <meta name="author" content="Stefano Coretta" />
     <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
     <link href="libs/panelset/panelset.css" rel="stylesheet" />
     <script src="libs/panelset/panelset.js"></script>
     <script src="libs/freezeframe/freezeframe.min.js"></script>
     <script src="libs/xaringanExtra-freezeframe/freezeframe-init.js"></script>
     <script id="xaringanExtra-freezeframe-options" type="application/json">{"selector":"img[src$=\"gif\"]","trigger":"click","overlay":false,"responsive":true,"warnings":true}</script>
+    <link rel="stylesheet" href="../custom.css" type="text/css" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -57,13 +59,13 @@ And in the darkness bind them.
 
 --
 
-.f5[(No, I couln't translate 'model' into Black Speech, alas...)]
+.f5[(No, I couldn't translate 'model' into Black Speech, alas...)]
 
 ---
 
 class: center middle
 
-# Now enter The Linear Model
+.f2[Now enter The Linear Model]
 
 &lt;iframe src="https://giphy.com/embed/l4FGCymGGNTZVZwtO" width="480" height="200" frameBorder="0" class="giphy-embed" allowFullScreen&gt;&lt;/iframe&gt;&lt;p&gt;
 
@@ -71,7 +73,7 @@ class: center middle
 
 class: center middle
 
-# Now enter The Bayesian Linear Model
+.f2[Now enter The Bayesian Linear Model]
 
 &lt;iframe src="https://giphy.com/embed/3ov9jG4eqz9k3XXsU8" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen&gt;&lt;/iframe&gt;&lt;p&gt;
 
@@ -79,16 +81,24 @@ class: center middle
 
 # All about the Bayes
 
-- Within the **NHST (Frequentist) framework**, the main analysis output is:
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt5[
 
-  - **Point estimates** of predictors' parameters (with standard error).
-  - **P-values**.
+Within the **NHST (Frequentist) framework**, the main analysis output is:
+
+- **Point estimates** of predictors' parameters (with standard error).
+- **P-values**.
+
+]
 
 --
 
-- Within the **Bayesian framework**, the main analysis output is:
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt5[
 
-  - **Probability distributions** of predictors' parameters.
+Within the **Bayesian framework**, the main analysis output is:
+
+- **Probability distributions** of predictors' parameters.
+
+]
 
 ---
 
@@ -109,25 +119,29 @@ mald
 
 ```
 ## # A tibble: 3,000 × 7
-##    Subject Item         IsWord PhonLev    RT ACC   RT_log
-##    &lt;chr&gt;   &lt;chr&gt;        &lt;fct&gt;    &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt;  &lt;dbl&gt;
-##  1 15345   nihnaxr      FALSE     5.84   945 TRUE    6.85
-##  2 15345   skaep        FALSE     6.03  1046 FALSE   6.95
-##  3 15345   grandparents TRUE     10.3    797 TRUE    6.68
-##  4 15345   sehs         FALSE     5.88  2134 TRUE    7.67
-##  5 15345   cousin       TRUE      5.78   597 TRUE    6.39
-##  6 15345   blowup       TRUE      6.03   716 TRUE    6.57
-##  7 15345   hhehrnzmaxn  FALSE     7.30  1985 TRUE    7.59
-##  8 15345   mantic       TRUE      6.21  1591 TRUE    7.37
-##  9 15345   notable      TRUE      6.82   620 TRUE    6.43
-## 10 15345   prowthihviht FALSE     7.68  1205 TRUE    7.09
+##    Subject Item         IsWord PhonLev    RT ACC       RT_log
+##    &lt;chr&gt;   &lt;chr&gt;        &lt;fct&gt;    &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;      &lt;dbl&gt;
+##  1 15345   nihnaxr      FALSE     5.84   945 correct     6.85
+##  2 15345   skaep        FALSE     6.03  1046 incorrect   6.95
+##  3 15345   grandparents TRUE     10.3    797 correct     6.68
+##  4 15345   sehs         FALSE     5.88  2134 correct     7.67
+##  5 15345   cousin       TRUE      5.78   597 correct     6.39
+##  6 15345   blowup       TRUE      6.03   716 correct     6.57
+##  7 15345   hhehrnzmaxn  FALSE     7.30  1985 correct     7.59
+##  8 15345   mantic       TRUE      6.21  1591 correct     7.37
+##  9 15345   notable      TRUE      6.82   620 correct     6.43
+## 10 15345   prowthihviht FALSE     7.68  1205 correct     7.09
 ## # … with 2,990 more rows
 ```
 
 
 ---
 
+layout: true
+
 # A frequentist linear model
+
+---
 
 
 ```r
@@ -142,8 +156,6 @@ lm_1 &lt;- lmer(
 ```
 
 ---
-
-# A frequentist linear model
 
 
 ```
@@ -173,11 +185,11 @@ lm_1 &lt;- lmer(
 
 ---
 
-# A frequentist linear model
-
-&lt;img src="index_files/figure-html/lm-1-pred-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/lm-1-pred-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
+
+layout: false
 
 # Increase model complexity
 
@@ -199,8 +211,7 @@ lm_2 &lt;- lmer(
 
 
 ```
-## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to
-## converge with max|grad| = 0.0969421 (tol = 0.002, component 1)
+## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to converge with max|grad| = 0.0969421 (tol = 0.002, component 1)
 ```
 
 ---
@@ -211,7 +222,11 @@ class: center middle inverse
 
 ---
 
+layout: true
+
 # A Bayesian linear model
+
+---
 
 
 ```r
@@ -222,7 +237,8 @@ brm_1 &lt;- brm(
     PhonLev:IsWord +
     (PhonLev + IsWord | Subject),
   data = mald,
-  # Let's use a lognormal fam, rather than log the RT values
+  # Let's use a log-normal family for RT, 
+  # rather than log the RT values.
   family = lognormal()
 )
 ```
@@ -230,8 +246,6 @@ brm_1 &lt;- brm(
 
 
 ---
-
-# A Bayesian linear model
 
 .medium[
 
@@ -272,11 +286,11 @@ brm_1 &lt;- brm(
 
 ---
 
-# A Bayesian linear model
-
-&lt;img src="index_files/figure-html/brm-1-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-1-cond-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
+
+layout: false
 
 # Let's start small
 
@@ -289,6 +303,8 @@ brm_2 &lt;- brm(
     IsWord,
   data = mald,
   family = lognormal(),
+  # Use cmdstanr
+  backend = "cmdstanr",
   # Save model output to file
   file = "./data/rds/brm_2.rds"
 )
@@ -300,32 +316,39 @@ class: center middle reverse
 
 .f1[[MCMC what?](https://chi-feng.github.io/mcmc-demo/app.html)]
 
+Markov Chain Monte Carlo
+
 ???
 
 More on MCMC: http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/
 
 ---
 
+layout: true
+
 # Let's start small
+
+---
 
 .pull-left[
 
 ```r
 brm_2 &lt;- brm(
-  RT ~
-    IsWord,
+  RT ~ IsWord,
   data = mald,
+  
   # Probability distribution
   # of the OUTCOME
   family = lognormal(),
+  
   # TECHNICAL STUFF
-  # Save model output
-  # to file
+  # Use cmdstanr
+  backend = "cmdstanr"
+  # Save model output to file
   file = "./data/rds/brm_2.rds",
   # Number of chains
   chains = 4, 
-  # Number of iterations per
-  # chain
+  # Number of iterations per chain
   iter = 2000,
   # Number of cores to use
   cores = 4
@@ -336,6 +359,8 @@ brm_2 &lt;- brm(
 --
 
 .pull-right[
+- `formula`, `data` and `family` should be familiar.
+
 - `chains`: Number of MCMC chains to be run.
 
 - `iter`: Number of iterations per MCMC chain.
@@ -346,8 +371,6 @@ brm_2 &lt;- brm(
 ]
 
 ---
-
-# Let's start small
 
 How do I interpret the output summary?
 
@@ -367,20 +390,22 @@ brm_2
 ## 
 ## Population-Level Effects: 
 ##             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept       6.85      0.01     6.84     6.86 1.00     4186     2843
-## IsWordFALSE     0.12      0.01     0.10     0.14 1.00     3947     2679
+## Intercept       6.85      0.01     6.83     6.86 1.00     3984     2785
+## IsWordFALSE     0.12      0.01     0.10     0.14 1.00     3497     3033
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma     0.28      0.00     0.27     0.29 1.00     3550     3114
+## sigma     0.28      0.00     0.27     0.29 1.00     3575     2931
 ## 
-## Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
 ## scale reduction factor on split chains (at convergence, Rhat = 1).
 ```
 ]
 
 ---
+
+layout: false
 
 # Quick plot
 
@@ -389,13 +414,13 @@ brm_2
 plot(brm_2)
 ```
 
-&lt;img src="index_files/figure-html/brm-2-plot-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-2-plot-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-# Get variables
+# Get parameters (variables)
 
-To list all variable names in a model, use:
+To list all the names of the parameters in a model, use:
 
 
 ```r
@@ -424,14 +449,14 @@ brm_2 %&gt;%
 ##    .chain .iteration .draw .variable   .value
 ##     &lt;int&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;
 ##  1      1          1     1 b_Intercept   6.85
-##  2      1          2     2 b_Intercept   6.84
-##  3      1          3     3 b_Intercept   6.85
-##  4      1          4     4 b_Intercept   6.85
+##  2      1          2     2 b_Intercept   6.87
+##  3      1          3     3 b_Intercept   6.86
+##  4      1          4     4 b_Intercept   6.86
 ##  5      1          5     5 b_Intercept   6.85
-##  6      1          6     6 b_Intercept   6.85
+##  6      1          6     6 b_Intercept   6.84
 ##  7      1          7     7 b_Intercept   6.85
 ##  8      1          8     8 b_Intercept   6.85
-##  9      1          9     9 b_Intercept   6.84
+##  9      1          9     9 b_Intercept   6.86
 ## 10      1         10    10 b_Intercept   6.85
 ## # … with 7,990 more rows
 ```
@@ -440,7 +465,11 @@ brm_2 %&gt;%
 
 ---
 
+layout: true
+
 # Posterior distributions
+
+---
 
 Now you can plot the draws using ggplot2.
 
@@ -456,15 +485,11 @@ g_1 &lt;- brm_2 %&gt;%
 
 ---
 
-# Posterior distributions
-
-&lt;img src="index_files/figure-html/brm-2-int-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-2-int-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 
 
 ---
-
-# Posterior distributions
 
 
 ```r
@@ -478,12 +503,11 @@ g_2 &lt;- brm_2 %&gt;%
 
 ---
 
-# Posterior distributions
-
-&lt;img src="index_files/figure-html/brm-2-isword-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-2-isword-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
 
+layout: false
 class: center middle inverse
 
 .f1[DIAGNOSTICS]
@@ -498,7 +522,7 @@ as.array(brm_2) %&gt;%
   mcmc_trace("b_IsWordFALSE", np = nuts_params(brm_2))
 ```
 
-&lt;img src="index_files/figure-html/brm-2-chain-1-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-2-chain-1-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -506,7 +530,7 @@ as.array(brm_2) %&gt;%
 # MCMC chain divergences
 
 .center[
-![](../../img/trace_c.png)
+![:scale 60%](../../img/trace_c.png)
 ]
 
 ???
@@ -533,14 +557,14 @@ brm_2
 ## 
 ## Population-Level Effects: 
 ##             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept       6.85      0.01     6.84     6.86 1.00     4186     2843
-## IsWordFALSE     0.12      0.01     0.10     0.14 1.00     3947     2679
+## Intercept       6.85      0.01     6.83     6.86 1.00     3984     2785
+## IsWordFALSE     0.12      0.01     0.10     0.14 1.00     3497     3033
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma     0.28      0.00     0.27     0.29 1.00     3550     3114
+## sigma     0.28      0.00     0.27     0.29 1.00     3575     2931
 ## 
-## Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
 ## scale reduction factor on split chains (at convergence, Rhat = 1).
 ```
@@ -555,7 +579,7 @@ brm_2
 pp_check(brm_2, ndraws = 100)
 ```
 
-&lt;img src="index_files/figure-html/brm-2-pp-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-2-pp-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -637,7 +661,7 @@ brm_1 &lt;- brm(
 conditional_effects(brm_1, effects = "PhonLev:IsWord")
 ```
 
-&lt;img src="index_files/figure-html/brm-1-bis-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-1-bis-cond-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -656,31 +680,25 @@ conditional_effects(
 
 # Interactions
 
-&lt;img src="index_files/figure-html/brm-1-bis-cond-3-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-1-bis-cond-3-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Group-level effects
 
 
-```
-## Warning: `gather_()` was deprecated in tidyr 1.2.0.
-## ℹ Please use `gather()` instead.
-## ℹ The deprecated feature was likely used in the tidybayes package.
-##   Please report the issue at &lt;]8;;https://github.com/mjskay/tidybayes/issues/newhttps://github.com/mjskay/tidybayes/issues/new]8;;&gt;.
-```
 
-&lt;img src="index_files/figure-html/brm-1-shrunk-intercept-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-1-shrunk-intercept-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Group-level effects
 
-&lt;img src="index_files/figure-html/brm-1-shrunk-isword-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-1-shrunk-isword-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-# We don't talk about Priors, no no no...
+# We didn't talk about priors, no no no...
 
 ![](../../../img/We_Dont_Talk_About_Bruno.jpg)
 
