@@ -4,7 +4,7 @@ title: "learnBayes in R"
 
 This is the website of the workshop **learnBayes**.
 
-Please, check the [Set-up](setup.qmd) package for important set-up instructions, before joining the workshop.
+Please, check the [Set-up](setup.qmd) page for important set-up instructions, before joining the workshop.
 
 This workshop assumes you have a **solid command of R and tidyverse packages, and familiarity with linear modelling** (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).
 

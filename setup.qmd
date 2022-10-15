@@ -19,7 +19,7 @@ Before installing the necessary software, make sure you have installed or update
 
 I strongly recommend you to use the Starter Kit.
 
-You can get the Starter Kit from [here](). It is just an RStudio project with some useful files.
+You can get the Starter Kit from [here](https://github.com/stefanocoretta/learnBayesKit). It is just an RStudio project with some useful files.
 
 ## Installation
 
