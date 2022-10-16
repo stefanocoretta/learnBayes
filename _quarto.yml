@@ -19,6 +19,8 @@ website:
         menu:
           - href: "slides/01_how_bayes/"
             text: "Day 1"
+          - href: "slides/02_how_priors/"
+            text: "Day 2"
 
 format:
   html:
