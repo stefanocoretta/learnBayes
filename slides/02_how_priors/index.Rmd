@@ -35,6 +35,7 @@ library(brms)
 library(tidybayes)
 library(bayesplot)
 library(extraDistr)
+library(googlesheets4)
 options(htmltools.dir.version = FALSE)
 xaringanExtra::use_xaringan_extra(c("panelset", "tachyons"))
 my_cores <- parallel::detectCores()
@@ -242,9 +243,33 @@ Report them here: <https://forms.gle/M7juHsxyv5Vbs7Gx7>.
 
 ---
 
-class: center middle inverse
+# Let's see what we got!
 
-.f1[Now let's see what we got!]
+```{r rt-sheet, echo=FALSE, message=FALSE, warning=FALSE}
+rt <- read_sheet("https://docs.google.com/spreadsheets/d/1TOJmee8wSKMMHoN9B_0oC3x33gIpvUovlQNqMV0S9vE/edit?usp=sharing", 1)
+colnames(rt) <- c("Timestamp", "mean_rt", "sd_rt")
+
+if (nrow(rt) == 0) {
+  rt <- tibble(Timestamp = c("a", "b"), mean_rt = c(1000, 2000), sd_rt = c(300, 450))
+}
+
+x <- seq(min(rt$mean_rt) - 3 * max(rt$sd_rt), max(rt$mean_rt) + 3 * max(rt$sd_rt))
+
+rt %>%
+  mutate(
+    y = map2(mean_rt, sd_rt, ~dnorm(x, .x, .y)),
+    x = list(x)
+  ) %>%
+  unnest(cols = c(y, x)) %>%
+  ggplot(aes(x, y, colour = as.character(Timestamp))) +
+  geom_line(size = 1) +
+  theme(legend.position = "none") +
+  labs(
+    x = "RT (ms)", y = "Density",
+    title = "Prposed distributions of RTs"
+  ) +
+  scale_color_brewer(palette = "Paired")
+```
 
 ---
 
