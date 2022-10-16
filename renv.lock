@@ -49,6 +49,14 @@
         "promises"
       ]
     },
+    "HDInterval": {
+      "Package": "HDInterval",
+      "Version": "0.2.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3b986a53325a1d95610b8d86a284dac0",
+      "Requirements": []
+    },
     "MASS": {
       "Package": "MASS",
       "Version": "7.3-57",
@@ -128,6 +136,16 @@
       "Repository": "CRAN",
       "Hash": "4f57884290cc75ab22f4af9e9d4ca862",
       "Requirements": []
+    },
+    "arrayhelpers": {
+      "Package": "arrayhelpers",
+      "Version": "1.1-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3d4e52d458784c335af3846f2de64f75",
+      "Requirements": [
+        "svUnit"
+      ]
     },
     "askpass": {
       "Package": "askpass",
@@ -633,6 +651,16 @@
       "Hash": "9a3d3c345f8a5648abe61608aaa29518",
       "Requirements": []
     },
+    "extraDistr": {
+      "Package": "extraDistr",
+      "Version": "1.9.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "9e29370a0dd450a33826a4932d3fa16d",
+      "Requirements": [
+        "Rcpp"
+      ]
+    },
     "fansi": {
       "Package": "fansi",
       "Version": "1.0.3",
@@ -731,6 +759,27 @@
       "Repository": "CRAN",
       "Hash": "15e9634c0fcd294799e9b2e929ed1b86",
       "Requirements": []
+    },
+    "ggdist": {
+      "Package": "ggdist",
+      "Version": "3.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "da5ae53a708eb6f8d2f9ec6acd188fd9",
+      "Requirements": [
+        "HDInterval",
+        "distributional",
+        "dplyr",
+        "ggplot2",
+        "glue",
+        "numDeriv",
+        "rlang",
+        "scales",
+        "tibble",
+        "tidyselect",
+        "vctrs",
+        "withr"
+      ]
     },
     "ggeffects": {
       "Package": "ggeffects",
@@ -1833,6 +1882,14 @@
         "stringi"
       ]
     },
+    "svUnit": {
+      "Package": "svUnit",
+      "Version": "1.0.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "894d0aff9585344af4ab78e2b4d60ab7",
+      "Requirements": []
+    },
     "sys": {
       "Package": "sys",
       "Version": "3.4",
@@ -1904,6 +1961,28 @@
         "pkgconfig",
         "rlang",
         "vctrs"
+      ]
+    },
+    "tidybayes": {
+      "Package": "tidybayes",
+      "Version": "3.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d501501261b724f35ec9f2b80f4421b5",
+      "Requirements": [
+        "arrayhelpers",
+        "coda",
+        "dplyr",
+        "ggdist",
+        "ggplot2",
+        "magrittr",
+        "posterior",
+        "rlang",
+        "tibble",
+        "tidyr",
+        "tidyselect",
+        "vctrs",
+        "withr"
       ]
     },
     "tidyr": {
