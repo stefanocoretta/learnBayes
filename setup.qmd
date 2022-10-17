@@ -51,7 +51,7 @@ You need to install the following packages:
 install.packages(c("tidyverse", "remotes"))
 remotes::install_github("stan-dev/cmdstanr")
 install.packages(c("brms"))
-install.packages(c("tidybayes"))
+install.packages(c("tidybayes", "extraDistr"))
 ```
 
 The [cmdstanr](https://mc-stan.org/cmdstanr/index.html) package is an interface between R and CmdStan (see below), while [brms](https://paul-buerkner.github.io/brms/) is the package you will use to run Bayesian linear models (think of it as the Bayesian equivalent of [lme4](https://github.com/lme4/lme4)).
