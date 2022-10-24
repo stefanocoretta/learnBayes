@@ -602,7 +602,7 @@ brm_1_shrunk %>%
 
 # We didn't talk about priors, no no no...
 
-![](../../../img/We_Dont_Talk_About_Bruno.jpg)
+![](../../img/We_Dont_Talk_About_Bruno.jpg)
 
 ---
 

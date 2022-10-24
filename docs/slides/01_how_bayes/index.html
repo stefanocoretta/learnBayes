@@ -212,8 +212,8 @@ lm_2 &lt;- lmer(
 
 
 ```
-## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to converge
-## with max|grad| = 0.0969421 (tol = 0.002, component 1)
+## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to
+## converge with max|grad| = 0.0969421 (tol = 0.002, component 1)
 ```
 
 ---
@@ -689,6 +689,12 @@ conditional_effects(
 # Group-level effects
 
 
+```
+## Warning: `gather_()` was deprecated in tidyr 1.2.0.
+## ℹ Please use `gather()` instead.
+## ℹ The deprecated feature was likely used in the tidybayes package.
+##   Please report the issue at &lt;]8;;https://github.com/mjskay/tidybayes/issues/newhttps://github.com/mjskay/tidybayes/issues/new]8;;&gt;.
+```
 
 &lt;img src="index_files/figure-html/brm-1-shrunk-intercept-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
@@ -702,7 +708,7 @@ conditional_effects(
 
 # We didn't talk about priors, no no no...
 
-![](../../../img/We_Dont_Talk_About_Bruno.jpg)
+![](../../img/We_Dont_Talk_About_Bruno.jpg)
 
 ---
 
