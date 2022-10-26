@@ -55,7 +55,7 @@ Prior and evidence are, of course, probability distributions.
 
 ---
 
-# Example from last time
+# Example from Day 1
 
 [Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (Tucker et al. 2019):
 
@@ -631,25 +631,25 @@ layout: false
 
 # Distribution of accuracy data by phonemic distance
 
-.f2[
+.f3[
 `$$\text{ACC}_i \sim Bernoulli(p)$$`
 ]
 
 --
 
-.f2[
+.f3[
 `$$logit(p) = \beta_0 + \beta_1\text{PL}_i$$`
 ]
 
 --
 
-.f2[
+.f3[
 `$$\beta_0 \sim Normal(\mu_0, \sigma_0)$$`
 ]
 
 --
 
-.f2[
+.f3[
 `$$\beta_1 \sim Normal(\mu_1, \sigma_1)$$`
 ]
 
@@ -675,13 +675,20 @@ So priors have to be specified on the log scale.
 
 .f2[
 `$$\text{ACC}_i \sim Bernoulli(p)$$`
+]
 
+.f2[
 `$$logit(p) = \beta_0 + \beta_1\text{PL}_i$$`
+]
 
+.f2[
 `$$\beta_0 \sim Normal(0, 1.5)$$`
+]
 
+.f2[
 `$$\beta_1 \sim Normal(0, 1)$$`
 ]
+
 
 ???
 
