@@ -1,6 +1,6 @@
 ---
 title: "Intro to Bayesian (Linear Models) for Speech and Language Scientists"
-subtitle: "Day 1"
+subtitle: "Part 1"
 author: "Stefano Coretta"
 institute: ""
 date: "2022/11/29"
