@@ -256,19 +256,21 @@ if (nrow(rt) == 0) {
 x <- seq(min(rt$mean_rt) - 3 * max(rt$sd_rt), max(rt$mean_rt) + 3 * max(rt$sd_rt))
 
 rt %>%
+  filter(mean_rt > 100, sd_rt > 50) %>%
   mutate(
     y = map2(mean_rt, sd_rt, ~dnorm(x, .x, .y)),
     x = list(x)
   ) %>%
   unnest(cols = c(y, x)) %>%
-  ggplot(aes(x, y, colour = as.character(Timestamp))) +
-  geom_line(size = 1) +
+  ggplot(aes(x, y, group = as.character(paste(Timestamp, mean_rt, sd_rt)))) +
+  geom_line(size = 1, alpha = 0.5) +
   theme(legend.position = "none") +
   labs(
     x = "RT (ms)", y = "Density",
-    title = "Prposed distributions of RTs"
+    title = "Proposed distributions of RTs"
   ) +
-  scale_color_brewer(palette = "Paired")
+  scale_color_brewer(palette = "Paired") +
+  xlim(-500, 2500)
 ```
 
 ---
@@ -553,7 +555,7 @@ rt_1_pp <- brm(
   prior = my_priors,
   sample_prior = "only",
   cores = my_cores,
-  file = "./data/rt_1_pp",
+  file = "./data/rds/rt_1_pp",
   backend = "cmdstanr"
 )
 ```
@@ -600,7 +602,7 @@ rt_1 <- brm(
   family = gaussian,
   prior = my_priors,
   cores = my_cores,
-  file = "./data/rt_1",
+  file = "./data/rds/rt_1",
   backend = "cmdstanr"
 )
 ```
@@ -826,7 +828,7 @@ acc_1 <- brm(
   family = bernoulli,
   prior = priors,
   cores = my_cores,
-  file = "./data/acc_1",
+  file = "./data/rds/acc_1",
   backend = "cmdstanr"
 )
 ```
@@ -858,7 +860,7 @@ acc_2 <- brm(
   family = bernoulli,
   prior = priors,
   cores = my_cores,
-  file = "./data/acc_2",
+  file = "./data/rds/acc_2",
   backend = "cmdstanr"
 )
 ```

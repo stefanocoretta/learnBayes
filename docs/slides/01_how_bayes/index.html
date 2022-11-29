@@ -29,7 +29,7 @@ class: center, middle, inverse, title-slide
 ### Stefano Coretta
 ]
 .date[
-### 2022/10/25
+### 2022/11/29
 ]
 
 ---
@@ -147,7 +147,7 @@ layout: true
 
 ```r
 lm_1 &lt;- lmer(
-  log(RT) ~
+  RT ~
     PhonLev +
     IsWord +
     PhonLev:IsWord +
@@ -161,27 +161,27 @@ lm_1 &lt;- lmer(
 
 ```
 ## Linear mixed model fit by REML ['lmerMod']
-## Formula: log(RT) ~ PhonLev + IsWord + PhonLev:IsWord + (1 | Subject)
+## Formula: RT ~ PhonLev + IsWord + PhonLev:IsWord + (1 | Subject)
 ##    Data: mald
 ## 
-## REML criterion at convergence: 647.9
+## REML criterion at convergence: 43232.4
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -8.0939 -0.6469 -0.1746  0.4883  4.1256 
+## -3.5511 -0.5985 -0.2439  0.3185  5.6906 
 ## 
 ## Random effects:
 ##  Groups   Name        Variance Std.Dev.
-##  Subject  (Intercept) 0.007429 0.08619 
-##  Residual             0.070268 0.26508 
+##  Subject  (Intercept)  11032   105.0   
+##  Residual             104648   323.5   
 ## Number of obs: 3000, groups:  Subject, 30
 ## 
 ## Fixed effects:
-##                      Estimate Std. Error t value
-## (Intercept)          6.617326   0.040724 162.493
-## PhonLev              0.032973   0.005235   6.298
-## IsWordFALSE          0.189964   0.053634   3.542
-## PhonLev:IsWordFALSE -0.010166   0.007437  -1.367
+##                     Estimate Std. Error t value
+## (Intercept)          754.965     49.687  15.195
+## PhonLev               32.148      6.389   5.032
+## IsWordFALSE          212.440     65.453   3.246
+## PhonLev:IsWordFALSE  -11.620      9.076  -1.280
 ```
 
 ---
@@ -199,7 +199,7 @@ layout: false
 
 ```r
 lm_2 &lt;- lmer(
-  log(RT) ~
+  RT ~
     PhonLev +
     IsWord +
     PhonLev:IsWord +
@@ -213,7 +213,7 @@ lm_2 &lt;- lmer(
 
 ```
 ## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to
-## converge with max|grad| = 0.0969421 (tol = 0.002, component 1)
+## converge with max|grad| = 0.0396074 (tol = 0.002, component 1)
 ```
 
 ---
@@ -239,20 +239,228 @@ brm_1 &lt;- brm(
     PhonLev:IsWord +
     (PhonLev + IsWord | Subject),
   data = mald,
-  # Let's use a log-normal family for RT, 
-  # rather than log the RT values.
-  family = lognormal()
+  family = gaussian()
 )
 ```
 
 
+```
+## Compiling Stan program...
+```
+
+```
+## 
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+ 
+```
+
+```
+## Start sampling
+```
+
+```
+## Running MCMC with 4 parallel chains, with 2 thread(s) per chain...
+## 
+## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 1 finished in 35.1 seconds.
+## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 3 finished in 39.3 seconds.
+## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 2 finished in 39.3 seconds.
+## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 4 finished in 39.8 seconds.
+## 
+## All 4 chains finished successfully.
+## Mean chain execution time: 38.4 seconds.
+## Total execution time: 40.0 seconds.
+```
+
+```
+## Warning: 108 of 4000 (3.0%) transitions ended with a divergence.
+## See https://mc-stan.org/misc/warnings for details.
+```
 
 ---
 
 .medium[
 
 ```
-##  Family: lognormal 
+##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: RT ~ PhonLev + IsWord + PhonLev:IsWord + (PhonLev + IsWord | Subject) 
 ##    Data: mald (Number of observations: 3000) 
@@ -262,23 +470,23 @@ brm_1 &lt;- brm(
 ## Group-Level Effects: 
 ## ~Subject (Number of levels: 30) 
 ##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sd(Intercept)                  0.09      0.03     0.05     0.15 1.00     1358     1422
-## sd(PhonLev)                    0.01      0.00     0.00     0.01 1.01      485     1324
-## sd(IsWordFALSE)                0.09      0.02     0.06     0.12 1.00     1888     3027
-## cor(Intercept,PhonLev)        -0.38      0.46    -0.94     0.69 1.00     2407     2576
-## cor(Intercept,IsWordFALSE)     0.25      0.29    -0.31     0.79 1.01      610     1005
-## cor(PhonLev,IsWordFALSE)      -0.34      0.43    -0.95     0.65 1.01      332      633
+## sd(Intercept)                 96.43     31.38    43.35   167.77 1.00      862      544
+## sd(PhonLev)                    7.26      4.69     0.37    17.15 1.01      415      778
+## sd(IsWordFALSE)               97.93     20.23    63.53   145.65 1.00      953      368
+## cor(Intercept,PhonLev)        -0.40      0.44    -0.94     0.69 1.00     1333     1981
+## cor(Intercept,IsWordFALSE)     0.53      0.26    -0.01     0.94 1.01      552      876
+## cor(PhonLev,IsWordFALSE)      -0.37      0.44    -0.94     0.63 1.01      481      880
 ## 
 ## Population-Level Effects: 
 ##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept               6.62      0.04     6.54     6.70 1.00     2922     2840
-## PhonLev                 0.03      0.01     0.02     0.04 1.00     3584     2629
-## IsWordFALSE             0.19      0.06     0.08     0.30 1.00     3063     2707
-## PhonLev:IsWordFALSE    -0.01      0.01    -0.02     0.00 1.00     3247     2770
+## Intercept             754.69     48.09   660.99   849.05 1.00     2054     2421
+## PhonLev                32.04      6.41    19.55    44.59 1.00     2220     2622
+## IsWordFALSE           209.91     67.12    78.75   342.71 1.00     1810     2368
+## PhonLev:IsWordFALSE   -11.34      8.94   -28.92     6.71 1.00     1890     2504
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma     0.26      0.00     0.26     0.27 1.00     6576     2644
+## sigma   320.23      4.21   311.95   328.42 1.00     3355     1680
 ## 
 ## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -304,12 +512,178 @@ brm_2 &lt;- brm(
   RT ~
     IsWord,
   data = mald,
-  family = lognormal(),
+  family = gaussian(),
   # Use cmdstanr
   backend = "cmdstanr",
   # Save model output to file
   file = "./data/rds/brm_2.rds"
 )
+```
+
+```
+## Compiling Stan program...
+```
+
+```
+## 
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+|
+
+/
+
+-
+
+\
+
+ 
+```
+
+```
+## Start sampling
+```
+
+```
+## Running MCMC with 4 sequential chains...
+## 
+## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 1 finished in 0.2 seconds.
+## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 2 finished in 0.2 seconds.
+## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 3 finished in 0.3 seconds.
+## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 4 finished in 0.2 seconds.
+## 
+## All 4 chains finished successfully.
+## Mean chain execution time: 0.2 seconds.
+## Total execution time: 1.2 seconds.
 ```
 
 ---
@@ -320,9 +694,7 @@ class: center middle reverse
 
 Markov Chain Monte Carlo
 
-???
-
-More on MCMC: http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/
+More on MCMC: &lt;http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/&gt;
 
 ---
 
@@ -341,7 +713,7 @@ brm_2 &lt;- brm(
   
   # Probability distribution
   # of the OUTCOME
-  family = lognormal(),
+  family = gaussian(),
   
   # TECHNICAL STUFF
   # Use cmdstanr
@@ -383,7 +755,7 @@ brm_2
 ```
 
 ```
-##  Family: lognormal 
+##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: RT ~ IsWord 
 ##    Data: mald (Number of observations: 3000) 
@@ -392,12 +764,12 @@ brm_2
 ## 
 ## Population-Level Effects: 
 ##             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept       6.85      0.01     6.83     6.86 1.00     3984     2785
-## IsWordFALSE     0.12      0.01     0.10     0.14 1.00     3497     3033
+## Intercept     981.00      8.84   963.63   998.70 1.00     3940     3345
+## IsWordFALSE   133.29     12.63   108.89   157.58 1.00     4112     3332
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma     0.28      0.00     0.27     0.29 1.00     3575     2931
+## sigma   341.33      4.48   332.90   350.23 1.00     3787     2678
 ## 
 ## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -450,16 +822,16 @@ brm_2 %&gt;%
 ## # Groups:   .variable [2]
 ##    .chain .iteration .draw .variable   .value
 ##     &lt;int&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;
-##  1      1          1     1 b_Intercept   6.85
-##  2      1          2     2 b_Intercept   6.87
-##  3      1          3     3 b_Intercept   6.86
-##  4      1          4     4 b_Intercept   6.86
-##  5      1          5     5 b_Intercept   6.85
-##  6      1          6     6 b_Intercept   6.84
-##  7      1          7     7 b_Intercept   6.85
-##  8      1          8     8 b_Intercept   6.85
-##  9      1          9     9 b_Intercept   6.86
-## 10      1         10    10 b_Intercept   6.85
+##  1      1          1     1 b_Intercept   995.
+##  2      1          2     2 b_Intercept  1007.
+##  3      1          3     3 b_Intercept   965.
+##  4      1          4     4 b_Intercept   991.
+##  5      1          5     5 b_Intercept   975.
+##  6      1          6     6 b_Intercept   987.
+##  7      1          7     7 b_Intercept   987.
+##  8      1          8     8 b_Intercept   974.
+##  9      1          9     9 b_Intercept   980.
+## 10      1         10    10 b_Intercept   981.
 ## # … with 7,990 more rows
 ```
 
@@ -550,7 +922,7 @@ brm_2
 ```
 
 ```
-##  Family: lognormal 
+##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: RT ~ IsWord 
 ##    Data: mald (Number of observations: 3000) 
@@ -559,12 +931,12 @@ brm_2
 ## 
 ## Population-Level Effects: 
 ##             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept       6.85      0.01     6.83     6.86 1.00     3984     2785
-## IsWordFALSE     0.12      0.01     0.10     0.14 1.00     3497     3033
+## Intercept     981.00      8.84   963.63   998.70 1.00     3940     3345
+## IsWordFALSE   133.29     12.63   108.89   157.58 1.00     4112     3332
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma     0.28      0.00     0.27     0.29 1.00     3575     2931
+## sigma   341.33      4.48   332.90   350.23 1.00     3787     2678
 ## 
 ## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -620,7 +992,7 @@ brm_1 &lt;- brm(
 .medium[
 
 ```
-##  Family: lognormal 
+##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: RT ~ PhonLev + IsWord + PhonLev:IsWord + (PhonLev + IsWord | Subject) 
 ##    Data: mald (Number of observations: 3000) 
@@ -630,23 +1002,23 @@ brm_1 &lt;- brm(
 ## Group-Level Effects: 
 ## ~Subject (Number of levels: 30) 
 ##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sd(Intercept)                  0.09      0.03     0.05     0.15 1.00     1358     1422
-## sd(PhonLev)                    0.01      0.00     0.00     0.01 1.01      485     1324
-## sd(IsWordFALSE)                0.09      0.02     0.06     0.12 1.00     1888     3027
-## cor(Intercept,PhonLev)        -0.38      0.46    -0.94     0.69 1.00     2407     2576
-## cor(Intercept,IsWordFALSE)     0.25      0.29    -0.31     0.79 1.01      610     1005
-## cor(PhonLev,IsWordFALSE)      -0.34      0.43    -0.95     0.65 1.01      332      633
+## sd(Intercept)                 96.43     31.38    43.35   167.77 1.00      862      544
+## sd(PhonLev)                    7.26      4.69     0.37    17.15 1.01      415      778
+## sd(IsWordFALSE)               97.93     20.23    63.53   145.65 1.00      953      368
+## cor(Intercept,PhonLev)        -0.40      0.44    -0.94     0.69 1.00     1333     1981
+## cor(Intercept,IsWordFALSE)     0.53      0.26    -0.01     0.94 1.01      552      876
+## cor(PhonLev,IsWordFALSE)      -0.37      0.44    -0.94     0.63 1.01      481      880
 ## 
 ## Population-Level Effects: 
 ##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept               6.62      0.04     6.54     6.70 1.00     2922     2840
-## PhonLev                 0.03      0.01     0.02     0.04 1.00     3584     2629
-## IsWordFALSE             0.19      0.06     0.08     0.30 1.00     3063     2707
-## PhonLev:IsWordFALSE    -0.01      0.01    -0.02     0.00 1.00     3247     2770
+## Intercept             754.69     48.09   660.99   849.05 1.00     2054     2421
+## PhonLev                32.04      6.41    19.55    44.59 1.00     2220     2622
+## IsWordFALSE           209.91     67.12    78.75   342.71 1.00     1810     2368
+## PhonLev:IsWordFALSE   -11.34      8.94   -28.92     6.71 1.00     1890     2504
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma     0.26      0.00     0.26     0.27 1.00     6576     2644
+## sigma   320.23      4.21   311.95   328.42 1.00     3355     1680
 ## 
 ## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -689,12 +1061,6 @@ conditional_effects(
 # Group-level effects
 
 
-```
-## Warning: `gather_()` was deprecated in tidyr 1.2.0.
-## ℹ Please use `gather()` instead.
-## ℹ The deprecated feature was likely used in the tidybayes package.
-##   Please report the issue at &lt;]8;;https://github.com/mjskay/tidybayes/issues/newhttps://github.com/mjskay/tidybayes/issues/new]8;;&gt;.
-```
 
 &lt;img src="index_files/figure-html/brm-1-shrunk-intercept-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 

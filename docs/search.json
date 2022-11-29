@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "learnBayes in R",
     "section": "",
-    "text": "Please, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook)."
+    "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook)."
   },
   {
     "objectID": "setup.html",
