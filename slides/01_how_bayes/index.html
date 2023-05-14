@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Intro to Bayesian (Linear Models) for Speech and Language Scientists</title>
+    <title>Introduction to Bayesian (Linear) Models</title>
     <meta charset="utf-8" />
     <meta name="author" content="Stefano Coretta" />
     <script src="libs/header-attrs/header-attrs.js"></script>
@@ -20,16 +20,16 @@
 class: center, middle, inverse, title-slide
 
 .title[
-# Intro to Bayesian (Linear Models) for Speech and Language Scientists
-]
-.subtitle[
-## Part 1
+# Introduction to Bayesian (Linear) Models
 ]
 .author[
 ### Stefano Coretta
 ]
+.institute[
+### University of Edinburgh
+]
 .date[
-### 2022/11/29
+### 2023/05/16
 ]
 
 ---
@@ -87,7 +87,7 @@ class: center middle
 Within the **NHST (Frequentist) framework**, the main analysis output is:
 
 - **Point estimates** of predictors' parameters (with standard error).
-- **P-values**.
+- **P-values**. 😈
 
 ]
 
@@ -111,6 +111,8 @@ Within the **Bayesian framework**, the main analysis output is:
 
 - Subset of MALD: 30 subjects, 100 observations each.
 
+- Let's investigate the effect of *mean phone-level Levenshtein distance* and *lexical status* (word vs non-word).
+
 --
 
 
@@ -132,7 +134,7 @@ mald
 ##  8 15345   mantic       TRUE      6.21  1591 correct     7.37
 ##  9 15345   notable      TRUE      6.82   620 correct     6.43
 ## 10 15345   prowthihviht FALSE     7.68  1205 correct     7.09
-## # … with 2,990 more rows
+## # ℹ 2,990 more rows
 ```
 
 
@@ -212,9 +214,13 @@ lm_2 &lt;- lmer(
 
 
 ```
-## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to
-## converge with max|grad| = 0.0396074 (tol = 0.002, component 1)
+## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to converge with max|grad| = 0.0396074 (tol =
+## 0.002, component 1)
 ```
+
+.center[
+&lt;iframe src="https://giphy.com/embed/3o7abwbzKeaRksvVaE" width="480" height="204" frameBorder="0" class="giphy-embed" allowFullScreen&gt;&lt;/iframe&gt;
+]
 
 ---
 
@@ -286,7 +292,7 @@ brm_1 &lt;- brm(
 
 ---
 
-&lt;img src="index_files/figure-html/brm-1-cond-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-1-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -310,13 +316,21 @@ brm_2 &lt;- brm(
 )
 ```
 
+--
+
+&lt;br&gt;
+
+- The model has to estimate the probability distributions of the estimates.
+
+- To do so, a **sampling algorithm** is used (Markov Chain Monte Carlo, **MCMC**).
+
 ---
 
 class: center middle reverse
 
 .f1[[MCMC what?](https://chi-feng.github.io/mcmc-demo/app.html)]
 
-Markov Chain Monte Carlo
+**Markov Chain Monte Carlo**
 
 More on MCMC: &lt;http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/&gt;
 
@@ -375,7 +389,7 @@ How do I interpret the output summary?
 .big[
 
 ```r
-brm_2
+summary(brm_2)
 ```
 
 ```
@@ -403,6 +417,36 @@ brm_2
 
 ---
 
+
+```
+## Population-Level Effects: 
+##             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept     981.00      8.84   963.63   998.70 1.00     3940     3345
+## IsWordFALSE   133.29     12.63   108.89   157.58 1.00     4112     3332
+```
+
+* `Intercept`: There is a **95% probability** that (based on model and data) the mean RT when the word is real is **between 964 and 999 ms**.
+
+  * The probability distribution of the intercept has mean = 981 ms and SD = 8.84.
+
+--
+
+* `IsWordFALSE`: At **95% confidence**, the difference in RT between non-words and real words is **between 109 and 158 ms** (based on model and data).
+
+  * The probability distribution of `IsWordFALSE` has mean = 133 ms and SD = 12.63 ms.
+
+--
+
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4[
+
+* These are **posterior probability distributions**.
+* They are always conditional on model and data.
+* The summary reports **95% Credible Intervals**, but you can get other intervals too (there is nothing special about 95%).
+
+]
+
+---
+
 layout: false
 
 # Quick plot
@@ -413,6 +457,35 @@ plot(brm_2)
 ```
 
 &lt;img src="index_files/figure-html/brm-2-plot-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Get MCMC draws
+
+You can easily extract the MCMC draws:
+
+
+```r
+brm_2_draws &lt;- as_draws_df(brm_2)
+brm_2_draws
+```
+
+```
+## # A draws_df: 1000 iterations, 4 chains, and 5 variables
+##    b_Intercept b_IsWordFALSE sigma lprior   lp__
+## 1          995           120   341    -13 -21762
+## 2         1007           125   341    -13 -21766
+## 3          965           139   341    -13 -21763
+## 4          991           124   341    -13 -21761
+## 5          975           149   345    -13 -21762
+## 6          987           117   336    -13 -21762
+## 7          987           126   345    -13 -21761
+## 8          974           150   341    -13 -21761
+## 9          980           139   334    -13 -21762
+## 10         981           136   335    -13 -21761
+## # ... with 3990 more draws
+## # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+```
 
 ---
 
@@ -431,38 +504,6 @@ variables(brm_2)
 
 ---
 
-# Get MCMC draws
-
-You can easily extract the MCMC draws:
-
-
-```r
-brm_2 %&gt;%
-  gather_draws(`b_.*`, regex = TRUE)
-```
-
-```
-## # A tibble: 8,000 × 5
-## # Groups:   .variable [2]
-##    .chain .iteration .draw .variable   .value
-##     &lt;int&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;
-##  1      1          1     1 b_Intercept   995.
-##  2      1          2     2 b_Intercept  1007.
-##  3      1          3     3 b_Intercept   965.
-##  4      1          4     4 b_Intercept   991.
-##  5      1          5     5 b_Intercept   975.
-##  6      1          6     6 b_Intercept   987.
-##  7      1          7     7 b_Intercept   987.
-##  8      1          8     8 b_Intercept   974.
-##  9      1          9     9 b_Intercept   980.
-## 10      1         10    10 b_Intercept   981.
-## # … with 7,990 more rows
-```
-
-
-
----
-
 layout: true
 
 # Posterior distributions
@@ -473,12 +514,11 @@ Now you can plot the draws using ggplot2.
 
 
 ```r
-g_1 &lt;- brm_2 %&gt;%
-  gather_draws(b_Intercept) %&gt;%
-  ggplot(aes(.value)) +
-  stat_halfeye(fill = "#214d65") +
-  scale_x_continuous(breaks = seq(6, 7, by = 0.01)) +
-  labs(title = "Intercept")
+g_1 &lt;- brm_2_draws %&gt;%
+  ggplot(aes(b_Intercept)) +
+  stat_halfeye(fill = "#214d65", alpha = 0.8) +
+  scale_x_continuous() +
+  labs(title = "Posterior distribution of Intercept")
 ```
 
 ---
@@ -491,12 +531,11 @@ g_1 &lt;- brm_2 %&gt;%
 
 
 ```r
-g_2 &lt;- brm_2 %&gt;%
-  gather_draws(b_IsWordFALSE) %&gt;%
-  ggplot(aes(.value)) +
-  stat_halfeye(fill = "#624B27") +
-  scale_x_continuous(breaks = seq(0, 1, by = 0.01)) +
-  labs(title = "Effect of IsWord = FALSE")
+g_2 &lt;- brm_2_draws %&gt;%
+  ggplot(aes(b_IsWordFALSE)) +
+  stat_halfeye(fill = "#624B27", alpha = 0.8) +
+  scale_x_continuous() +
+  labs(title = "Posterior distribution of IsWord: FALSE - TRUE")
 ```
 
 ---
@@ -512,7 +551,21 @@ class: center middle inverse
 
 ---
 
+layout: true
+
 # MCMC chains diagnostics
+
+---
+
+
+```r
+as.array(brm_2) %&gt;%
+  mcmc_trace("b_Intercept", np = nuts_params(brm_2))
+```
+
+&lt;img src="index_files/figure-html/brm-2-chain-1-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+
+---
 
 
 ```r
@@ -520,12 +573,11 @@ as.array(brm_2) %&gt;%
   mcmc_trace("b_IsWordFALSE", np = nuts_params(brm_2))
 ```
 
-&lt;img src="index_files/figure-html/brm-2-chain-1-1.png" height="400px" style="display: block; margin: auto;" /&gt;
-
+&lt;img src="index_files/figure-html/brm-2-chain-2-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-# MCMC chain divergences
+An example of bad MCMC chain mixing.
 
 .center[
 ![:scale 60%](../../img/trace_c.png)
@@ -537,7 +589,7 @@ Picture from &lt;https://www.rdatagen.net/post/diagnosing-and-dealing-with-estim
 
 ---
 
-# `\(\hat{R}\)` and Effective Sample Size
+** `\(\hat{R}\)` and Effective Sample Size**
 
 .medium[
 
@@ -570,6 +622,8 @@ brm_2
 
 ---
 
+layout: false
+
 # Posterior predictive checks
 
 
@@ -587,7 +641,11 @@ class: center middle inverse
 
 ---
 
+layout: true
+
 # Interactions and group-level effects
+
+---
 
 
 ```r
@@ -610,8 +668,6 @@ brm_1 &lt;- brm(
 ```
 
 ---
-
-# Interactions and group-level effects
 
 .medium[
 
@@ -652,7 +708,12 @@ brm_1 &lt;- brm(
 
 ---
 
+layout: false
+layout: true
+
 # Interactions
+
+---
 
 
 ```r
@@ -663,48 +724,94 @@ conditional_effects(brm_1, effects = "PhonLev:IsWord")
 
 ---
 
-# Interactions
+
+```
+## Population-Level Effects: 
+##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept             754.69     48.09   660.99   849.05 1.00     2054     2421
+## PhonLev                32.04      6.41    19.55    44.59 1.00     2220     2622
+## IsWordFALSE           209.91     67.12    78.75   342.71 1.00     1810     2368
+## PhonLev:IsWordFALSE   -11.34      8.94   -28.92     6.71 1.00     1890     2504
+```
+
+* `Intercept`: At 95% confidence, the mean RT when the word is real and the mean phone-level distance is 0 is between 661 and 849 ms.
+
+* `PhonLev`: At 95% probability, the difference in mean RT for each unit-increase of phone-level distance, when the word is real, is between 20 and 45 ms.
+
+* `IsWordFALSE`: There is a 95% probability that the difference in mean RT between non-words and real words, when mean phone-level distance is 0, is between 79 and 342 ms.
+
+* `PhonLev:IsWordFALSE`: We can be 95% confident that for each unit-increase of mean phone-level distance when the word is not a real word the difference in mean RT changes by -29 to +7 ms (relative to the difference when the word is real).
+
+---
 
 
 ```r
 conditional_effects(
   brm_1, effects = "PhonLev:IsWord",
-  spaghetti = TRUE, ndraws = 100
+  spaghetti = TRUE, ndraws = 200
 ) %&gt;%
-  plot(spaghetti_args = c(size = 2, alpha = 1))
+  plot(spaghetti_args = list(linewidth = 2))
 ```
 
 ---
 
-# Interactions
-
-&lt;img src="index_files/figure-html/brm-1-bis-cond-3-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/brm-1-bis-cond-3-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
+
+layout: false
+layout: true
 
 # Group-level effects
 
+---
+
+**Group-level effects** are the Bayesian equivalent of frequentist random effects.
+
 
 ```
-## Warning: `gather_()` was deprecated in tidyr 1.2.0.
-## ℹ Please use `gather()` instead.
-## ℹ The deprecated feature was likely used in the tidybayes package.
-##   Please report the issue at &lt;]8;;https://github.com/mjskay/tidybayes/issues/newhttps://github.com/mjskay/tidybayes/issues/new]8;;&gt;.
+## Group-Level Effects: 
+## ~Subject (Number of levels: 30) 
+##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)                 96.43     31.38    43.35   167.77 1.00      862      544
+## sd(PhonLev)                    7.26      4.69     0.37    17.15 1.01      415      778
+## sd(IsWordFALSE)               97.93     20.23    63.53   145.65 1.00      953      368
+## cor(Intercept,PhonLev)        -0.40      0.44    -0.94     0.69 1.00     1333     1981
+## cor(Intercept,IsWordFALSE)     0.53      0.26    -0.01     0.94 1.01      552      876
+## cor(PhonLev,IsWordFALSE)      -0.37      0.44    -0.94     0.63 1.01      481      880
 ```
 
-&lt;img src="index_files/figure-html/brm-1-shrunk-intercept-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+--
+
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt5[
+
+As with the population-level effects, the interpretation of the group-level effects is the same as that of the frequentist random effects, but you have a full (posterior) probability distribution instead of a point estimate.
+
+]
 
 ---
 
-# Group-level effects
 
-&lt;img src="index_files/figure-html/brm-1-shrunk-isword-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+
+&lt;img src="index_files/figure-html/brm-1-shrunk-intercept-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
+
+&lt;img src="index_files/figure-html/brm-1-shrunk-isword-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+&lt;img src="index_files/figure-html/brm-1-shrunk-cor-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+layout: false
 
 # We didn't talk about priors, no no no...
 
-![](../../img/We_Dont_Talk_About_Bruno.jpg)
+.center[
+![:scale 70%](../../img/We_Dont_Talk_About_Bruno.jpg)
+]
 
 ---
 
