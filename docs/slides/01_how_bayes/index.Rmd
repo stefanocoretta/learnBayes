@@ -1,9 +1,8 @@
 ---
-title: "Intro to Bayesian (Linear Models) for Speech and Language Scientists"
-subtitle: "Part 1"
+title: "Introduction to Bayesian (Linear) Models"
 author: "Stefano Coretta"
-institute: ""
-date: "2022/11/29"
+institute: "University of Edinburgh"
+date: "2023/05/16"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -27,7 +26,7 @@ knitr::opts_chunk$set(
 knitr::opts_knit$set(root.dir = here::here())
 
 library(tidyverse)
-theme_set(theme_light())
+theme_set(theme_minimal())
 
 library(xaringanExtra)
 use_xaringan_extra(c("panelset", "tachyons", "freezeframe"))
@@ -47,7 +46,7 @@ library(xaringanthemer)
 style_mono_accent(
   base_color = "#1c5253",
   header_font_google = google_font("Josefin Sans"),
-  text_font_google   = google_font("Montserrat", "300", "300i"),
+  text_font_google   = google_font("Montserrat", "300", "300i", "700", "700i"),
   code_font_google   = google_font("Fira Mono"),
   outfile = "./slides/xaringan-themer.css"
 )
@@ -103,7 +102,7 @@ class: center middle
 Within the **NHST (Frequentist) framework**, the main analysis output is:
 
 - **Point estimates** of predictors' parameters (with standard error).
-- **P-values**.
+- **P-values**. 😈
 
 ]
 
@@ -126,6 +125,8 @@ Within the **Bayesian framework**, the main analysis output is:
 - **MALD data set**: 521 subjects, RTs and accuracy.
 
 - Subset of MALD: 30 subjects, 100 observations each.
+
+- Let's investigate the effect of *mean phone-level Levenshtein distance* and *lexical status* (word vs non-word).
 
 --
 
@@ -198,6 +199,10 @@ lm_2 <- lmer(
 )
 ```
 
+.center[
+<iframe src="https://giphy.com/embed/3o7abwbzKeaRksvVaE" width="480" height="204" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+]
+
 ---
 
 class: center middle inverse
@@ -251,7 +256,7 @@ brm_1
 
 ---
 
-```{r brm-1-cond, echo=FALSE}
+```{r brm-1-cond, echo=FALSE, out.height="500px"}
 conditional_effects(brm_1, effects = "PhonLev:IsWord")
 ```
 
@@ -276,13 +281,21 @@ brm_2 <- brm(
 )
 ```
 
+--
+
+<br>
+
+- The model has to estimate the probability distributions of the estimates.
+
+- To do so, a **sampling algorithm** is used (Markov Chain Monte Carlo, **MCMC**).
+
 ---
 
 class: center middle reverse
 
 .f1[[MCMC what?](https://chi-feng.github.io/mcmc-demo/app.html)]
 
-Markov Chain Monte Carlo
+**Markov Chain Monte Carlo**
 
 More on MCMC: <http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/>
 
@@ -339,8 +352,34 @@ How do I interpret the output summary?
 
 .big[
 ```{r brm-2-sum}
-brm_2
+summary(brm_2)
 ```
+]
+
+---
+
+```{r brm-2-sum-2, echo=FALSE}
+cat(capture.output(summary(brm_2))[8:11], sep = "\n")
+```
+
+* `Intercept`: There is a **95% probability** that (based on model and data) the mean RT when the word is real is **between 964 and 999 ms**.
+
+  * The probability distribution of the intercept has mean = 981 ms and SD = 8.84.
+
+--
+
+* `IsWordFALSE`: At **95% confidence**, the difference in RT between non-words and real words is **between 109 and 158 ms** (based on model and data).
+
+  * The probability distribution of `IsWordFALSE` has mean = 133 ms and SD = 12.63 ms.
+
+--
+
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4[
+
+* These are **posterior probability distributions**.
+* They are always conditional on model and data.
+* The summary reports **95% Credible Intervals**, but you can get other intervals too (there is nothing special about 95%).
+
 ]
 
 ---
@@ -355,6 +394,17 @@ plot(brm_2)
 
 ---
 
+# Get MCMC draws
+
+You can easily extract the MCMC draws:
+
+```{r brm-2-draws}
+brm_2_draws <- as_draws_df(brm_2)
+brm_2_draws
+```
+
+---
+
 # Get parameters (variables)
 
 To list all the names of the parameters in a model, use:
@@ -362,19 +412,6 @@ To list all the names of the parameters in a model, use:
 ```{r brm-2-vars}
 variables(brm_2)
 ```
-
----
-
-# Get MCMC draws
-
-You can easily extract the MCMC draws:
-
-```{r brm-2-draws}
-brm_2 %>%
-  gather_draws(`b_.*`, regex = TRUE)
-```
-
-
 
 ---
 
@@ -387,12 +424,11 @@ layout: true
 Now you can plot the draws using ggplot2.
 
 ```{r brm-2-int-g}
-g_1 <- brm_2 %>%
-  gather_draws(b_Intercept) %>%
-  ggplot(aes(.value)) +
-  stat_halfeye(fill = "#214d65") +
-  scale_x_continuous(breaks = seq(6, 7, by = 0.01)) +
-  labs(title = "Intercept")
+g_1 <- brm_2_draws %>%
+  ggplot(aes(b_Intercept)) +
+  stat_halfeye(fill = "#214d65", alpha = 0.8) +
+  scale_x_continuous() +
+  labs(title = "Posterior distribution of Intercept")
 ```
 
 ---
@@ -406,12 +442,11 @@ g_1
 ---
 
 ```{r brm-2-isword-g}
-g_2 <- brm_2 %>%
-  gather_draws(b_IsWordFALSE) %>%
-  ggplot(aes(.value)) +
-  stat_halfeye(fill = "#624B27") +
-  scale_x_continuous(breaks = seq(0, 1, by = 0.01)) +
-  labs(title = "Effect of IsWord = FALSE")
+g_2 <- brm_2_draws %>%
+  ggplot(aes(b_IsWordFALSE)) +
+  stat_halfeye(fill = "#624B27", alpha = 0.8) +
+  scale_x_continuous() +
+  labs(title = "Posterior distribution of IsWord: FALSE - TRUE")
 ```
 
 ---
@@ -429,17 +464,27 @@ class: center middle inverse
 
 ---
 
+layout: true
+
 # MCMC chains diagnostics
 
+---
+
 ```{r brm-2-chain-1, message=FALSE}
+as.array(brm_2) %>%
+  mcmc_trace("b_Intercept", np = nuts_params(brm_2))
+```
+
+---
+
+```{r brm-2-chain-2, message=FALSE}
 as.array(brm_2) %>%
   mcmc_trace("b_IsWordFALSE", np = nuts_params(brm_2))
 ```
 
-
 ---
 
-# MCMC chain divergences
+An example of bad MCMC chain mixing.
 
 .center[
 ![:scale 60%](../../img/trace_c.png)
@@ -451,7 +496,7 @@ Picture from <https://www.rdatagen.net/post/diagnosing-and-dealing-with-estimati
 
 ---
 
-# $\hat{R}$ and Effective Sample Size
+** $\hat{R}$ and Effective Sample Size**
 
 .medium[
 ```{r brm-2-diag}
@@ -460,6 +505,8 @@ brm_2
 ]
 
 ---
+
+layout: false
 
 # Posterior predictive checks
 
@@ -475,7 +522,11 @@ class: center middle inverse
 
 ---
 
+layout: true
+
 # Interactions and group-level effects
+
+---
 
 ```{r brm-1-bis}
 brm_1 <- brm(
@@ -498,8 +549,6 @@ brm_1 <- brm(
 
 ---
 
-# Interactions and group-level effects
-
 .medium[
 ```{r brm-1-bis-sum, echo=FALSE, warning=FALSE}
 brm_1
@@ -508,7 +557,12 @@ brm_1
 
 ---
 
+layout: false
+layout: true
+
 # Interactions
+
+---
 
 ```{r brm-1-bis-cond}
 conditional_effects(brm_1, effects = "PhonLev:IsWord")
@@ -516,31 +570,62 @@ conditional_effects(brm_1, effects = "PhonLev:IsWord")
 
 ---
 
-# Interactions
+```{r brm-1-bis-sum-2, warning=FALSE, echo=FALSE}
+cat(capture.output(summary(brm_1))[18:23], sep = "\n")
+```
+
+* `Intercept`: At 95% confidence, the mean RT when the word is real and the mean phone-level distance is 0 is between 661 and 849 ms.
+
+* `PhonLev`: At 95% probability, the difference in mean RT for each unit-increase of phone-level distance, when the word is real, is between 20 and 45 ms.
+
+* `IsWordFALSE`: There is a 95% probability that the difference in mean RT between non-words and real words, when mean phone-level distance is 0, is between 79 and 342 ms.
+
+* `PhonLev:IsWordFALSE`: We can be 95% confident that for each unit-increase of mean phone-level distance when the word is not a real word the difference in mean RT changes by -29 to +7 ms (relative to the difference when the word is real).
+
+---
 
 ```{r brm-1-bis-cond-2, eval=FALSE}
 conditional_effects(
   brm_1, effects = "PhonLev:IsWord",
-  spaghetti = TRUE, ndraws = 100
+  spaghetti = TRUE, ndraws = 200
 ) %>%
-  plot(spaghetti_args = c(size = 2, alpha = 1))
+  plot(spaghetti_args = list(linewidth = 2))
 ```
 
 ---
 
-# Interactions
-
-```{r brm-1-bis-cond-3, echo=FALSE}
+```{r brm-1-bis-cond-3, echo=FALSE, out.height="500px", cache=TRUE}
 conditional_effects(
   brm_1, effects = "PhonLev:IsWord",
-  spaghetti = TRUE, ndraws = 100
+  spaghetti = TRUE, ndraws = 200
 ) %>%
-  plot(spaghetti_args = c(size = 2, alpha = 1))
+  plot(spaghetti_args = list(linewidth = 2))
 ```
 
 ---
 
+layout: false
+layout: true
+
 # Group-level effects
+
+---
+
+**Group-level effects** are the Bayesian equivalent of frequentist random effects.
+
+```{r brm-1-bis-sum-3, warning=FALSE, echo=FALSE}
+cat(capture.output(summary(brm_1))[8:16], sep = "\n")
+```
+
+--
+
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt5[
+
+As with the population-level effects, the interpretation of the group-level effects is the same as that of the frequentist random effects, but you have a full (posterior) probability distribution instead of a point estimate.
+
+]
+
+---
 
 ```{r shrunk, echo=FALSE}
 brm_1_shrunk <- brm_1 %>%
@@ -548,27 +633,29 @@ brm_1_shrunk <- brm_1 %>%
   mean_qi() %>%
   mutate(source = "meta-analysis")
 
+gmean_RT <- mean(mald$RT, na.rm = TRUE)
+
 original <- mald %>%
   group_by(Subject) %>%
-  mutate(
-    mean_RT = mean(RT),
+  summarise(
+    mean_RT = mean(RT) ,
     sd_RT = sd(RT),
     lower = mean_RT - 1.96 * sd_RT,
     upper = mean_RT + 1.96 * sd_RT
   )
 ```
 
-```{r brm-1-shrunk-intercept, echo=FALSE}
+```{r brm-1-shrunk-intercept, echo=FALSE, out.height="500px"}
 brm_1_shrunk %>%
   filter(term == "Intercept") %>%
   ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   geom_point(size = 4) +
   geom_errorbarh(aes(xmin = r_Subject.lower, xmax = r_Subject.upper)) +
-  geom_point(data = original, aes(mean_RT - mean(RT), Subject), colour = "red", size = 3) +
+  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = "red", size = 3, alpha = 0.6) +
   labs(
-    title = "By-subject conditional mean for Intercept",
-    x = "Conditional mean",
+    title = "By-subject conditional mode for Intercept",
+    x = "Conditional mode",
     y = "Subject",
     caption = str_wrap("The red dots mark the by-subject mean RT from the raw data.")
   )
@@ -576,9 +663,7 @@ brm_1_shrunk %>%
 
 ---
 
-# Group-level effects
-
-```{r brm-1-shrunk-isword, echo=FALSE}
+```{r brm-1-shrunk-isword, echo=FALSE, out.height="500px"}
 brm_1_shrunk %>%
   filter(term == "IsWordFALSE") %>%
   ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +
@@ -586,17 +671,32 @@ brm_1_shrunk %>%
   geom_point(size = 4) +
   geom_errorbarh(aes(xmin = r_Subject.lower, xmax = r_Subject.upper)) +
   labs(
-    title = "By-subject conditional mean for IsWord = FALSE",
-    x = "Conditional mean (log-odds)",
+    title = "By-subject conditional mode for IsWord = FALSE",
+    x = "Conditional mode",
     y = "Subject"
   )
 ```
 
 ---
 
+```{r brm-1-shrunk-cor, echo=FALSE, out.height="500px"}
+as_draws_df(brm_1) %>%
+  ggplot(aes(sd_Subject__Intercept, sd_Subject__IsWordFALSE)) +
+  geom_point(size = 1, alpha = 0.2) +
+  labs(
+    title = "Group-level Intercept vs IsWordFALSE"
+  )
+```
+
+---
+
+layout: false
+
 # We didn't talk about priors, no no no...
 
-![](../../img/We_Dont_Talk_About_Bruno.jpg)
+.center[
+![:scale 70%](../../img/We_Dont_Talk_About_Bruno.jpg)
+]
 
 ---
 
