@@ -39,7 +39,7 @@ Here is an overview of what you will install:
 
 Some of the software (CmdStan) used in the workshop requires a working C++ toolchain for compilation.
 
-You can find information on how to set up the C++ toolchain in [Section 1.2.1](https://mc-stan.org/docs/2_29/cmdstan-guide/cmdstan-installation.html#installing-the-c-toolchain) of the CmdStan User's Guide.
+You can find information on how to set up the C++ toolchain in [Section 1.2.1](https://mc-stan.org/docs/cmdstan-guide/cmdstan-installation.html#cpp-toolchain) of the CmdStan User's Guide.
 
 Make sure to follow the instructions for your operating system.
 
