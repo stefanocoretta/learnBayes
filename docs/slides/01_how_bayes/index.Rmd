@@ -67,7 +67,7 @@ mald <- readRDS("./data/mald.rds")
 | 12.00 - 12.45 | **Diagnostics, interactions, group-level effects** |
 | 12.45 - 13.00 | Q&A                                            |
 
---
+<br>
 
 Note: The Starter Kit code might not be up to date.
 
