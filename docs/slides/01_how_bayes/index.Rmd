@@ -56,6 +56,19 @@ style_mono_accent(
 mald <- readRDS("./data/mald.rds")
 ```
 
+## Plan
+
+<br>
+
+| Time          | Topic                                          |
+|---------------|------------------------------------------------|
+| 11.00 - 11.45 | **Model basics and plotting**                      |
+| 11.45 - 12.00 | Break                                          |
+| 12.00 - 12.45 | **Diagnostics, interactions, group-level effects** |
+| 12.45 - 13.00 | Q&A                                            |
+
+---
+
 class: right
 
 
