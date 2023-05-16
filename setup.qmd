@@ -58,7 +58,7 @@ The [cmdstanr](https://mc-stan.org/cmdstanr/index.html) package is an interface 
 
 It will take several minutes to install the packages, depending on your system and configuration.
 
-If at any point you get asked about installing extra packages or software, please do so.
+**If after opening the Starter Kit in RStudio you get asked to install extra packages or software, please do so.**
 
 ### Install CmdStan
 

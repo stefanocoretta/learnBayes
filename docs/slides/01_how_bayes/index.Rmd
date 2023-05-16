@@ -69,7 +69,7 @@ mald <- readRDS("./data/mald.rds")
 
 <br>
 
-Note: The Starter Kit code might not be up to date.
+NOTE: Please, re-download the Starter Kit.
 
 ---
 
