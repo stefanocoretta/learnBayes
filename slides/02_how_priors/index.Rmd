@@ -3,7 +3,7 @@ title: "Intro to Bayesian (Linear Models) for Speech and Language Scientists"
 subtitle: "Part 2"
 author: "Stefano Coretta"
 institute: ""
-date: "2022/11/29"
+date: "7 June 2023"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -22,7 +22,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo = TRUE, out.height = "400px", dpi = 300,
+  echo = TRUE, out.height = "500px", dpi = 300,
   fig.align = "center", fig.width = 7, fig.height = 5
 )
 knitr::opts_knit$set(root.dir = here::here())
@@ -63,7 +63,7 @@ Prior and evidence are, of course, probability distributions.
 
 ---
 
-# Example from Day 1
+# Example from Part 1
 
 [Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (Tucker et al. 2019):
 
@@ -309,34 +309,14 @@ This Gaussian distribution is the **prior probability distribution** (or simply 
 
 .f2[
 $$\text{RT}_i \sim Normal(\mu, \sigma)$$
-$$\mu \sim Normal(\mu_1 = 0, \sigma_1)$$
+$$\mu \sim Normal(\mu_1 = 1500, 750)$$
 ]
-
-???
-
-We will talk about different types of priors later. For now it's sufficient to remember that a conservative approach (which is what we want to do) is to set $\mu_1$ to 0.
-
---
-
-<br>
-<br>
-
-**What about $\sigma_1$?**
 
 ---
 
-# Prior belief as probability distributions
-
-.f2[
-$$\text{RT}_i \sim Normal(\mu, \sigma)$$
-$$\mu \sim Normal(\mu_1 = 0, \sigma_1 = 1500)$$
-]
-
-???
-
 Let's be generous and assume that the mean RT will definitely not be greater than 3 seconds. (This might seem like a very high number, but we will see how it can help estimation)
 
-$3000/2 = 1500$ ms (remember, two times the SD), so we can set $\sigma_1 = 1500$.
+$(3000 - 1500) / 2 = 750$ ms (remember, two times the SD), so we can set $\sigma_1 = 750$.
 
 
 ---
@@ -344,14 +324,14 @@ $3000/2 = 1500$ ms (remember, two times the SD), so we can set $\sigma_1 = 1500$
 # Seeing is believing
 
 ```{r mu1-prior, echo=FALSE}
-x <- seq(-6000, 6000)
+x <- seq(-1500, 4500)
 ggplot() +
-  aes(x = x, y = dnorm(x, 0, 1500)) +
+  aes(x = x, y = dnorm(x, 1500, 750)) +
   geom_line(size = 2, colour = "#8970FF") +
   labs(
     x = "Mean RT (ms)", y = "Density",
     title = expression(paste("Prior for ", mu)),
-    subtitle = expression(paste(mu[1], "=0", ", ", sigma[1], "=1500"))
+    subtitle = expression(paste(mu[1], "=1500", ", ", sigma[1], "=750"))
   )
 ```
 
@@ -369,7 +349,7 @@ WARNING: The distribution that you see here **is not** the distribution of RTs! 
 
 .f2[
 $$\text{RT}_i \sim Normal(\mu, \sigma)$$
-$$\mu \sim Normal(0, 1500)$$
+$$\mu \sim Normal(1500, 750)$$
 ]
 
 --
@@ -387,7 +367,7 @@ We'll talk about $\sigma$ in a second...
 `RT ~ 1, family = gaussian`
 ]
 
-$$\mu \sim Normal(0, 1500)$$
+$$\mu \sim Normal(1500, 750)$$
 ]
 
 --

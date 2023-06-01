@@ -4,6 +4,7 @@
     <title>Intro to Bayesian (Linear Models) for Speech and Language Scientists</title>
     <meta charset="utf-8" />
     <meta name="author" content="Stefano Coretta" />
+    <meta name="date" content="2023-06-07" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
@@ -26,7 +27,7 @@ class: center, middle, inverse, title-slide
 ### Stefano Coretta
 ]
 .date[
-### 2022/11/29
+### 7 June 2023
 ]
 
 ---
@@ -55,7 +56,7 @@ Prior and evidence are, of course, probability distributions.
 
 ---
 
-# Example from Day 1
+# Example from Part 1
 
 [Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (Tucker et al. 2019):
 
@@ -128,24 +129,24 @@ layout: true
 
 ---
 
-&lt;img src="index_files/figure-html/empirical-rule-1-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/empirical-rule-1-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-&lt;img src="index_files/figure-html/empirical-rule-2-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/empirical-rule-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-&lt;img src="index_files/figure-html/empirical-rule-3-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/empirical-rule-3-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 
 ---
 
-&lt;img src="index_files/figure-html/empirical-rule-4-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/empirical-rule-4-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-&lt;img src="index_files/figure-html/empirical-rule-5-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/empirical-rule-5-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -174,7 +175,7 @@ Report them here: &lt;https://forms.gle/M7juHsxyv5Vbs7Gx7&gt;.
 
 # Let's see what we got!
 
-&lt;img src="index_files/figure-html/rt-sheet-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/rt-sheet-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -212,41 +213,21 @@ This Gaussian distribution is the **prior probability distribution** (or simply 
 
 .f2[
 `$$\text{RT}_i \sim Normal(\mu, \sigma)$$`
-`$$\mu \sim Normal(\mu_1 = 0, \sigma_1)$$`
+`$$\mu \sim Normal(\mu_1 = 1500, 750)$$`
 ]
-
-???
-
-We will talk about different types of priors later. For now it's sufficient to remember that a conservative approach (which is what we want to do) is to set `\(\mu_1\)` to 0.
-
---
-
-&lt;br&gt;
-&lt;br&gt;
-
-**What about `\(\sigma_1\)`?**
 
 ---
 
-# Prior belief as probability distributions
-
-.f2[
-`$$\text{RT}_i \sim Normal(\mu, \sigma)$$`
-`$$\mu \sim Normal(\mu_1 = 0, \sigma_1 = 1500)$$`
-]
-
-???
-
 Let's be generous and assume that the mean RT will definitely not be greater than 3 seconds. (This might seem like a very high number, but we will see how it can help estimation)
 
-`\(3000/2 = 1500\)` ms (remember, two times the SD), so we can set `\(\sigma_1 = 1500\)`.
+`\((3000 - 1500) / 2 = 750\)` ms (remember, two times the SD), so we can set `\(\sigma_1 = 750\)`.
 
 
 ---
 
 # Seeing is believing
 
-&lt;img src="index_files/figure-html/mu1-prior-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/mu1-prior-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -262,7 +243,7 @@ WARNING: The distribution that you see here **is not** the distribution of RTs! 
 
 .f2[
 `$$\text{RT}_i \sim Normal(\mu, \sigma)$$`
-`$$\mu \sim Normal(0, 1500)$$`
+`$$\mu \sim Normal(1500, 750)$$`
 ]
 
 --
@@ -280,7 +261,7 @@ We'll talk about `\(\sigma\)` in a second...
 `RT ~ 1, family = gaussian`
 ]
 
-`$$\mu \sim Normal(0, 1500)$$`
+`$$\mu \sim Normal(1500, 750)$$`
 ]
 
 --
@@ -381,7 +362,7 @@ Now, what about `\(\sigma\)`? (Be careful not to mix up `\(\sigma\)` and `\(\sig
 # Prior for `\(\sigma\)`: Half Cauchy
 
 
-&lt;img src="index_files/figure-html/cauchy-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/cauchy-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -465,7 +446,7 @@ rt_1_pp &lt;- brm(
 
 ---
 
-&lt;img src="index_files/figure-html/rt-1-pp-plot-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/rt-1-pp-plot-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -512,11 +493,11 @@ rt_1
 ## 
 ## Population-Level Effects: 
 ##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept  1046.60      6.35  1034.07  1059.17 1.00     3569     2710
+## Intercept  1046.45      6.25  1034.23  1058.32 1.00     3573     2686
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma   347.49      4.52   338.70   356.37 1.00     3750     3114
+## sigma   347.41      4.51   338.80   356.47 1.00     3835     3048
 ## 
 ## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -527,7 +508,7 @@ rt_1
 
 # Distribution of RTs
 
-&lt;img src="index_files/figure-html/rt-1-ppc-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/rt-1-ppc-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -541,7 +522,7 @@ background-image: url("../../img/chris-robert-unsplash.jpg")
 
 # PP check didn't look good...
 
-&lt;img src="index_files/figure-html/rt-1-ppc-2-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/rt-1-ppc-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -614,15 +595,15 @@ layout: true
 
 ---
 
-&lt;img src="index_files/figure-html/acc-pd-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/acc-pd-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-&lt;img src="index_files/figure-html/acc-pd-2-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/acc-pd-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-&lt;img src="index_files/figure-html/acc-pd-3-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/acc-pd-3-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -667,7 +648,7 @@ So priors have to be specified on the log scale.
 
 # Log-odds and probabilities
 
-&lt;img src="index_files/figure-html/p-log-odds-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/p-log-odds-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -727,7 +708,7 @@ acc_1 &lt;- brm(
 conditional_effects(acc_1, "PhonLev")
 ```
 
-&lt;img src="index_files/figure-html/acc-1-cond-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/acc-1-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -763,7 +744,7 @@ acc_2 &lt;- brm(
 conditional_effects(acc_2, "PhonLev:IsWord")
 ```
 
-&lt;img src="index_files/figure-html/acc-2-cond-1.png" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/acc-2-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
