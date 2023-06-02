@@ -1,8 +1,8 @@
 ---
-title: "Intro to Bayesian (Linear Models) for Speech and Language Scientists"
+title: "Introduction to Bayesian Linear Models"
 subtitle: "Part 2"
 author: "Stefano Coretta"
-institute: ""
+institute: "University of Edinburgh"
 date: "7 June 2023"
 output:
   xaringan::moon_reader:
@@ -37,6 +37,7 @@ library(bayesplot)
 library(extraDistr)
 library(truncdist)
 library(googlesheets4)
+gs4_deauth()
 options(htmltools.dir.version = FALSE)
 xaringanExtra::use_xaringan_extra(c("panelset", "tachyons"))
 my_cores <- parallel::detectCores()
