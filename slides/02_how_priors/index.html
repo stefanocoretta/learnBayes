@@ -216,7 +216,7 @@ This Gaussian distribution is the **prior probability distribution** (or simply 
 `$$\mu \sim Normal(\mu_1 = 1500, 750)$$`
 ]
 
----
+???
 
 Let's be generous and assume that the mean RT will definitely not be greater than 3 seconds. (This might seem like a very high number, but we will see how it can help estimation)
 
@@ -321,7 +321,7 @@ my_priors &lt;- c(
 
 ```r
 my_priors &lt;- c(
-  prior(normal(0, 1500), class = Intercept), # Intercept (i.e. mu)
+  prior(normal(1500, 750), class = Intercept), # Intercept (i.e. mu)
   prior(...)  # sigma
 )
 ```
@@ -346,7 +346,7 @@ my_priors &lt;- c(
 .center[
 `RT ~ 1, family = gaussian`
 
-`prior(normal(0, 1500), class = Intercept)`
+`prior(normal(1500, 750), class = Intercept)`
 
 ...?
 ]
@@ -359,7 +359,7 @@ Now, what about `\(\sigma\)`? (Be careful not to mix up `\(\sigma\)` and `\(\sig
 
 ---
 
-# Prior for `\(\sigma\)`: Half Cauchy
+# Prior for `\(\sigma\)`: Truncated Cauchy
 
 
 &lt;img src="index_files/figure-html/cauchy-1.png" height="500px" style="display: block; margin: auto;" /&gt;
@@ -370,8 +370,10 @@ Now, what about `\(\sigma\)`? (Be careful not to mix up `\(\sigma\)` and `\(\sig
 ```r
 HDInterval::inverseCDF(
   c(0.5, 0.75, 0.95),
-  phcauchy,
-  sigma = 50
+  ptrunc,
+  spec = "cauchy",
+  scale = 50,
+  a = 0
 )
 ```
 
@@ -382,8 +384,10 @@ HDInterval::inverseCDF(
 ```r
 HDInterval::inverseCDF(
   c(0.5, 0.75, 0.95),
-  phcauchy,
-  sigma = 100
+  ptrunc,
+  spec = "cauchy",
+  scale = 100,
+  a = 0
 )
 ```
 
@@ -402,8 +406,8 @@ HDInterval::inverseCDF(
 
 .pull-left[
 `$$\text{RT}_i \sim Normal(\mu, \sigma)$$`
-`$$\mu \sim Normal(\mu_1 = 0, \sigma_1 = 1500)$$`
-`$$\sigma = HalfCauchy(\mu_2 = 0, \sigma_2 = 100)$$`
+`$$\mu \sim Normal(\mu_1 = 1500, \sigma_1 = 750)$$`
+`$$\sigma = Cauchy(\mu_2 = 0, \sigma_2 = 500)$$`
 ]
 
 
@@ -411,9 +415,9 @@ HDInterval::inverseCDF(
 .center[
 `RT ~ 1, family = gaussian`
 
-`prior(normal(0, 1500), class = Intercept)`
+`prior(normal(1500, 750), class = Intercept)`
 
-`prior(cauchy(0, 100), class = sigma)`
+`prior(cauchy(0, 50), class = sigma)`
 ]
 ]
 
@@ -428,8 +432,8 @@ layout: true
 
 ```r
 my_priors &lt;- c(
-  prior(normal(0, 1500), class = Intercept), # Intercept (i.e. mu)
-  prior(cauchy(0, 100), class = sigma)  # sigma
+  prior(normal(1500, 750), class = Intercept), # Intercept (i.e. mu)
+  prior(cauchy(0, 50), class = sigma)  # sigma
 )
 
 rt_1_pp &lt;- brm(
@@ -439,7 +443,7 @@ rt_1_pp &lt;- brm(
   prior = my_priors,
   sample_prior = "only",
   cores = my_cores,
-  file = "./data/rds/rt_1_pp",
+  file = "./data/cache/rt_1_pp",
   backend = "cmdstanr"
 )
 ```
@@ -458,8 +462,8 @@ layout: false
 
 ```r
 my_priors &lt;- c(
-  prior(normal(0, 1500), class = Intercept), # Intercept (i.e. mu)
-  prior(cauchy(0, 100), class = sigma)  # sigma
+  prior(normal(1500, 750), class = Intercept), # Intercept (i.e. mu)
+  prior(cauchy(0, 50), class = sigma)  # sigma
 )
 
 rt_1 &lt;- brm(
@@ -468,7 +472,7 @@ rt_1 &lt;- brm(
   family = gaussian,
   prior = my_priors,
   cores = my_cores,
-  file = "./data/rds/rt_1",
+  file = "./data/cache/rt_1",
   backend = "cmdstanr"
 )
 ```
@@ -493,11 +497,11 @@ rt_1
 ## 
 ## Population-Level Effects: 
 ##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept  1046.45      6.25  1034.23  1058.32 1.00     3573     2686
+## Intercept  1046.39      6.40  1033.75  1058.56 1.00     3673     2611
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma   347.41      4.51   338.80   356.47 1.00     3835     3048
+## sigma   347.46      4.48   338.73   356.27 1.00     3807     2454
 ## 
 ## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -528,7 +532,7 @@ background-image: url("../../img/chris-robert-unsplash.jpg")
 
 Why is that?
 
-Because our prior believes were a bit off...
+Because our prior beliefs were a bit off...
 
 ---
 
@@ -694,7 +698,7 @@ acc_1 &lt;- brm(
   family = bernoulli,
   prior = priors,
   cores = my_cores,
-  file = "./data/rds/acc_1",
+  file = "./data/cache/acc_1",
   backend = "cmdstanr"
 )
 ```
@@ -702,11 +706,6 @@ acc_1 &lt;- brm(
 ---
 
 # Accuracy and phonemic distance
-
-
-```r
-conditional_effects(acc_1, "PhonLev")
-```
 
 &lt;img src="index_files/figure-html/acc-1-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
@@ -730,7 +729,7 @@ acc_2 &lt;- brm(
   family = bernoulli,
   prior = priors,
   cores = my_cores,
-  file = "./data/rds/acc_2",
+  file = "./data/cache/acc_2",
   backend = "cmdstanr"
 )
 ```
@@ -738,11 +737,6 @@ acc_2 &lt;- brm(
 ---
 
 # Accuracy and phonemic distance by word type
-
-
-```r
-conditional_effects(acc_2, "PhonLev:IsWord")
-```
 
 &lt;img src="index_files/figure-html/acc-2-cond-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
