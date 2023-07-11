@@ -3,7 +3,11 @@ title: "Pre-workshop set-up"
 editor: visual
 ---
 
-Please, follow these instructions to get ready **before** the workshop.
+Please, follow these instructions carefully to get ready **at least one day before the workshop**.
+
+::: callout-important
+Installing the necessary software takes a lot of space on your computer and can take a long of time (1-3 hours depending on the system).
+:::
 
 ## Pre-requisites
 
@@ -31,11 +35,13 @@ Now you will need to install a few packages and extra software.
 
 Here is an overview of what you will install:
 
--   C++ toolchain.
--   R packages: tidyverse, remotes, cmdstanr, brms.
--   CmdStan (including Stan).
+1.  C++ toolchain.
 
-### Install the C++ toolchain
+2.  R packages: tidyverse, remotes, cmdstanr, brms.
+
+3.  CmdStan (including Stan).
+
+### 1. Install the C++ toolchain
 
 Some of the software (CmdStan) used in the workshop requires a working C++ toolchain for compilation.
 
@@ -43,7 +49,13 @@ You can find information on how to set up the C++ toolchain in [Section 1.2.1](h
 
 Make sure to follow the instructions for your operating system.
 
-### Install the R packages
+::: callout-caution
+**WINDOWS USERS**: The installation process for Windows is more complex than that on Unix/macOS, so pay extra attention in reading the instructions.
+
+Many attendants with a Windows laptop forget to follow some of the steps (in particular, make sure you are updating the PATH variable as instructed).
+:::
+
+### 2. Install the R packages
 
 You need to install the following packages:
 
@@ -60,7 +72,7 @@ It will take several minutes to install the packages, depending on your system a
 
 **If after opening the Starter Kit in RStudio you get asked to install extra packages or software, please do so.**
 
-### Install CmdStan
+### 3. Install CmdStan
 
 Now that you have installed the R packages, you need to install CmdStan.
 
@@ -73,6 +85,26 @@ To install CmdStan, run the following command in the R console:
 ``` r
 cmdstanr::install_cmdstan(cores = parallel::detectCores(), overwrite = TRUE)
 ```
+
+### Check your installation
+
+Run the following in the RStudio Console.
+
+``` r
+library(cmdstanr)
+file <- file.path(cmdstan_path(), "examples", "bernoulli", "bernoulli.stan")
+mod <- cmdstan_model(file, force_recompile = TRUE)
+data_list <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
+fit <- mod$sample(
+  data = data_list, 
+  seed = 123, 
+  chains = 4, 
+  parallel_chains = 4,
+  refresh = 500 # print update every 500 iters
+)
+```
+
+If everything goes well you should see `Compiling Stan program…` and then `Running MCMC with 4 parallel chains…` followed by information on chains and iterations.
 
 ## Troubleshoot
 

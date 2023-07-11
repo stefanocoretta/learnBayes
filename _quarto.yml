@@ -18,9 +18,9 @@ website:
       - text: Slides
         menu:
           - href: "slides/01_how_bayes/"
-            text: "Morning session"
+            text: "Session 1"
           - href: "slides/02_how_priors/"
-            text: "Afternoon session"
+            text: "Session 2"
 
 format:
   html:
