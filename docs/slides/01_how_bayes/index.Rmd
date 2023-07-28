@@ -57,25 +57,6 @@ style_mono_accent(
 mald <- readRDS("./data/mald.rds")
 ```
 
-## Plan
-
-<br>
-
-| Time          | Topic                                          |
-|---------------|------------------------------------------------|
-| 09.00 - 10.30 | **Introduction to Bayesian Linear Models**     |
-| 10.30 - 11.00 | Break                                          |
-| 11.00 - 12.30 | **Diagnostics, interactions, group-level effects** |
-| 12.30 - 14.30 | Lunch + Posters                                |
-| 14.30 - 16.00 | **Priors**                                     |
-| 16.00 - 16.30 | Break                                          |
-| 16.30 - 18.00 | Q&A/Consultations                              |
-
-<br>
-
-NOTE: Please, re-download the Starter Kit.
-
----
 
 class: right
 

@@ -44,25 +44,6 @@ class: center, middle, inverse, title-slide
 
 
 
-## Plan
-
-&lt;br&gt;
-
-| Time          | Topic                                          |
-|---------------|------------------------------------------------|
-| 09.00 - 10.30 | **Introduction to Bayesian Linear Models**     |
-| 10.30 - 11.00 | Break                                          |
-| 11.00 - 12.30 | **Diagnostics, interactions, group-level effects** |
-| 12.30 - 14.30 | Lunch + Posters                                |
-| 14.30 - 16.00 | **Priors**                                     |
-| 16.00 - 16.30 | Break                                          |
-| 16.30 - 18.00 | Q&amp;A/Consultations                              |
-
-&lt;br&gt;
-
-NOTE: Please, re-download the Starter Kit.
-
----
 
 class: right
 
@@ -237,7 +218,8 @@ lm_2 &lt;- lmer(
 
 
 ```
-## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to converge with max|grad| = 0.0396074 (tol = 0.002, component 1)
+## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
+## Model failed to converge with max|grad| = 0.0396074 (tol = 0.002, component 1)
 ```
 
 .center[
@@ -287,13 +269,20 @@ brm_1 &lt;- brm(
 ## 
 ## Group-Level Effects: 
 ## ~Subject (Number of levels: 30) 
-##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sd(Intercept)                100.12     34.37    45.19   179.30 1.00      987      601
-## sd(PhonLev)                    7.62      5.31     0.37    20.46 1.01      376      519
-## sd(IsWordFALSE)               96.76     19.35    64.53   138.81 1.00     2040     1972
-## cor(Intercept,PhonLev)        -0.42      0.45    -0.94     0.68 1.00     1397      871
-## cor(Intercept,IsWordFALSE)     0.55      0.25    -0.01     0.93 1.00      741     1777
-## cor(PhonLev,IsWordFALSE)      -0.38      0.42    -0.94     0.62 1.01      496      953
+##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)                100.12     34.37    45.19   179.30 1.00      987
+## sd(PhonLev)                    7.62      5.31     0.37    20.46 1.01      376
+## sd(IsWordFALSE)               96.76     19.35    64.53   138.81 1.00     2040
+## cor(Intercept,PhonLev)        -0.42      0.45    -0.94     0.68 1.00     1397
+## cor(Intercept,IsWordFALSE)     0.55      0.25    -0.01     0.93 1.00      741
+## cor(PhonLev,IsWordFALSE)      -0.38      0.42    -0.94     0.62 1.01      496
+##                            Tail_ESS
+## sd(Intercept)                   601
+## sd(PhonLev)                     519
+## sd(IsWordFALSE)                1972
+## cor(Intercept,PhonLev)          871
+## cor(Intercept,IsWordFALSE)     1777
+## cor(PhonLev,IsWordFALSE)        953
 ## 
 ## Population-Level Effects: 
 ##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
@@ -521,7 +510,8 @@ variables(brm_2)
 ```
 
 ```
-## [1] "b_Intercept"   "b_IsWordFALSE" "sigma"         "lprior"        "lp__"
+## [1] "b_Intercept"   "b_IsWordFALSE" "sigma"         "lprior"       
+## [5] "lp__"
 ```
 
 ---
@@ -703,13 +693,20 @@ brm_1_bis &lt;- brm(
 ## 
 ## Group-Level Effects: 
 ## ~Subject (Number of levels: 30) 
-##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sd(Intercept)                 95.32     31.73    45.61   170.35 1.01     1224     2012
-## sd(PhonLev)                    6.46      4.81     0.24    17.49 1.02      373     1553
-## sd(IsWordFALSE)               96.22     19.16    62.98   137.45 1.00     2049     2612
-## cor(Intercept,PhonLev)        -0.36      0.48    -0.94     0.76 1.00     1431     2270
-## cor(Intercept,IsWordFALSE)     0.52      0.26    -0.06     0.94 1.00      573     1181
-## cor(PhonLev,IsWordFALSE)      -0.32      0.47    -0.95     0.76 1.01      390      793
+##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)                 95.32     31.73    45.61   170.35 1.01     1224
+## sd(PhonLev)                    6.46      4.81     0.24    17.49 1.02      373
+## sd(IsWordFALSE)               96.22     19.16    62.98   137.45 1.00     2049
+## cor(Intercept,PhonLev)        -0.36      0.48    -0.94     0.76 1.00     1431
+## cor(Intercept,IsWordFALSE)     0.52      0.26    -0.06     0.94 1.00      573
+## cor(PhonLev,IsWordFALSE)      -0.32      0.47    -0.95     0.76 1.01      390
+##                            Tail_ESS
+## sd(Intercept)                  2012
+## sd(PhonLev)                    1553
+## sd(IsWordFALSE)                2612
+## cor(Intercept,PhonLev)         2270
+## cor(Intercept,IsWordFALSE)     1181
+## cor(PhonLev,IsWordFALSE)        793
 ## 
 ## Population-Level Effects: 
 ##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
@@ -748,12 +745,12 @@ conditional_effects(brm_1_bis, effects = "PhonLev:IsWord")
 
 
 ```
-## Family Specific Parameters: 
-##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma   320.28      4.24   312.11   328.50 1.00     7014     3116
-## 
-## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
-## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## Population-Level Effects: 
+##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept             754.05     48.22   662.19   848.00 1.00     2534     2795
+## PhonLev                32.10      6.34    19.86    44.40 1.00     2805     2897
+## IsWordFALSE           208.79     65.13    78.73   333.10 1.00     2436     2804
+## PhonLev:IsWordFALSE   -11.29      8.75   -27.87     6.44 1.00     2543     2525
 ```
 
 * `Intercept`: At 95% confidence, the mean RT when the word is real and the mean phone-level distance is 0 is between 661 and 849 ms.
@@ -794,13 +791,13 @@ layout: true
 ```
 ## Group-Level Effects: 
 ## ~Subject (Number of levels: 30) 
-##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sd(Intercept)                 95.32     31.73    45.61   170.35 1.01     1224     2012
-## sd(PhonLev)                    6.46      4.81     0.24    17.49 1.02      373     1553
-## sd(IsWordFALSE)               96.22     19.16    62.98   137.45 1.00     2049     2612
-## cor(Intercept,PhonLev)        -0.36      0.48    -0.94     0.76 1.00     1431     2270
-## cor(Intercept,IsWordFALSE)     0.52      0.26    -0.06     0.94 1.00      573     1181
-## cor(PhonLev,IsWordFALSE)      -0.32      0.47    -0.95     0.76 1.01      390      793
+##                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)                 95.32     31.73    45.61   170.35 1.01     1224
+## sd(PhonLev)                    6.46      4.81     0.24    17.49 1.02      373
+## sd(IsWordFALSE)               96.22     19.16    62.98   137.45 1.00     2049
+## cor(Intercept,PhonLev)        -0.36      0.48    -0.94     0.76 1.00     1431
+## cor(Intercept,IsWordFALSE)     0.52      0.26    -0.06     0.94 1.00      573
+## cor(PhonLev,IsWordFALSE)      -0.32      0.47    -0.95     0.76 1.01      390
 ```
 
 --
