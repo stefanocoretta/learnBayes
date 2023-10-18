@@ -320,8 +320,6 @@ brm_2 &lt;- brm(
     IsWord,
   data = mald,
   family = gaussian(),
-  # Use cmdstanr
-  backend = "cmdstanr",
   # Save model output to file
   file = "./data/cache/brm_2.rds"
 )
@@ -365,8 +363,6 @@ brm_2 &lt;- brm(
   family = gaussian(),
   
   # TECHNICAL STUFF
-  # Use cmdstanr
-  backend = "cmdstanr"
   # Save model output to file
   file = "./data/cache/brm_2.rds",
   # Number of chains
@@ -672,9 +668,7 @@ brm_1_bis &lt;- brm(
   data = mald,
   family = gaussian(),
   # Technical stuff
-  backend = "cmdstanr",
   cores = 4,
-  threads = threading(2),
   file = "data/cache/brm_1_bis"
 )
 ```

@@ -35,7 +35,6 @@ use_xaringan_extra(c("panelset", "tachyons", "freezeframe"))
 library(lme4)
 library(ggeffects)
 library(brms)
-library(cmdstanr)
 library(tidybayes)
 library(bayesplot)
 
@@ -241,9 +240,7 @@ brm_1 <- brm(
   data = mald,
   family = gaussian(),
   # Technical stuff
-  backend = "cmdstanr",
   cores = 4,
-  threads = threading(2),
   file = "data/cache/brm_1"
 )
 ```
@@ -276,8 +273,6 @@ brm_2 <- brm(
     IsWord,
   data = mald,
   family = gaussian(),
-  # Use cmdstanr
-  backend = "cmdstanr",
   # Save model output to file
   file = "./data/cache/brm_2.rds"
 )
@@ -320,8 +315,6 @@ brm_2 <- brm(
   family = gaussian(),
   
   # TECHNICAL STUFF
-  # Use cmdstanr
-  backend = "cmdstanr"
   # Save model output to file
   file = "./data/cache/brm_2.rds",
   # Number of chains
@@ -542,9 +535,7 @@ brm_1_bis <- brm(
   data = mald,
   family = gaussian(),
   # Technical stuff
-  backend = "cmdstanr",
   cores = 4,
-  threads = threading(2),
   file = "data/cache/brm_1_bis"
 )
 ```

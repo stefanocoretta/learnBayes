@@ -28,7 +28,7 @@ You can get the Starter Kit from [here](https://github.com/stefanocoretta/learnB
 ## Installation
 
 ::: {.callout-important icon="false"}
-If you have previously installed the C++ toolkit, CmdStan and/or cmdstanr, or if you have recently updated your OS, please follow these instructions to reinstall them.
+If you have previously installed the C++ toolkit or if you have recently updated your OS, please follow these instructions to reinstall them.
 :::
 
 Now you will need to install a few packages and extra software.
@@ -37,75 +37,52 @@ Here is an overview of what you will install:
 
 1.  C++ toolchain.
 
-2.  R packages: tidyverse, remotes, cmdstanr, brms.
-
-3.  CmdStan (including Stan).
+2.  R packages: tidyverse, brms, tidybayes, extraDistr.
 
 ### 1. Install the C++ toolchain
 
-Some of the software (CmdStan) used in the workshop requires a working C++ toolchain for compilation.
+The package brms used in the workshop requires a working C++ toolchain to compile models.
 
-You can find information on how to set up the C++ toolchain in [Section 1.2.1](https://mc-stan.org/docs/cmdstan-guide/cmdstan-installation.html#cpp-toolchain) of the CmdStan User's Guide.
+#### Windows
 
-Make sure to follow the instructions for your operating system.
+For Windows, follow the instructions here: <https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html>
 
-::: callout-caution
-**WINDOWS USERS**: The installation process for Windows is more complex than that on Unix/macOS, so pay extra attention in reading the instructions.
+#### macOS
 
-Many attendants with a Windows laptop forget to follow some of the steps (in particular, make sure you are updating the PATH variable as instructed).
-:::
+For macOS, open the Terminal and write the following line then press enter/return:
+
+```         
+xcode-select --install
+```
+
+You'll see a panel that asks you to install the Xcode Command Line Tools. Install them. Downloading and installation will take 30 to 60 minutes.
+
+#### Linux
+
+For Linux, follow the instructions here: <https://github.com/stan-dev/rstan/wiki/Configuring-C-Toolchain-for-Linux>
 
 ### 2. Install the R packages
 
 You need to install the following packages:
 
 ``` r
-install.packages(c("tidyverse", "remotes"))
-remotes::install_github("stan-dev/cmdstanr")
-install.packages(c("brms"))
-install.packages(c("tidybayes", "extraDistr"))
+install.packages(c("tidyverse", "brms", "tidybayes", "extraDistr"))
 ```
-
-The [cmdstanr](https://mc-stan.org/cmdstanr/index.html) package is an interface between R and CmdStan (see below), while [brms](https://paul-buerkner.github.io/brms/) is the package you will use to run Bayesian linear models (think of it as the Bayesian equivalent of [lme4](https://github.com/lme4/lme4)).
 
 It will take several minutes to install the packages, depending on your system and configuration.
 
 **If after opening the Starter Kit in RStudio you get asked to install extra packages or software, please do so.**
 
-### 3. Install CmdStan
-
-Now that you have installed the R packages, you need to install CmdStan.
-
-[CmdStan](https://mc-stan.org/users/interfaces/cmdstan) is a shell interface to the programming language Stan.
-
-[Stan](https://mc-stan.org) is what runs the Bayesian models, but you don't have to know Stan, because you will use the R packages to run the models (those packages will communicate with Stan in your stead).
-
-To install CmdStan, run the following command in the R console:
-
-``` r
-cmdstanr::install_cmdstan(cores = parallel::detectCores(), overwrite = TRUE)
-```
-
 ### Check your installation
 
-Run the following in the RStudio Console.
+Run the following in the RStudio Console:
 
 ``` r
-library(cmdstanr)
-file <- file.path(cmdstan_path(), "examples", "bernoulli", "bernoulli.stan")
-mod <- cmdstan_model(file, force_recompile = TRUE)
-data_list <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
-fit <- mod$sample(
-  data = data_list, 
-  seed = 123, 
-  chains = 4, 
-  parallel_chains = 4,
-  refresh = 500 # print update every 500 iters
-)
+example(stan_model, package = "rstan", run.dontrun = TRUE)
 ```
 
-If everything goes well you should see `Compiling Stan program…` and then `Running MCMC with 4 parallel chains…` followed by information on chains and iterations.
+If you see some strange looking text printed in the Console and then `fit` and `fit2` in the Environment, then you are sorted!
 
 ## Troubleshoot
 
-If you have issues with any of these steps, please get in touch with Stefano.
+If you have issues with any of these steps, please get in touch with Stefano no later than two working days prior to the workshop.
