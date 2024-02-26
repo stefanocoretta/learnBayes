@@ -455,28 +455,6 @@
       ],
       "Hash": "3f038e5ac7f41d4ac41ce658c85e3042"
     },
-    "cmdstanr": {
-      "Package": "cmdstanr",
-      "Version": "0.5.3",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "stan-dev",
-      "RemoteRepo": "cmdstanr",
-      "RemoteRef": "master",
-      "RemoteSha": "dbf41cd389dc8e2902676bf205d34e40a0f51a05",
-      "RemoteHost": "api.github.com",
-      "Requirements": [
-        "R",
-        "R6",
-        "checkmate",
-        "data.table",
-        "jsonlite",
-        "posterior",
-        "processx",
-        "withr"
-      ],
-      "Hash": "e2c574b3393b8ede2107265f01a6955d"
-    },
     "coda": {
       "Package": "coda",
       "Version": "0.19-4",
