@@ -1,0 +1,108 @@
+---
+title: "Introduction to Bayesian Linear Models"
+subtitle: "02 - Diagnostics"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(lme4)
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+## MCMC traces
+
+```{r}
+#| label: brm-2
+#| echo: false
+
+brm_2 <- readRDS("data/cache/brm_2.rds")
+```
+
+```{r}
+#| label: brm-2-plot
+
+plot(brm_2)
+```
+
+## MCMC traces: bad
+
+An example of bad MCMC chain mixing.
+
+![](/img/trace_c.png){fig-align="center"}
+
+::: notes
+Picture from <https://www.rdatagen.net/post/diagnosing-and-dealing-with-estimation-issues-in-the-bayesian-meta-analysis/>.
+:::
+
+## MCMC traces: intercept
+
+```{r}
+#| label: brm-2-trace-int
+
+as.array(brm_2) %>%
+  mcmc_trace("b_Intercept", np = nuts_params(brm_2))
+```
+
+## MCMC traces: `IsWord`
+
+```{r}
+#| label: brm-2-trace-isword
+
+as.array(brm_2) %>%
+  mcmc_trace("b_IsWordFALSE", np = nuts_params(brm_2))
+```
+
+## $\hat{R}$ and Effective Sample Size (ESS)
+
+```{r brm-2-diag}
+brm_2
+```
+
+## Posterior Predictive Checks
+
+```{r}
+#| label: brm-2-pp
+
+pp_check(brm_2, ndraws = 20)
+```
+
+## Summary
+
+::: box-tip
+Quick and dirty diagnostics:
+
+- MCMC traces: hairy caterpillars, no divergent transitions.
+
+- $\hat{R}: should be as close to 1 as possible.
+
+- Effective Sample Size (ESS): should be large enough.
+
+- Posterior Predictive Checks: predicted outcome distribution should match the empirical distribution.
+:::
+
+. . .
+
+::: box-warning
+- `brm()` warns you about divergent transition, $\hat{R} > 1$ and low ESS.
+
+- Posterior predictive checks are based on visual inspection only.
+:::

@@ -1,0 +1,437 @@
+---
+title: "Introduction to Bayesian Linear Models"
+subtitle: "01 - Basics"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(lme4)
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+## 
+
+![](/img/One_Ring_inscription.svg.png){fig-align="right" width="300"}
+
+::: {.f2 style="text-align: right;"}
+One **model** to rule them all.<br> One **model** to find them.<br> One **model** to bring them all<br> And in the darkness bind them.
+:::
+
+. . .
+
+::: f5
+(No, I couldn't translate 'model' into Black Speech, alas...)
+:::
+
+## Now enter The Linear Model
+
+<p style="text-align:center">
+
+<iframe src="https://giphy.com/embed/l4FGCymGGNTZVZwtO" width="480" height="200" frameBorder="0" class="giphy-embed" allowFullScreen>
+
+</iframe>
+
+</p>
+
+## Now enter The Bayesian Linear Model
+
+<p style="text-align:center">
+
+<iframe src="https://giphy.com/embed/3ov9jG4eqz9k3XXsU8" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen>
+
+</iframe>
+
+</p>
+
+## All about the Bayes
+
+::: box-note
+Within the **NHST (Frequentist) framework**, the main analysis output is:
+
+-   **Point estimates** of predictors' parameters (with standard error).
+-   **P-values**. 😈
+:::
+
+. . .
+
+::: box-tip
+Within the **Bayesian framework**, the main analysis output is:
+
+-   **Probability distributions** of predictors' parameters.
+:::
+
+## An example: MALD
+
+::: box-tip
+[Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (MALD) data (Tucker et al. 2019):
+
+-   **Auditory Lexical Decision task** with real and nonce English words.
+-   Reaction times and accuracy.
+-   Total 521 subjects; subset of 30 subjects, 100 observations each.
+:::
+
+. . .
+
+```{r}
+#| label: mald
+#| echo: false
+
+mald <- readRDS("./data/mald.rds")
+```
+
+```{r}
+#| label: mald-print
+
+mald
+```
+
+## MALD: phone-level distance and lexical status
+
+Let's investigate the effects of:
+
+-   `PhonLev`: mean phone-level Levenshtein distance.
+-   `IsWord`: lexical status (real word vs nonce word).
+
+On:
+
+-   `RT`: reaction times.
+-   `ACC`: accuracy.
+
+## MALD: phone-level distance and lexical status
+
+```{r}
+#| label: dist-stat
+
+mald |> 
+  ggplot(aes(PhonLev, RT)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth(aes(colour = IsWord, fill = IsWord), method = "lm", formula = y ~ x) +
+  labs(
+    x = "Phone-level distance", y = "RT (ms)"
+  )
+```
+
+## A frequentist linear model
+
+```{r}
+#| label: lm-1
+
+lm_1 <- lmer(
+  RT ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (1 | Subject),
+  data = mald
+)
+```
+
+## A frequentist linear model: summary
+
+```{r}
+#| label: lm-1-summ
+
+summary(lm_1)
+```
+
+## A frequentist linear model: plot predictions
+
+```{r}
+#| label: lm-1-pred
+#| message: false
+
+ggpredict(lm_1, terms = c("PhonLev", "IsWord")) %>%
+  plot()
+```
+
+## Increase model complexity
+
+**Try it yourself!** Does it work?
+
+```{r}
+#| label: lm-2
+#| eval: false
+
+lm_2 <- lmer(
+  RT ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald
+)
+```
+
+. . .
+
+```{r}
+#| label: lm-2-run
+#| echo: false
+#| warning: true
+
+lm_2 <- lmer(
+  RT ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald
+)
+```
+
+<p style="text-align:center">
+
+<iframe src="https://giphy.com/embed/3o7abwbzKeaRksvVaE" width="480" height="204" frameBorder="0" class="giphy-embed" allowFullScreen>
+
+</iframe>
+
+</p>
+
+## Let's go Bayesian! {background-color="var(--inverse)"}
+
+...like the Bayesian Rats!
+
+![](/img/the-bayesian-rats.jpeg){fig-align="center" width="500"}
+
+## A Bayesian linear model
+
+```{r}
+#| label: brm-1
+#| eval: false
+
+brm_1 <- brm(
+  RT ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald,
+  family = gaussian()
+)
+```
+
+```{r}
+#| label: brm-1-run
+#| echo: false
+
+brm_1 <- brm(
+  RT ~
+    PhonLev +
+    IsWord +
+    PhonLev:IsWord +
+    (PhonLev + IsWord | Subject),
+  data = mald,
+  family = gaussian(),
+  # Technical stuff
+  cores = 4,
+  file = "data/cache/brm_1"
+)
+```
+
+## A Bayesian linear model: summary
+
+```{r}
+#| label: brm-1-summ
+
+brm_1
+```
+
+## A Bayesian linear model: plot predictions
+
+```{r}
+#| label: brm-1-plot
+
+conditional_effects(brm_1, effects = "PhonLev:IsWord")
+```
+
+## Let's start small
+
+**Try it yourself!**
+
+```{r}
+#| label: brm-2
+#| eval: false
+
+brm_2 <- brm(
+  # formula = outcome ~ predictor
+  RT ~ IsWord,
+  data = mald,
+  # Specify the distribution family of the outcome
+  family = gaussian()
+)
+```
+
+. . .
+
+::: box-tip
+-   The model estimates the probability distributions of the effects of each predictor.
+
+-   To do so, a **sampling algorithm** is used (Markov Chain Monte Carlo, **MCMC**).
+:::
+
+## MCMC what? {background-color="var(--inverse)"}
+
+**Markov Chain Monte Carlo**
+
+-   MCMC simulation: <https://chi-feng.github.io/mcmc-demo/app.html>
+
+-   More on MCMC: <http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/>
+
+## Technicalities
+
+```{r}
+#| label: brm-2-explain
+
+brm_2 <- brm(
+  RT ~ IsWord,
+  data = mald,
+  family = gaussian(),
+  
+  # TECHNICAL STUFF
+  # Save model output to file
+  file = "./data/cache/brm_2.rds",
+  # Number of MCMC chains
+  chains = 4, 
+  # Number of iterations per chain
+  iter = 2000,
+  # Number of cores to use (one per chain)
+  cores = 4
+)
+```
+
+::: box-error
+You can find out how many cores your laptop has with `parallel::detectCores()`.
+:::
+
+## The model summary
+
+```{r}
+#| label: brm-2-summ
+
+brm_2
+```
+
+## Interpreting the summary
+
+```{r}
+#| label: brm-2-summ-2
+#| echo: false
+
+cat(capture.output(summary(brm_2))[8:11], sep = "\n")
+```
+
+::: box-warning
+`Intercept`: There is a **95% probability** that (based on model and data) the mean RT when the word is real is **between 964 and 999 ms**.
+
+-   The probability distribution of the intercept has mean = 981 ms and SD = 9 (rounded).
+:::
+
+. . .
+
+::: box-tip
+`IsWordFALSE`: At **95% confidence**, the difference in RT between non-words and real words is **between +109 and +158 ms** (based on model and data).
+
+-   The probability distribution of `IsWordFALSE` has mean = 133 ms and SD = 13 (rounded).
+:::
+
+. . .
+
+## Posterior probabilities
+
+::: box-note
+-   These are **posterior probability distributions**.
+-   They are always conditional on model and data.
+-   The summary reports **95% Credible Intervals**, but you can get other intervals too (there is nothing special about 95%).
+:::
+
+. . .
+
+```{r}
+#| label: summ-80
+
+summary(brm_2, prob = 0.8)
+```
+
+## Quick plot
+
+```{r}
+#| label: brm-2-plot
+
+plot(brm_2, combo = c("dens", "trace"))
+
+```
+
+## Extract the MCMC draws
+
+```{r}
+#| label: brm-2-draws
+
+brm_2_draws <- as_draws_df(brm_2)
+brm_2_draws
+```
+
+## Get parameters
+
+To list all the names of the parameters in a model, use:
+
+```{r}
+#| label: brm-2-vars
+
+variables(brm_2)
+```
+
+## Posterior distributions: intercept
+
+Now you can plot the draws using ggplot2.
+
+```{r}
+#| label: brm-2-int
+#| output-location: slide
+
+brm_2_draws %>%
+  ggplot(aes(b_Intercept)) +
+  stat_halfeye(fill = "#214d65", alpha = 0.8) +
+  scale_x_continuous() +
+  labs(title = "Posterior distribution of Intercept")
+```
+
+## Posterior distribution: `IsWordFalse`
+
+```{r}
+#| label: brm-2-isword
+#| output-location: slide
+
+brm_2_draws %>%
+  ggplot(aes(b_IsWordFALSE)) +
+  stat_halfeye(fill = "#624B27", alpha = 0.8) +
+  scale_x_continuous() +
+  labs(title = "Posterior distribution of IsWord: FALSE - TRUE")
+```
+
+## Conditional posterior probabilities
+
+```{r}
+#| label: brm-2-cond
+
+conditional_effects(brm_2, "IsWord")
+```
+
