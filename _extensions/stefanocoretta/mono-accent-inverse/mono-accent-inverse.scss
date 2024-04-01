@@ -1,0 +1,84 @@
+/*-- scss:defaults --*/
+
+// lighten-color
+@function lighten-color($color, $strength: 0.7) {
+  @if $strength < 0 or $strength > 1 {
+    @error "Strength must be between 0 and 1";
+  }
+
+  $red: red($color);
+  $green: green($color);
+  $blue: blue($color);
+
+  $red: (1 - $strength) * $red + $strength * 255;
+  $green: (1 - $strength) * $green + $strength * 255;
+  $blue: (1 - $strength) * $blue + $strength * 255;
+
+  @return rgb($red, $green, $blue);
+}
+
+// darken-color
+@function darken-color($color, $strength: 0.8) {
+  @if $strength < 0 or $strength > 1 {
+    @error "Strength must be between 0 and 1";
+  }
+
+  $red: red($color);
+  $green: green($color);
+  $blue: blue($color);
+
+  $red: $red * (1 - $strength);
+  $green: $green * (1 - $strength);
+  $blue: $blue * (1 - $strength);
+
+  @return rgb($red, $green, $blue);
+}
+
+// fonts
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,600;1,600&family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Source+Code+Pro:wght@400;700&display=swap');
+
+$font-family-sans-serif: 'Noto Sans', sans-serif !default; // style-text_font_family
+$presentation-heading-font: Cabin, sans-serif !default; // style-header_font_family
+$font-family-monospace: 'Source Code Pro', monospace !default; // style-code_font_family
+$presentation-font-size-root: 20px !default; // style-base_font_size
+$presentation-h2-font-size: 2.5rem !default; // style-header_h2_font_size
+$code-block-font-size: 0.9rem !default; // style-code_font_size
+
+// colors
+// base-color is the "primary" color of the theme
+$base-color: #3C989E !default; // style-base_color
+$lighter-color: #FFFFFF !default; // style-white_color
+$darker-color: darken-color($base-color, 0.9) !default; // style-black_color
+$text-muted: rgba($base-color, 0.5) !default; // apply_alpha()
+// body-color is the text color
+$body-color: $lighter-color !default; // style-text_color
+$presentation-heading-color: $base-color !default; // style-header_color
+// body-bg is the slide background color
+$body-bg: $darker-color !default; // style-background_color
+$link-color: $base-color !default; // style-link_color
+$dark-bg-text-color: $lighter-color !default; // style-inverse_background_color
+
+/*-- scss:rules --*/
+
+:root {
+  --inverse: #{$base-color};
+}
+
+// style-padding
+.reveal .slide {
+  padding: 16px 64px 16px 64px;
+}
+
+.reveal .slide h2 {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.reveal blockquote {
+  color: $body-color;
+}
+
+// make text of blockquote white if in slide with dark background
+section.has-dark-background blockquote {
+  color: $lighter-color;
+}

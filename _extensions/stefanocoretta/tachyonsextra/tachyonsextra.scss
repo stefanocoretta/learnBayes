@@ -1,0 +1,27 @@
+/*-- scss:defaults --*/
+
+
+
+/*-- scss:rules --*/
+
+@import 'tachyons/tachyons';
+
+.box-x {
+  @extend .ba, .bw2, .br3, .shadow-5, .ph4, .pv2, .mt2, .mb1;
+}
+
+.box-note {
+  @extend .bg-washed-blue, .b--dark-blue, .box-x;
+}
+
+.box-tip {
+  @extend .bg-washed-green, .b--dark-green, .box-x;
+}
+
+.box-warning {
+  @extend .bg-washed-yellow, .b--gold, .box-x;
+}
+
+.box-error {
+  @extend .bg-washed-red, .b--dark-red, .box-x;
+}
