@@ -1,0 +1,21 @@
+{
+  "hash": "de2976d15f13353899a0cfbceb2813d4",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Introduction to Bayesian Linear Models\"\nsubtitle: \"03 - Priors\"\nauthor: \"Stefano Coretta\"\ninstitute: \"University of Edinburgh\"\neditor: source\nformat:\n  mono-light-revealjs:\n    theme: [default, custom.scss]\n    history: false\nfilters:\n  - tachyonsextra\nexecute: \n  echo: true\n---\n\n\n\n\n## Bayesian belief update\n\n![](/img/prior-update.png){fig-align=\"center\"}\n\n## \n\n\n::: {.cell}\n::: {.cell-output-display}\n\n```{=html}\n<section id=\"Priors\" data-background-iframe=\"https://seeing-theory.brown.edu/bayesian-inference/index.html#section3\" data-background-interactive>\n</section>\n```\n\n:::\n:::\n\n\n## Let's start small\n\n$$\\text{RT}_i \\sim Gaussian(\\mu, \\sigma)$$\n\n. . .\n\n::: box-note\n\n- $\\text{RT}_i$: Reaction Times\n\n- $\\sim$: distributed according to a\n\n- $Gaussian()$: Gaussian distribution\n\n- with mean $\\mu$ and standard deviation $\\sigma$\n\n:::\n\n## The empirical rule\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](03_priors_files/figure-revealjs/empirical-rule-1-1.png){width=960}\n:::\n:::\n\n\n## The empirical rule\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](03_priors_files/figure-revealjs/empirical-rule-2-1.png){width=960}\n:::\n:::\n\n\n## The empirical rule\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](03_priors_files/figure-revealjs/empirical-rule-3-1.png){width=960}\n:::\n:::\n\n\n## The empirical rule\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](03_priors_files/figure-revealjs/empirical-rule-4-1.png){width=960}\n:::\n:::\n\n\n## The empirical rule\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](03_priors_files/figure-revealjs/empirical-rule-5-1.png){width=960}\n:::\n:::\n",
+    "supporting": [
+      "03_priors_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-after-body": [
+        "\n<script>\n  // htmlwidgets need to know to resize themselves when slides are shown/hidden.\n  // Fire the \"slideenter\" event (handled by htmlwidgets.js) when the current\n  // slide changes (different for each slide format).\n  (function () {\n    // dispatch for htmlwidgets\n    function fireSlideEnter() {\n      const event = window.document.createEvent(\"Event\");\n      event.initEvent(\"slideenter\", true, true);\n      window.document.dispatchEvent(event);\n    }\n\n    function fireSlideChanged(previousSlide, currentSlide) {\n      fireSlideEnter();\n\n      // dispatch for shiny\n      if (window.jQuery) {\n        if (previousSlide) {\n          window.jQuery(previousSlide).trigger(\"hidden\");\n        }\n        if (currentSlide) {\n          window.jQuery(currentSlide).trigger(\"shown\");\n        }\n      }\n    }\n\n    // hookup for slidy\n    if (window.w3c_slidy) {\n      window.w3c_slidy.add_observer(function (slide_num) {\n        // slide_num starts at position 1\n        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);\n      });\n    }\n\n  })();\n</script>\n\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

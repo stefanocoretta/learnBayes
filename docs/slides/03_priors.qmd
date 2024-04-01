@@ -1,0 +1,166 @@
+---
+title: "Introduction to Bayesian Linear Models"
+subtitle: "03 - Priors"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+## Bayesian belief update
+
+![](/img/prior-update.png){fig-align="center"}
+
+## 
+
+```{r}
+#| label: seeing-theory
+#| echo: false
+
+library(htmltools)
+
+HTML('<section id="Priors" data-background-iframe="https://seeing-theory.brown.edu/bayesian-inference/index.html#section3" data-background-interactive>
+</section>')
+```
+
+## Let's start small
+
+$$\text{RT}_i \sim Gaussian(\mu, \sigma)$$
+
+. . .
+
+::: box-note
+
+- $\text{RT}_i$: Reaction Times
+
+- $\sim$: distributed according to a
+
+- $Gaussian()$: Gaussian distribution
+
+- with mean $\mu$ and standard deviation $\sigma$
+
+:::
+
+## The empirical rule
+
+```{r}
+#| label: empirical-rule-1
+#| echo: false
+
+x <- seq(-4, 4, by = 0.01)
+y = dnorm(x, 0, 1)
+
+ger_1 <- ggplot() +
+  aes(x, y) +
+  geom_line(linewidth = 2, colour = "#FFA70B") +
+  scale_x_continuous(breaks = c(-4:4), labels = c("", expression(paste(-3, sigma)), expression(paste(-2, sigma)), expression(paste(-1, sigma)), expression(paste(mu)), expression(paste(+1, sigma)), expression(paste(+2, sigma)), expression(paste(+3, sigma)), "")) +
+  ylim(0, 0.6) +
+  labs(
+    x = element_blank(), y = element_blank()
+  )
+ger_1
+```
+
+## The empirical rule
+
+```{r empirical-rule-2, echo=FALSE}
+ger_1 +
+  geom_ribbon(aes(x = ifelse(x >= -1 & x <= 1, x, NA), ymin = 0, ymax = y), alpha = 0.7, fill = "#8970FF") +
+  annotate(
+    "segment",
+    x = -1, xend = 1, y = 0.45, yend = 0.45,
+    arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")),
+    linewidth = 1
+  ) +
+  annotate("label", x = 0, y = 0.45, label = "68%") +
+  geom_line(linewidth = 2, colour = "#FFA70B")
+```
+
+## The empirical rule
+
+```{r empirical-rule-3, echo=FALSE}
+ger_1 +
+  geom_ribbon(aes(x = ifelse(x >= -2 & x <= 2, x, NA), ymin = 0, ymax = y), alpha = 0.4, fill = "#8970FF") +
+annotate(
+    "segment",
+    x = -2, xend = 2, y = 0.5, yend = 0.5,
+    arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")),
+    linewidth = 1
+  ) +
+  annotate("label", x = 0, y = 0.50, label = "95%") +
+  geom_line(linewidth = 2, colour = "#FFA70B")
+```
+
+## The empirical rule
+
+```{r empirical-rule-4, echo=FALSE}
+ger_1 +
+  geom_ribbon(aes(x = x, ymin = 0, ymax = y), alpha = 0.3, fill = "#8970FF") +
+  annotate(
+    "segment",
+    x = -3, xend = 3, y = 0.55, yend = 0.55,
+    arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")),
+    linewidth = 1
+  ) +
+  annotate("label", x = 0, y = 0.55, label = "99.7 ≈ 100%") +
+  geom_line(linewidth = 2, colour = "#FFA70B")
+```
+
+## The empirical rule
+
+```{r empirical-rule-5, echo=FALSE}
+x <- seq(-4, 4, by = 0.01)
+y = dnorm(x, 0, 1)
+ggplot() +
+  aes(x, y) +
+  geom_ribbon(aes(x = x, ymin = 0, ymax = y), alpha = 0.3, fill = "#8970FF") +
+  geom_ribbon(aes(x = ifelse(x >= -2 & x <= 2, x, NA), ymin = 0, ymax = y), alpha = 0.4, fill = "#8970FF") +
+  geom_ribbon(aes(x = ifelse(x >= -1 & x <= 1, x, NA), ymin = 0, ymax = y), alpha = 0.7, fill = "#8970FF") +
+  geom_line(linewidth = 2, colour = "#FFA70B") +
+  annotate(
+    "segment",
+    x = -1, xend = 1, y = 0.45, yend = 0.45,
+    arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")),
+    linewidth = 1
+  ) +
+  annotate("label", x = 0, y = 0.45, label = "68%") +
+  annotate(
+    "segment",
+    x = -2, xend = 2, y = 0.5, yend = 0.5,
+    arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")),
+    linewidth = 1
+  ) +
+  annotate("label", x = 0, y = 0.50, label = "95%") +
+  annotate(
+    "segment",
+    x = -3, xend = 3, y = 0.55, yend = 0.55,
+    arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")),
+    linewidth = 1
+  ) +
+  annotate("label", x = 0, y = 0.55, label = "99.7 ≈ 100%") +
+  scale_x_continuous(breaks = c(-4:4), labels = c("", expression(paste(-3, sigma)), expression(paste(-2, sigma)), expression(paste(-1, sigma)), expression(paste(mu)), expression(paste(+1, sigma)), expression(paste(+2, sigma)), expression(paste(+3, sigma)), "")) +
+  ylim(0, 0.6) +
+  labs(
+    x = element_blank(), y = element_blank()
+  )
+```

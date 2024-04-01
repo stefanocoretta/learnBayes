@@ -90,19 +90,22 @@ pp_check(brm_2, ndraws = 20)
 ::: box-tip
 Quick and dirty diagnostics:
 
-- MCMC traces: hairy caterpillars, no divergent transitions.
+- MCMC traces: hairy caterpillars, **no divergent transitions**.
 
-- $\hat{R}: should be as close to 1 as possible.
+- $\hat{R}$: should be 1 (> 1 means non-convergence).
 
-- Effective Sample Size (ESS): should be large enough.
+- Effective Sample Size (**ESS**): should be large enough.
 
-- Posterior Predictive Checks: predicted outcome distribution should match the empirical distribution.
+- **Posterior Predictive Checks**: predicted outcome distribution should match the empirical distribution.
 :::
 
 . . .
 
 ::: box-warning
-- `brm()` warns you about divergent transition, $\hat{R} > 1$ and low ESS.
+- `brm()` warns you about divergent transition, $\hat{R} > 1$ and low ESS and how to fix them.
+
+  - This usually involves increasing the number of iterations and/or other MCMC tricks.
 
 - Posterior predictive checks are based on visual inspection only.
 :::
+
