@@ -19,12 +19,6 @@ Before installing the necessary software, make sure you have installed or update
 
 -   Your **operating system is up-to-date**.
 
-## Starter Kit
-
-I strongly recommend you to use the Starter Kit.
-
-You can get the Starter Kit from [here](https://github.com/stefanocoretta/learnBayesKit). It is just an RStudio project with some useful files.
-
 ## Installation
 
 ::: {.callout-important icon="false"}
@@ -83,6 +77,12 @@ example(stan_model, package = "rstan", run.dontrun = TRUE)
 
 If you see some strange looking text printed in the Console and then `fit` and `fit2` in the Environment, then you are sorted!
 
-## Troubleshoot
+## Troubleshooting
 
-If you have issues with any of these steps, please get in touch with Stefano no later than two working days prior to the workshop.
+If you are having issues with installation, the best place to ask for help are:
+
+-   The Stan Forums: <https://discourse.mc-stan.org>
+
+-   StackOverflow: <https://stackoverflow.com>
+
+-   Any search engine.
