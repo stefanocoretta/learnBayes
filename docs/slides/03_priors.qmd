@@ -25,6 +25,8 @@ library(ggeffects)
 library(brms)
 library(tidybayes)
 library(bayesplot)
+library(googlesheets4)
+gs4_deauth()
 ```
 
 ## Bayesian belief update
@@ -34,7 +36,7 @@ library(bayesplot)
 ## 
 
 ```{r}
-#| label: seeing-theory
+#| label: seeing-priors
 #| echo: false
 
 library(htmltools)
@@ -50,16 +52,35 @@ $$\text{RT}_i \sim Gaussian(\mu, \sigma)$$
 . . .
 
 ::: box-note
+-   $\text{RT}_i$: Reaction Times
 
-- $\text{RT}_i$: Reaction Times
+-   $\sim$: distributed according to a
 
-- $\sim$: distributed according to a
+-   $Gaussian()$: Gaussian distribution
 
-- $Gaussian()$: Gaussian distribution
-
-- with mean $\mu$ and standard deviation $\sigma$
-
+-   with mean $\mu$ and standard deviation $\sigma$
 :::
+
+. . .
+
+::: box-warning
+We **assume** RTs are distributed according to a Gaussian distribution (the assumption can be wrong)
+
+...and in fact it is (RTs are not Gaussian, but we will get to that later).
+:::
+
+## 
+
+```{r}
+#| label: seeing-gaussian
+#| echo: false
+
+library(htmltools)
+
+HTML('<section id="Priors" data-background-iframe="https://seeing-theory.brown.edu/probability-distributions/index.html#section2" data-background-interactive>
+</section>')
+```
+
 
 ## The empirical rule
 
@@ -164,3 +185,90 @@ ggplot() +
     x = element_blank(), y = element_blank()
   )
 ```
+
+## Distribution of RTs
+
+$$\text{RT}_i \sim Gaussian(\mu, \sigma)$$
+
+<br> <br> <br>
+
+Pick a $\mu$ and $\sigma$.
+
+Report them here: <https://forms.gle/M7juHsxyv5Vbs7Gx7>.
+
+## Let's see what we got!
+
+```{r}
+#| label: rt-sheet
+#| echo: false
+#| message: false
+#| warning: false
+
+rt <- read_sheet("https://docs.google.com/spreadsheets/d/1TOJmee8wSKMMHoN9B_0oC3x33gIpvUovlQNqMV0S9vE/edit?usp=sharing", 1)
+colnames(rt) <- c("Timestamp", "mean_rt", "sd_rt")
+
+if (nrow(rt) == 0) {
+  rt <- tibble(Timestamp = c("a", "b"), mean_rt = c(1000, 2000), sd_rt = c(300, 450))
+}
+
+x <- seq(min(rt$mean_rt) - 3 * max(rt$sd_rt), max(rt$mean_rt) + 3 * max(rt$sd_rt))
+
+rt %>%
+  filter(mean_rt > 100, sd_rt > 50) %>%
+  mutate(
+    y = map2(mean_rt, sd_rt, ~dnorm(x, .x, .y)),
+    x = list(x)
+  ) %>%
+  unnest(cols = c(y, x)) %>%
+  ggplot(aes(x, y, group = as.character(paste(Timestamp, mean_rt, sd_rt)))) +
+  geom_line(size = 1, alpha = 0.5) +
+  theme(legend.position = "none") +
+  labs(
+    x = "RT (ms)", y = "Density",
+    title = "Proposed distributions of RTs"
+  ) +
+  scale_color_brewer(palette = "Paired") +
+  xlim(-500, 2500)
+```
+
+## Distribution of RTs
+
+$$\text{RT}_i \sim Gaussian(\mu, \sigma)$$
+
+$$\mu = ...?$$
+
+$$\sigma = ...?$$
+
+. . .
+
+::: box-tip
+When uncertain, use probabilities!
+:::
+
+## Priors of the parameters
+
+$$
+\begin{align}
+\text{RT}_i \sim & Gaussian(\mu, \sigma)\\
+
+\mu \sim & Gaussian(\mu_1, \sigma_1)\\
+
+\sigma \sim & Cauchy(0, \sigma_2)\\
+\end{align}
+$$
+
+. . .
+
+::: box-note
+Let's pick $\mu_1$ and $\sigma_1$.
+
+We can use the empirical rule.
+:::
+
+## Prior for $\mu$
+
+::: box-note
+
+- Assume the mean will be between 500 and 1500 ms at 95% confidence.
+
+:::

@@ -312,7 +312,7 @@
     "href": "slides/03_priors.html#lets-start-small",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Let’s start small",
-    "text": "Let’s start small\n\\[\\text{RT}_i \\sim Gaussian(\\mu, \\sigma)\\]\n\n\n\n\\(\\text{RT}_i\\): Reaction Times\n\\(\\sim\\): distributed according to a\n\\(Gaussian()\\): Gaussian distribution\nwith mean \\(\\mu\\) and standard deviation \\(\\sigma\\)"
+    "text": "Let’s start small\n\\[\\text{RT}_i \\sim Gaussian(\\mu, \\sigma)\\]\n\n\n\n\\(\\text{RT}_i\\): Reaction Times\n\\(\\sim\\): distributed according to a\n\\(Gaussian()\\): Gaussian distribution\nwith mean \\(\\mu\\) and standard deviation \\(\\sigma\\)\n\n\n\n\n\nWe assume RTs are distributed according to a Gaussian distribution (the assumption can be wrong)\n…and in fact it is (RTs are not Gaussian, but we will get to that later)."
   },
   {
     "objectID": "slides/03_priors.html#the-empirical-rule",
@@ -348,5 +348,40 @@
     "title": "Introduction to Bayesian Linear Models",
     "section": "The empirical rule",
     "text": "The empirical rule"
+  },
+  {
+    "objectID": "slides/03_priors.html#distribution-of-rts",
+    "href": "slides/03_priors.html#distribution-of-rts",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Distribution of RTs",
+    "text": "Distribution of RTs\n\\[\\text{RT}_i \\sim Gaussian(\\mu, \\sigma)\\]\n  \nPick a \\(\\mu\\) and \\(\\sigma\\).\nReport them here: https://forms.gle/M7juHsxyv5Vbs7Gx7."
+  },
+  {
+    "objectID": "slides/03_priors.html#lets-see-what-we-got",
+    "href": "slides/03_priors.html#lets-see-what-we-got",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Let’s see what we got!",
+    "text": "Let’s see what we got!"
+  },
+  {
+    "objectID": "slides/03_priors.html#distribution-of-rts-1",
+    "href": "slides/03_priors.html#distribution-of-rts-1",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Distribution of RTs",
+    "text": "Distribution of RTs\n\\[\\text{RT}_i \\sim Gaussian(\\mu, \\sigma)\\]\n\\[\\mu = ...?\\]\n\\[\\sigma = ...?\\]\n\n\nWhen uncertain, use probabilities!"
+  },
+  {
+    "objectID": "slides/03_priors.html#priors-of-the-parameters",
+    "href": "slides/03_priors.html#priors-of-the-parameters",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Priors of the parameters",
+    "text": "Priors of the parameters\n$$ \\[\\begin{align}\n\\text{RT}_i \\sim & Gaussian(\\mu, \\sigma)\\\\\n\n\\mu \\sim & Gaussian(\\mu_1, \\sigma_1)\\\\\n\n\\sigma \\sim & Cauchy(0, \\sigma_2)\\\\\n\\end{align}\\] $$\n\n\nLet’s pick \\(\\mu_1\\) and \\(\\sigma_1\\).\nWe can use the empirical rule."
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-for-mu",
+    "href": "slides/03_priors.html#prior-for-mu",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior for \\(\\mu\\)",
+    "text": "Prior for \\(\\mu\\)\n\n\nAssume the mean will be between 500 and 1500 ms at 95% confidence."
   }
 ]

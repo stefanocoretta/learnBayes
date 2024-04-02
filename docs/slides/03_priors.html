@@ -368,6 +368,21 @@ Stefano Coretta
 </ul>
 </div>
 </div>
+<div class="fragment">
+<div class="box-warning">
+<p>We <strong>assume</strong> RTs are distributed according to a Gaussian distribution (the assumption can be wrong)</p>
+<p>…and in fact it is (RTs are not Gaussian, but we will get to that later).</p>
+</div>
+</div>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<div class="cell">
+<div class="cell-output-display">
+<section id="Priors" data-background-iframe="https://seeing-theory.brown.edu/probability-distributions/index.html#section2" data-background-interactive="">
+</section>
+</div>
+</div>
 </section>
 <section id="the-empirical-rule" class="slide level2">
 <h2>The empirical rule</h2>
@@ -388,8 +403,54 @@ Stefano Coretta
 <section id="the-empirical-rule-4" class="slide level2">
 <h2>The empirical rule</h2>
 
+<img data-src="03_priors_files/figure-revealjs/empirical-rule-5-1.png" width="960" class="r-stretch"></section>
+<section id="distribution-of-rts" class="slide level2">
+<h2>Distribution of RTs</h2>
+<p><span class="math display">\[\text{RT}_i \sim Gaussian(\mu, \sigma)\]</span></p>
+<p><br> <br> <br></p>
+<p>Pick a <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>.</p>
+<p>Report them here: <a href="https://forms.gle/M7juHsxyv5Vbs7Gx7" class="uri">https://forms.gle/M7juHsxyv5Vbs7Gx7</a>.</p>
+</section>
+<section id="lets-see-what-we-got" class="slide level2">
+<h2>Let’s see what we got!</h2>
 
-<img data-src="03_priors_files/figure-revealjs/empirical-rule-5-1.png" width="960" class="r-stretch"><div class="quarto-auto-generated-content">
+<img data-src="03_priors_files/figure-revealjs/rt-sheet-1.png" width="960" class="r-stretch"></section>
+<section id="distribution-of-rts-1" class="slide level2">
+<h2>Distribution of RTs</h2>
+<p><span class="math display">\[\text{RT}_i \sim Gaussian(\mu, \sigma)\]</span></p>
+<p><span class="math display">\[\mu = ...?\]</span></p>
+<p><span class="math display">\[\sigma = ...?\]</span></p>
+<div class="fragment">
+<div class="box-tip">
+<p>When uncertain, use probabilities!</p>
+</div>
+</div>
+</section>
+<section id="priors-of-the-parameters" class="slide level2">
+<h2>Priors of the parameters</h2>
+<p>$$ <span class="math display">\[\begin{align}
+\text{RT}_i \sim &amp; Gaussian(\mu, \sigma)\\
+
+\mu \sim &amp; Gaussian(\mu_1, \sigma_1)\\
+
+\sigma \sim &amp; Cauchy(0, \sigma_2)\\
+\end{align}\]</span> $$</p>
+<div class="fragment">
+<div class="box-note">
+<p>Let’s pick <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\sigma_1\)</span>.</p>
+<p>We can use the empirical rule.</p>
+</div>
+</div>
+</section>
+<section id="prior-for-mu" class="slide level2">
+<h2>Prior for <span class="math inline">\(\mu\)</span></h2>
+<div class="box-note">
+<ul>
+<li>Assume the mean will be between 500 and 1500 ms at 95% confidence.</li>
+</ul>
+</div>
+
+<div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
