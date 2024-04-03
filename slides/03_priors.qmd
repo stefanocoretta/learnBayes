@@ -27,6 +27,16 @@ library(tidybayes)
 library(bayesplot)
 library(googlesheets4)
 gs4_deauth()
+library(HDInterval)
+library(truncdist)
+my_seed <- 0745
+```
+
+```{r}
+#| label: mald
+#| echo: false
+
+mald <- readRDS("./data/mald.rds")
 ```
 
 ## Bayesian belief update
@@ -80,7 +90,6 @@ library(htmltools)
 HTML('<section id="Priors" data-background-iframe="https://seeing-theory.brown.edu/probability-distributions/index.html#section2" data-background-interactive>
 </section>')
 ```
-
 
 ## The empirical rule
 
@@ -250,9 +259,7 @@ When uncertain, use probabilities!
 $$
 \begin{align}
 \text{RT}_i & \sim Gaussian(\mu, \sigma)\\
-
 \mu & \sim Gaussian(\mu_1, \sigma_1)\\
-
 \sigma & \sim Cauchy(0, \sigma_2)\\
 \end{align}
 $$
@@ -268,7 +275,162 @@ We can use the empirical rule.
 ## Prior for $\mu$
 
 ::: box-note
+-   Let's say that the mean is between 500 and 2500 ms at 95% confidence.
 
-- Assume the mean will be between 500 and 1500 ms at 95% confidence.
+-   Get $\mu_1$
 
+    -   `mean(c(500, 2500))` = 1500
+
+-   Get $\sigma_2$
+
+    -   `(2500 - 1500) / 2` = 500
+:::
+
+. . .
+
+$$
+\begin{align}
+\text{RT}_i & \sim Gaussian(\mu, \sigma)\\
+\mu & \sim Gaussian(\mu_1 = 1500, \sigma_1 = 500)\\
+\sigma & \sim Cauchy(0, \sigma_2)\\
+\end{align}
+$$
+
+## Prior for $\mu$: plot
+
+```{r}
+#| label: mu-prior-plot
+
+ggplot(tibble(x = c(-100, 3100)), aes(x = x)) +
+  stat_function(fun = dnorm, geom = "area", fill = "lightblue",
+                args = list(1500, 500))
+```
+
+## Prior for $\sigma$
+
+```{r hdi-cauchy}
+# library(HDInterval)
+
+round(inverseCDF(c(0.025, 0.5, 0.975), ptrunc, spec = "cauchy", a = 0, scale = 10))
+
+round(inverseCDF(c(0.025, 0.5, 0.975), ptrunc, spec = "cauchy", a = 0, scale = 25))
+
+round(inverseCDF(c(0.025, 0.5, 0.975), ptrunc, spec = "cauchy", a = 0, scale = 50))
+```
+
+## Prior for $\sigma$: plot
+
+```{r}
+#| label: sigma-prior-plot
+
+ggplot(tibble(x = c(0, 500)), aes(x = x)) +
+  stat_function(fun = dcauchy, geom = "area", fill = "tomato4",
+                args = list(0, 25))
+```
+
+## Prior predictive checks: sample prior
+
+```{r}
+#| label: brm-3-priorpp
+
+brm_3_priorpp <- brm(
+  RT ~ 1,
+  family = gaussian,
+  prior = c(
+    prior(normal(1500, 500), class = Intercept),
+    prior(cauchy(0, 25), class = sigma)
+  ),
+  data = mald,
+  sample_prior = "only",
+  cores = 4,
+  file = "data/cache/brm_3_priorpp",
+  seed = my_seed
+)
+```
+
+## Prior predictive checks: sample prior
+
+```{r}
+#| label: brm-3-priorpp-summ
+
+summary(brm_3_priorpp)
+```
+
+
+## Prior predictive checks: plot
+
+```{r}
+#| label: brm-3-priorpp-plot
+
+set.seed(my_seed)
+brm_3_pppreds <- posterior_predict(brm_3_priorpp, newdata = tibble(y = 1), ndraws = 1e3) |>
+  as.vector()
+
+ggplot() +
+  aes(x = brm_3_pppreds) +
+  geom_density(fill = "forestgreen") +
+  geom_rug()
+```
+
+## Prior predictive checks: plot (zoom in)
+
+```{r}
+#| label: brm-3-priorpp-plot-2
+#| warning: false
+
+ggplot() +
+  aes(x = brm_3_pppreds) +
+  geom_density(fill = "forestgreen") +
+  xlim(-1000, 3500) +
+  geom_rug()
+```
+
+## Run the model
+
+```{r}
+#| label: brm-3
+
+brm_3 <- brm(
+  RT ~ 1,
+  family = gaussian,
+  prior = c(
+    prior(normal(1500, 500), class = Intercept),
+    prior(cauchy(0, 25), class = sigma)
+  ),
+  data = mald,
+  cores = 4,
+  file = "data/cache/brm_3",
+  seed = my_seed
+)
+```
+
+## Model summary
+
+```{r}
+#| label: brm-3-summ
+
+summary(brm_3)
+```
+
+## Posterior predictive checks
+
+```{r}
+#| label: brm-3-pp
+
+pp_check(brm_3, ndraws = 100)
+```
+
+## Summary
+
+::: box-note
+
+- Priors are probability distributions that convey prior knowledge about the model parameters.
+
+- Gaussian family
+  - $\mu$: Gaussian prior.
+  - $\sigma$: (Truncated) Cauchy prior (but also Student-t and others).
+
+- Use the empirical rule to work out Gaussian priors and the `HDIinterval::inverseCDF()` function for other families.
+
+- Prior predictive checks are fundamental and should be run during the study design, **before** data collection (or in any case without being informed by the data).
 :::

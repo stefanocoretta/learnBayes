@@ -30,6 +30,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -428,13 +493,13 @@ Stefano Coretta
 </section>
 <section id="priors-of-the-parameters" class="slide level2">
 <h2>Priors of the parameters</h2>
-<p>$$ <span class="math display">\[\begin{align}
-\text{RT}_i \sim &amp; Gaussian(\mu, \sigma)\\
-
-\mu \sim &amp; Gaussian(\mu_1, \sigma_1)\\
-
-\sigma \sim &amp; Cauchy(0, \sigma_2)\\
-\end{align}\]</span> $$</p>
+<p><span class="math display">\[
+\begin{align}
+\text{RT}_i &amp; \sim Gaussian(\mu, \sigma)\\
+\mu &amp; \sim Gaussian(\mu_1, \sigma_1)\\
+\sigma &amp; \sim Cauchy(0, \sigma_2)\\
+\end{align}
+\]</span></p>
 <div class="fragment">
 <div class="box-note">
 <p>Let’s pick <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\sigma_1\)</span>.</p>
@@ -446,7 +511,195 @@ Stefano Coretta
 <h2>Prior for <span class="math inline">\(\mu\)</span></h2>
 <div class="box-note">
 <ul>
-<li>Assume the mean will be between 500 and 1500 ms at 95% confidence.</li>
+<li><p>Let’s say that the mean is between 500 and 2500 ms at 95% confidence.</p></li>
+<li><p>Get <span class="math inline">\(\mu_1\)</span></p>
+<ul>
+<li><code>mean(c(500, 2500))</code> = 1500</li>
+</ul></li>
+<li><p>Get <span class="math inline">\(\sigma_2\)</span></p>
+<ul>
+<li><code>(2500 - 1500) / 2</code> = 500</li>
+</ul></li>
+</ul>
+</div>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{align}
+\text{RT}_i &amp; \sim Gaussian(\mu, \sigma)\\
+\mu &amp; \sim Gaussian(\mu_1 = 1500, \sigma_1 = 500)\\
+\sigma &amp; \sim Cauchy(0, \sigma_2)\\
+\end{align}
+\]</span></p>
+</div>
+</section>
+<section id="prior-for-mu-plot" class="slide level2">
+<h2>Prior for <span class="math inline">\(\mu\)</span>: plot</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">3100</span>)), <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb1-2"><a></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">geom =</span> <span class="st">"area"</span>, <span class="at">fill =</span> <span class="st">"lightblue"</span>,</span>
+<span id="cb1-3"><a></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="dv">1500</span>, <span class="dv">500</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="03_priors_files/figure-revealjs/mu-prior-plot-1.png" width="960" class="r-stretch"></section>
+<section id="prior-for-sigma" class="slide level2">
+<h2>Prior for <span class="math inline">\(\sigma\)</span></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co"># library(HDInterval)</span></span>
+<span id="cb2-2"><a></a></span>
+<span id="cb2-3"><a></a><span class="fu">round</span>(<span class="fu">inverseCDF</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>), ptrunc, <span class="at">spec =</span> <span class="st">"cauchy"</span>, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]   0  10 255</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">round</span>(<span class="fu">inverseCDF</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>), ptrunc, <span class="at">spec =</span> <span class="st">"cauchy"</span>, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">25</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]   1  25 636</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">round</span>(<span class="fu">inverseCDF</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>), ptrunc, <span class="at">spec =</span> <span class="st">"cauchy"</span>, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]    2   50 1273</code></pre>
+</div>
+</div>
+</section>
+<section id="prior-for-sigma-plot" class="slide level2">
+<h2>Prior for <span class="math inline">\(\sigma\)</span>: plot</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">500</span>)), <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb8-2"><a></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dcauchy, <span class="at">geom =</span> <span class="st">"area"</span>, <span class="at">fill =</span> <span class="st">"tomato4"</span>,</span>
+<span id="cb8-3"><a></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="dv">0</span>, <span class="dv">25</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="03_priors_files/figure-revealjs/sigma-prior-plot-1.png" width="960" class="r-stretch"></section>
+<section id="prior-predictive-checks-sample-prior" class="slide level2">
+<h2>Prior predictive checks: sample prior</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>brm_3_priorpp <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb9-2"><a></a>  RT <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb9-3"><a></a>  <span class="at">family =</span> gaussian,</span>
+<span id="cb9-4"><a></a>  <span class="at">prior =</span> <span class="fu">c</span>(</span>
+<span id="cb9-5"><a></a>    <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">1500</span>, <span class="dv">500</span>), <span class="at">class =</span> Intercept),</span>
+<span id="cb9-6"><a></a>    <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">0</span>, <span class="dv">25</span>), <span class="at">class =</span> sigma)</span>
+<span id="cb9-7"><a></a>  ),</span>
+<span id="cb9-8"><a></a>  <span class="at">data =</span> mald,</span>
+<span id="cb9-9"><a></a>  <span class="at">sample_prior =</span> <span class="st">"only"</span>,</span>
+<span id="cb9-10"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb9-11"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/brm_3_priorpp"</span>,</span>
+<span id="cb9-12"><a></a>  <span class="at">seed =</span> my_seed</span>
+<span id="cb9-13"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="prior-predictive-checks-sample-prior-1" class="slide level2">
+<h2>Prior predictive checks: sample prior</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">summary</span>(brm_3_priorpp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: gaussian 
+  Links: mu = identity; sigma = identity 
+Formula: RT ~ 1 
+   Data: mald (Number of observations: 3000) 
+  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+         total post-warmup draws = 4000
+
+Regression Coefficients:
+          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+Intercept  1505.95    489.24   536.86  2446.34 1.00     2753     2363
+
+Further Distributional Parameters:
+      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sigma   270.58   5598.05     0.99   845.19 1.00     2921     2014
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+</div>
+</section>
+<section id="prior-predictive-checks-plot" class="slide level2">
+<h2>Prior predictive checks: plot</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">set.seed</span>(my_seed)</span>
+<span id="cb12-2"><a></a>brm_3_pppreds <span class="ot">&lt;-</span> <span class="fu">posterior_predict</span>(brm_3_priorpp, <span class="at">newdata =</span> <span class="fu">tibble</span>(<span class="at">y =</span> <span class="dv">1</span>), <span class="at">ndraws =</span> <span class="fl">1e3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a></a>  <span class="fu">as.vector</span>()</span>
+<span id="cb12-4"><a></a></span>
+<span id="cb12-5"><a></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb12-6"><a></a>  <span class="fu">aes</span>(<span class="at">x =</span> brm_3_pppreds) <span class="sc">+</span></span>
+<span id="cb12-7"><a></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb12-8"><a></a>  <span class="fu">geom_rug</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="03_priors_files/figure-revealjs/brm-3-priorpp-plot-1.png" width="960" class="r-stretch"></section>
+<section id="prior-predictive-checks-plot-zoom-in" class="slide level2">
+<h2>Prior predictive checks: plot (zoom in)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb13-2"><a></a>  <span class="fu">aes</span>(<span class="at">x =</span> brm_3_pppreds) <span class="sc">+</span></span>
+<span id="cb13-3"><a></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb13-4"><a></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">1000</span>, <span class="dv">3500</span>) <span class="sc">+</span></span>
+<span id="cb13-5"><a></a>  <span class="fu">geom_rug</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="03_priors_files/figure-revealjs/brm-3-priorpp-plot-2-1.png" width="960" class="r-stretch"></section>
+<section id="run-the-model" class="slide level2">
+<h2>Run the model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>brm_3 <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb14-2"><a></a>  RT <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb14-3"><a></a>  <span class="at">family =</span> gaussian,</span>
+<span id="cb14-4"><a></a>  <span class="at">prior =</span> <span class="fu">c</span>(</span>
+<span id="cb14-5"><a></a>    <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">1500</span>, <span class="dv">500</span>), <span class="at">class =</span> Intercept),</span>
+<span id="cb14-6"><a></a>    <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">0</span>, <span class="dv">25</span>), <span class="at">class =</span> sigma)</span>
+<span id="cb14-7"><a></a>  ),</span>
+<span id="cb14-8"><a></a>  <span class="at">data =</span> mald,</span>
+<span id="cb14-9"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb14-10"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/brm_3"</span>,</span>
+<span id="cb14-11"><a></a>  <span class="at">seed =</span> my_seed</span>
+<span id="cb14-12"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-summary" class="slide level2">
+<h2>Model summary</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">summary</span>(brm_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: gaussian 
+  Links: mu = identity; sigma = identity 
+Formula: RT ~ 1 
+   Data: mald (Number of observations: 3000) 
+  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+         total post-warmup draws = 4000
+
+Regression Coefficients:
+          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+Intercept  1046.60      6.34  1034.32  1058.94 1.00     3563     2804
+
+Further Distributional Parameters:
+      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sigma   347.51      4.45   338.90   356.76 1.00     3678     2772
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+</div>
+</section>
+<section id="posterior-predictive-checks" class="slide level2">
+<h2>Posterior predictive checks</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">pp_check</span>(brm_3, <span class="at">ndraws =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="03_priors_files/figure-revealjs/brm-3-pp-1.png" width="960" class="r-stretch"></section>
+<section id="summary" class="slide level2">
+<h2>Summary</h2>
+<div class="box-note">
+<ul>
+<li><p>Priors are probability distributions that convey prior knowledge about the model parameters.</p></li>
+<li><p>Gaussian family</p>
+<ul>
+<li><span class="math inline">\(\mu\)</span>: Gaussian prior.</li>
+<li><span class="math inline">\(\sigma\)</span>: (Truncated) Cauchy prior (but also Student-t and others).</li>
+</ul></li>
+<li><p>Use the empirical rule to work out Gaussian priors and the <code>HDIinterval::inverseCDF()</code> function for other families.</p></li>
+<li><p>Prior predictive checks are fundamental and should be run during the study design, <strong>before</strong> data collection (or in any case without being informed by the data).</p></li>
 </ul>
 </div>
 

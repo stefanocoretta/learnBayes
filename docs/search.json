@@ -375,13 +375,90 @@
     "href": "slides/03_priors.html#priors-of-the-parameters",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Priors of the parameters",
-    "text": "Priors of the parameters\n$$ \\[\\begin{align}\n\\text{RT}_i \\sim & Gaussian(\\mu, \\sigma)\\\\\n\n\\mu \\sim & Gaussian(\\mu_1, \\sigma_1)\\\\\n\n\\sigma \\sim & Cauchy(0, \\sigma_2)\\\\\n\\end{align}\\] $$\n\n\nLet’s pick \\(\\mu_1\\) and \\(\\sigma_1\\).\nWe can use the empirical rule."
+    "text": "Priors of the parameters\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1, \\sigma_1)\\\\\n\\sigma & \\sim Cauchy(0, \\sigma_2)\\\\\n\\end{align}\n\\]\n\n\nLet’s pick \\(\\mu_1\\) and \\(\\sigma_1\\).\nWe can use the empirical rule."
   },
   {
     "objectID": "slides/03_priors.html#prior-for-mu",
     "href": "slides/03_priors.html#prior-for-mu",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Prior for \\(\\mu\\)",
-    "text": "Prior for \\(\\mu\\)\n\n\nAssume the mean will be between 500 and 1500 ms at 95% confidence."
+    "text": "Prior for \\(\\mu\\)\n\n\nLet’s say that the mean is between 500 and 2500 ms at 95% confidence.\nGet \\(\\mu_1\\)\n\nmean(c(500, 2500)) = 1500\n\nGet \\(\\sigma_2\\)\n\n(2500 - 1500) / 2 = 500\n\n\n\n\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1 = 1500, \\sigma_1 = 500)\\\\\n\\sigma & \\sim Cauchy(0, \\sigma_2)\\\\\n\\end{align}\n\\]"
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-for-mu-plot",
+    "href": "slides/03_priors.html#prior-for-mu-plot",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior for \\(\\mu\\): plot",
+    "text": "Prior for \\(\\mu\\): plot\n\nggplot(tibble(x = c(-100, 3100)), aes(x = x)) +\n  stat_function(fun = dnorm, geom = \"area\", fill = \"lightblue\",\n                args = list(1500, 500))"
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-for-sigma",
+    "href": "slides/03_priors.html#prior-for-sigma",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior for \\(\\sigma\\)",
+    "text": "Prior for \\(\\sigma\\)\n\n# library(HDInterval)\n\nround(inverseCDF(c(0.025, 0.5, 0.975), ptrunc, spec = \"cauchy\", a = 0, scale = 10))\n\n[1]   0  10 255\n\nround(inverseCDF(c(0.025, 0.5, 0.975), ptrunc, spec = \"cauchy\", a = 0, scale = 25))\n\n[1]   1  25 636\n\nround(inverseCDF(c(0.025, 0.5, 0.975), ptrunc, spec = \"cauchy\", a = 0, scale = 50))\n\n[1]    2   50 1273"
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-for-sigma-plot",
+    "href": "slides/03_priors.html#prior-for-sigma-plot",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior for \\(\\sigma\\): plot",
+    "text": "Prior for \\(\\sigma\\): plot\n\nggplot(tibble(x = c(0, 500)), aes(x = x)) +\n  stat_function(fun = dcauchy, geom = \"area\", fill = \"tomato4\",\n                args = list(0, 25))"
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-predictive-checks-sample-prior",
+    "href": "slides/03_priors.html#prior-predictive-checks-sample-prior",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior predictive checks: sample prior",
+    "text": "Prior predictive checks: sample prior\n\nbrm_3_priorpp &lt;- brm(\n  RT ~ 1,\n  family = gaussian,\n  prior = c(\n    prior(normal(1500, 500), class = Intercept),\n    prior(cauchy(0, 25), class = sigma)\n  ),\n  data = mald,\n  sample_prior = \"only\",\n  cores = 4,\n  file = \"data/cache/brm_3_priorpp\",\n  seed = my_seed\n)"
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-predictive-checks-sample-prior-1",
+    "href": "slides/03_priors.html#prior-predictive-checks-sample-prior-1",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior predictive checks: sample prior",
+    "text": "Prior predictive checks: sample prior\n\nsummary(brm_3_priorpp)\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 1 \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept  1505.95    489.24   536.86  2446.34 1.00     2753     2363\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   270.58   5598.05     0.99   845.19 1.00     2921     2014\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-predictive-checks-plot",
+    "href": "slides/03_priors.html#prior-predictive-checks-plot",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior predictive checks: plot",
+    "text": "Prior predictive checks: plot\n\nset.seed(my_seed)\nbrm_3_pppreds &lt;- posterior_predict(brm_3_priorpp, newdata = tibble(y = 1), ndraws = 1e3) |&gt;\n  as.vector()\n\nggplot() +\n  aes(x = brm_3_pppreds) +\n  geom_density(fill = \"forestgreen\") +\n  geom_rug()"
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-predictive-checks-plot-zoom-in",
+    "href": "slides/03_priors.html#prior-predictive-checks-plot-zoom-in",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior predictive checks: plot (zoom in)",
+    "text": "Prior predictive checks: plot (zoom in)\n\nggplot() +\n  aes(x = brm_3_pppreds) +\n  geom_density(fill = \"forestgreen\") +\n  xlim(-1000, 3500) +\n  geom_rug()"
+  },
+  {
+    "objectID": "slides/03_priors.html#run-the-model",
+    "href": "slides/03_priors.html#run-the-model",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Run the model",
+    "text": "Run the model\n\nbrm_3 &lt;- brm(\n  RT ~ 1,\n  family = gaussian,\n  prior = c(\n    prior(normal(1500, 500), class = Intercept),\n    prior(cauchy(0, 25), class = sigma)\n  ),\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_3\",\n  seed = my_seed\n)"
+  },
+  {
+    "objectID": "slides/03_priors.html#model-summary",
+    "href": "slides/03_priors.html#model-summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Model summary",
+    "text": "Model summary\n\nsummary(brm_3)\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 1 \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept  1046.60      6.34  1034.32  1058.94 1.00     3563     2804\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   347.51      4.45   338.90   356.76 1.00     3678     2772\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/03_priors.html#posterior-predictive-checks",
+    "href": "slides/03_priors.html#posterior-predictive-checks",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Posterior predictive checks",
+    "text": "Posterior predictive checks\n\npp_check(brm_3, ndraws = 100)"
+  },
+  {
+    "objectID": "slides/03_priors.html#summary",
+    "href": "slides/03_priors.html#summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Summary",
+    "text": "Summary\n\n\nPriors are probability distributions that convey prior knowledge about the model parameters.\nGaussian family\n\n\\(\\mu\\): Gaussian prior.\n\\(\\sigma\\): (Truncated) Cauchy prior (but also Student-t and others).\n\nUse the empirical rule to work out Gaussian priors and the HDIinterval::inverseCDF() function for other families.\nPrior predictive checks are fundamental and should be run during the study design, before data collection (or in any case without being informed by the data)."
   }
 ]
