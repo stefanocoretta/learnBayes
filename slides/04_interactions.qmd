@@ -1,0 +1,177 @@
+---
+title: "Introduction to Bayesian Linear Models"
+subtitle: "04 - Interactions"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+library(googlesheets4)
+gs4_deauth()
+library(HDInterval)
+library(truncdist)
+library(marginaleffects)
+my_seed <- 0745
+```
+
+```{r}
+#| label: mald
+#| echo: false
+
+mald <- readRDS("./data/mald.rds")
+```
+
+## Interactions: the traditional way
+
+```{r}
+#| label: brm-4
+
+brm_4 <- brm(
+  # RT ~ IsWord + PhoneLev + IsWord:PhonLev
+  RT ~ IsWord * PhonLev,
+  family = gaussian,
+  data = mald,
+  cores = 4,
+  file = "data/cache/brm_4",
+  seed = my_seed
+)
+```
+
+
+## Interactions: the traditional way (model summary)
+
+```{r}
+#| label: brm-4-summ
+
+brm_4
+```
+
+## Interactions: no intercept
+
+```{r}
+#| label: brm-4a
+
+brm_4a <- brm(
+  RT ~ 0 + IsWord + IsWord:PhonLev,
+  family = gaussian,
+  data = mald,
+  cores = 4,
+  file = "data/cache/brm_4a",
+  seed = my_seed
+)
+```
+
+
+## Interactions: no intercept (model summary)
+
+```{r}
+#| label: brm-4a-summ
+
+brm_4a
+```
+
+## Conditional posterior probabilities
+
+```{r}
+#| label: brm-4a-cond
+
+conditional_effects(brm_4a, "PhonLev:IsWord")
+```
+
+## Conditional posterior probabilities: spaghetti
+
+```{r}
+#| label: brm-4a-cond-2
+
+brm_4a_condp <- conditional_effects(brm_4a, "PhonLev:IsWord", spaghetti = TRUE, ndraws = 100)
+plot(brm_4a_condp, plot = FALSE, spaghetti_args = list(linewidth = 2))[[1]] +
+  theme(
+    plot.background = element_rect(fill = "black"),
+    text = element_text(colour = "white")
+  )
+```
+
+## Conditional posteriors at specific values
+
+```{r}
+#| label: brm-4a-cond-3
+conds <- tibble(
+  PhonLev = c(7.5, 10),
+  cond__ = c("PhonLev = 7.5", "PhonLev = 10")
+)
+
+conditional_effects(brm_4a, "IsWord", conditions = conds)
+```
+
+## Comparisons (aka contrasts) at specific values
+
+```{r}
+#| label: brm-4a-comp
+
+# library(marginaleffects)
+
+comparisons(brm_4a, variables = "IsWord", newdata = datagrid(PhonLev = c(7.5, 10, 12)))
+```
+
+## Comparisons (aka contrasts): 70% CrI
+
+```{r}
+#| label: brm-4a-comp-70
+
+comparisons(brm_4a, variables = "IsWord", newdata = datagrid(PhonLev = c(7.5, 10, 12)), conf_level = 0.7)
+```
+
+## Comparisons (aka contrasts) along `PhonLev`
+
+```{r}
+#| label: brm-4a-comp-phonlev
+
+plot_comparisons(brm_4a, variables = "IsWord", condition = "PhonLev", conf_level = 0.7)
+```
+
+
+
+## Interactions: priors
+
+```{r}
+#| label: brm-4-priors
+
+get_prior(
+  RT ~ IsWord * PhonLev,
+  family = gaussian,
+  data = mald
+)
+```
+
+## Interactions: priors with no intercept
+
+```{r}
+#| label: brm-4-priors-2
+
+get_prior(
+  RT ~ 0 + IsWord + IsWord:PhonLev,
+  family = gaussian,
+  data = mald
+)
+```
+
+
