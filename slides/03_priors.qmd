@@ -260,7 +260,7 @@ $$
 \begin{align}
 \text{RT}_i & \sim Gaussian(\mu, \sigma)\\
 \mu & \sim Gaussian(\mu_1, \sigma_1)\\
-\sigma & \sim Cauchy(0, \sigma_2)\\
+\sigma & \sim Cauchy_{+}(0, \sigma_2)\\
 \end{align}
 $$
 
@@ -281,7 +281,7 @@ We can use the empirical rule.
 
     -   `mean(c(500, 2500))` = 1500
 
--   Get $\sigma_2$
+-   Get $\sigma_1$
 
     -   `(2500 - 1500) / 2` = 500
 :::
@@ -292,7 +292,7 @@ $$
 \begin{align}
 \text{RT}_i & \sim Gaussian(\mu, \sigma)\\
 \mu & \sim Gaussian(\mu_1 = 1500, \sigma_1 = 500)\\
-\sigma & \sim Cauchy(0, \sigma_2)\\
+\sigma & \sim Cauchy_{+}(0, \sigma_2)\\
 \end{align}
 $$
 
