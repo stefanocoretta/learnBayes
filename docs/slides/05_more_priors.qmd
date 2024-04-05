@@ -1,0 +1,236 @@
+---
+title: "Introduction to Bayesian Linear Models"
+subtitle: "05 - More on priors"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+library(HDInterval)
+library(truncdist)
+library(marginaleffects)
+my_seed <- 0745
+```
+
+```{r}
+#| label: mald
+#| echo: false
+
+mald <- readRDS("./data/mald.rds")
+```
+
+## Interactions: priors
+
+```{r}
+#| label: brm-4-priors
+
+get_prior(
+  RT ~ IsWord * PhonLev,
+  family = lognormal,
+  data = mald
+)
+```
+
+## Interactions: priors with no intercept
+
+```{r}
+#| label: brm-4-priors-2
+
+get_prior(
+  RT ~ 0 + IsWord + IsWord:PhonLev,
+  family = lognormal,
+  data = mald
+)
+```
+
+## The model and the priors
+
+$$
+\begin{align}
+\text{RT_i} & \sim LN(\mu_i, \sigma) \\
+log(\mu_i) & = \beta_{1_{IW[i]}} + \beta_{2_{IW[i]}} \cdot \text{PhonLev}_i \\
+\beta_{1_{IW[T]}} & \sim Gaussian(\mu_1, \sigma_1) \\
+\beta_{1_{IW[F]}} & \sim Gaussian(\mu_2, \sigma_2) \\
+\beta_{2_{IW[T]}} & \sim Gaussian(\mu_3, \sigma_3) \\
+\beta_{2_{IW[F]}} & \sim Gaussian(\mu_4, \sigma_4) \\
+\sigma & \sim Cauchy_{+}(0, \sigma_5)
+\end{align}
+$$
+
+## Centring numeric predictors
+
+::: box-note
+
+- `PhonLev` is numeric, so for the $\beta_{1_{IW[i]}}$ priors, we need to think about the mean log-RT when `PhonLev` is 0.
+
+- Let's centre `PhonLev`, so that we need to think about the mean log_RT when `PhonLev` is at its mean.
+
+:::
+
+. . .
+
+```{r}
+#| label: mald-centr
+
+mean(mald$PhonLev)
+
+mald <- mald |> 
+  mutate(PhonLev_c = PhonLev - mean(PhonLev))
+```
+
+## The model (revised)
+
+$$
+\begin{align}
+\text{RT_i} & \sim LN(\mu_i, \sigma) \\
+log(\mu_i) & = \beta_{1_{IW[i]}} + \beta_{2_{IW[i]}} \cdot (\text{PhonLev}_i - mean(\text{PhonLev})) \\
+\end{align}
+$$
+## Prior for $\beta_i$
+
+::: box-note
+-   Let's say again that the mean RT is between 500 and 2500 ms at 95% confidence. Now let's log these.
+  
+  - In logs: `log(500) = 6.2` and `log(2500) = 7.8`
+
+-   Get $\mu_1$ and $\mu_2$
+
+    -   `mean(c(6.2, 7.8))` = 7
+
+-   Get $\sigma_1$ and $\sigma_2$
+
+    -   `(7.8 - 7) / 2` = 0.4 (let's round to 0.5)
+:::
+
+. . .
+
+$$
+\begin{align}
+\text{RT_i} & \sim LN(\mu_i, \sigma) \\
+log(\mu_i) & = \beta_{1_{IW[i]}} + \beta_{2_{IW[i]}} \cdot (\text{PhonLev}_i - mean(\text{PhonLev})) \\
+\beta_{1_{IW[T]}} & \sim Gaussian(7, 0.5) \\
+\beta_{1_{IW[F]}} & \sim Gaussian(7, 0.5) \\
+\end{align}
+$$
+
+## Prior for $\beta_2$
+
+::: box-note
+
+- Let's assume no expectation about the effect of `PhonLev`, apart from that can be negative or positive or null, and not very large.
+
+- $Gaussian(0, 0.1)$.
+
+  - This means we are 95% "confident" that the effect of `PhonLev` on log-RTs is between -0.2 and +0.2 for each unit increase of `PhonLev`.
+  
+  - `800 * exp(0.2) = 800 * 1.22 = 976` i.e. a (`976 - 800 =`) 176 ms increase per unit increase. (Also `800 * (1.22 - 1)`).
+
+:::
+
+. . .
+
+$$
+\begin{align}
+\text{RT_i} & \sim LN(\mu_i, \sigma) \\
+log(\mu_i) & = \beta_{1_{IW[i]}} + \beta_{2_{IW[i]}} \cdot (\text{PhonLev}_i - mean(\text{PhonLev})) \\
+\beta_{1_{IW[T]}} & \sim Gaussian(7, 0.5) \\
+\beta_{1_{IW[F]}} & \sim Gaussian(7, 0.5) \\
+\beta_{2_{IW[T]}} & \sim Gaussian(0, 0.1) \\
+\beta_{2_{IW[F]}} & \sim Gaussian(0, 0.1) \\
+\end{align}
+$$
+
+## Prior predictive checks
+
+```{r}
+#| label: brm-4b-priorpp
+
+brm_4b_priors <- c(
+  prior(normal(7, 0.5), class = b, coef = IsWordFALSE),
+  prior(normal(7, 0.5), class = b, coef = IsWordTRUE),
+  prior(normal(0, 0.1), class = b, coef = `IsWordFALSE:PhonLev_c`),
+  prior(normal(0, 0.1), class = b, coef = `IsWordTRUE:PhonLev_c`),
+  prior(cauchy(0, 0.02), class = sigma)
+)
+
+brm_4b_priorpp <- brm(
+  RT ~ 0 + IsWord + IsWord:PhonLev_c,
+  family = lognormal,
+  prior = brm_4b_priors,
+  data = mald,
+  sample_prior = "only",
+  cores = 4,
+  file = "data/cache/brm_4b_priorpp",
+  seed = my_seed
+)
+```
+
+## Prior predictive checks plot
+
+```{r}
+#| label: brm-4b-priorpp-cond
+
+conditional_effects(brm_4b_priorpp, "PhonLev_c:IsWord")
+```
+
+## Run the model
+
+```{r}
+#| label: brm-4b
+
+brm_4b <- brm(
+  RT ~ 0 + IsWord + IsWord:PhonLev_c,
+  family = lognormal,
+  prior = brm_4b_priors,
+  data = mald,
+  cores = 4,
+  file = "data/cache/brm_4b",
+  seed = my_seed
+)
+```
+
+## Model summary
+
+```{r}
+#| label: brm-4b-summ
+
+brm_4b
+```
+
+
+## Posterior predictive checks
+
+```{r}
+#| label: brm-4b-pp
+
+pp_check(brm_4b, ndraws = 50)
+```
+
+
+## Conditional posterior probabilies
+
+```{r}
+#| label: brm-4b-cond
+
+conditional_effects(brm_4b, "PhonLev_c:IsWord")
+```
+

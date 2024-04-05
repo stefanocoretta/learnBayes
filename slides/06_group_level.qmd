@@ -1,0 +1,196 @@
+---
+title: "Introduction to Bayesian Linear Models"
+subtitle: "05 - More on priors"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+library(HDInterval)
+library(truncdist)
+library(marginaleffects)
+my_seed <- 0745
+```
+
+```{r}
+#| label: mald
+#| echo: false
+
+mald <- readRDS("./data/mald.rds") |> 
+  mutate(PhonLev_c = PhonLev - mean(PhonLev))
+```
+
+## Group-level effects
+
+::: box-note
+
+**Group-level effects** are the Bayesian equivalent of frequentist random effects.
+
+As with the population-level effects, the interpretation of the group-level effects is the same as that of the frequentist random effects, but you have a full (posterior) probability distribution instead of a point estimate.
+
+:::
+
+## Group-level priors
+
+```{r}
+get_prior(
+  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),
+  family = lognormal,
+  data = mald
+)
+```
+
+. . .
+
+```{r}
+brm_5_priors <- c(
+  prior(normal(7, 0.5), class = b, coef = IsWordFALSE),
+  prior(normal(7, 0.5), class = b, coef = IsWordTRUE),
+  prior(normal(0, 0.1), class = b, coef = `IsWordFALSE:PhonLev_c`),
+  prior(normal(0, 0.1), class = b, coef = `IsWordTRUE:PhonLev_c`),
+  prior(cauchy(0, 0.02), class = sigma),
+  prior(cauchy(0, 0.01), class = sd),
+  prior(lkj(2), class = cor)
+)
+```
+
+## Prior predictive checks
+
+```{r}
+brm_5_priorpp <- brm(
+  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),
+  family = lognormal,
+  prior = brm_5_priors,
+  data = mald,
+  sample_prior = "only",
+  cores = 4,
+  file = "data/cache/brm_5_priorpp",
+  seed = my_seed
+)
+```
+
+## Prior predictive checks: plot
+
+```{r}
+conditional_effects(brm_5_priorpp, "PhonLev_c:IsWord")
+```
+
+## Run the model
+
+```{r}
+#| label: brm-5
+
+brm_5 <- brm(
+  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),
+  family = lognormal,
+  prior = brm_5_priors,
+  data = mald,
+  cores = 4,
+  file = "data/cache/brm_5",
+  seed = my_seed
+)
+```
+
+## Model summary
+
+```{r}
+#| label: brm-5-summ
+
+brm_5
+```
+
+
+## Conditional posterior probability distributions
+
+```{r}
+#| label: brm-5-cond
+
+conditional_effects(brm_5, "PhonLev_c:IsWord")
+```
+
+## Getting group-level adjustments
+
+```{r}
+#| label: brm-5-shunk
+
+brm_5_shrunk <- brm_5 |>
+  spread_draws(r_Subject[Subject,term]) |>
+  mean_qi() |>
+  mutate(source = "shrunk")
+
+gmean_RT <- mean(mald$RT_log, na.rm = TRUE)
+
+original <- mald |>
+  group_by(Subject) |>
+  summarise(
+    mean_RT = mean(RT_log) ,
+    sd_RT = sd(RT_log),
+    lower = mean_RT - 1.96 * sd_RT,
+    upper = mean_RT + 1.96 * sd_RT
+  )
+```
+
+## Plotting group-level adjustments for `IsWordTRUE`.
+
+```{r}
+#| label: brm-1-shrunk-iwtrue
+
+brm_5_shrunk |>
+  filter(term %in% c("IsWordTRUE")) |>
+  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(size = 2) +
+  geom_errorbarh(aes(xmin = .lower, xmax = .upper)) +
+  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = "red", size = 2, alpha = 0.6) +
+  facet_grid(cols = vars(term)) +
+  labs(
+    title = "By-subject conditional mode for Intercept",
+    x = "Conditional mode",
+    y = "Subject",
+    caption = str_wrap("The red dots mark the by-subject mean RT from the raw data.")
+  ) +
+  xlim(-.4, .4)
+```
+
+## Plotting group-level adjustments for `IsWordTRUE`.
+
+```{r}
+#| label: brm-1-shrunk-iwfalse
+
+brm_5_shrunk |>
+  filter(term %in% c("IsWordFALSE")) |>
+  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(size = 2) +
+  geom_errorbarh(aes(xmin = .lower, xmax = .upper)) +
+  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = "red", size = 2, alpha = 0.6) +
+  facet_grid(cols = vars(term)) +
+  labs(
+    title = "By-subject conditional mode for Intercept",
+    x = "Conditional mode",
+    y = "Subject",
+    caption = str_wrap("The red dots mark the by-subject mean RT from the raw data.")
+  ) +
+  xlim(-.4, .4)
+```
+
+

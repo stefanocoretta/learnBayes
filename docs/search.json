@@ -544,5 +544,75 @@
     "title": "Introduction to Bayesian Linear Models",
     "section": "Interactions: priors with no intercept",
     "text": "Interactions: priors with no intercept\n\nget_prior(\n  RT ~ 0 + IsWord + IsWord:PhonLev,\n  family = gaussian,\n  data = mald\n)\n\n                  prior class                coef group resp dpar nlpar lb ub\n                 (flat)     b                                                \n                 (flat)     b         IsWordFALSE                            \n                 (flat)     b IsWordFALSE:PhonLev                            \n                 (flat)     b          IsWordTRUE                            \n                 (flat)     b  IsWordTRUE:PhonLev                            \n student_t(3, 0, 220.9) sigma                                            0   \n       source\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default"
+  },
+  {
+    "objectID": "slides/06_group_level.html#group-level-effects",
+    "href": "slides/06_group_level.html#group-level-effects",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Group-level effects",
+    "text": "Group-level effects\n\nGroup-level effects are the Bayesian equivalent of frequentist random effects.\nAs with the population-level effects, the interpretation of the group-level effects is the same as that of the frequentist random effects, but you have a full (posterior) probability distribution instead of a point estimate."
+  },
+  {
+    "objectID": "slides/06_group_level.html#group-level-priors",
+    "href": "slides/06_group_level.html#group-level-priors",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Group-level priors",
+    "text": "Group-level priors\n\nget_prior(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  data = mald\n)\n\n                prior class                  coef   group resp dpar nlpar lb ub\n               (flat)     b                                                    \n               (flat)     b           IsWordFALSE                              \n               (flat)     b IsWordFALSE:PhonLev_c                              \n               (flat)     b            IsWordTRUE                              \n               (flat)     b  IsWordTRUE:PhonLev_c                              \n               lkj(1)   cor                                                    \n               lkj(1)   cor                       Subject                      \n student_t(3, 0, 2.5)    sd                                                0   \n student_t(3, 0, 2.5)    sd                       Subject                  0   \n student_t(3, 0, 2.5)    sd           IsWordFALSE Subject                  0   \n student_t(3, 0, 2.5)    sd IsWordFALSE:PhonLev_c Subject                  0   \n student_t(3, 0, 2.5)    sd            IsWordTRUE Subject                  0   \n student_t(3, 0, 2.5)    sd  IsWordTRUE:PhonLev_c Subject                  0   \n student_t(3, 0, 2.5) sigma                                                0   \n       source\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default\n (vectorized)\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default\n\n\n\n\nbrm_5_priors &lt;- c(\n  prior(normal(7, 0.5), class = b, coef = IsWordFALSE),\n  prior(normal(7, 0.5), class = b, coef = IsWordTRUE),\n  prior(normal(0, 0.1), class = b, coef = `IsWordFALSE:PhonLev_c`),\n  prior(normal(0, 0.1), class = b, coef = `IsWordTRUE:PhonLev_c`),\n  prior(cauchy(0, 0.02), class = sigma),\n  prior(cauchy(0, 0.01), class = sd),\n  prior(lkj(2), class = cor)\n)"
+  },
+  {
+    "objectID": "slides/06_group_level.html#prior-predictive-checks",
+    "href": "slides/06_group_level.html#prior-predictive-checks",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior predictive checks",
+    "text": "Prior predictive checks\n\nbrm_5_priorpp &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  prior = brm_5_priors,\n  data = mald,\n  sample_prior = \"only\",\n  cores = 4,\n  file = \"data/cache/brm_5_priorpp\",\n  seed = my_seed\n)"
+  },
+  {
+    "objectID": "slides/06_group_level.html#prior-predictive-checks-plot",
+    "href": "slides/06_group_level.html#prior-predictive-checks-plot",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior predictive checks: plot",
+    "text": "Prior predictive checks: plot\n\nconditional_effects(brm_5_priorpp, \"PhonLev_c:IsWord\")"
+  },
+  {
+    "objectID": "slides/06_group_level.html#run-the-model",
+    "href": "slides/06_group_level.html#run-the-model",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Run the model",
+    "text": "Run the model\n\nbrm_5 &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  prior = brm_5_priors,\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_5\",\n  seed = my_seed\n)"
+  },
+  {
+    "objectID": "slides/06_group_level.html#model-summary",
+    "href": "slides/06_group_level.html#model-summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Model summary",
+    "text": "Model summary\n\nbrm_5\n\n Family: lognormal \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject) \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~Subject (Number of levels: 30) \n                                                Estimate Est.Error l-95% CI\nsd(IsWordTRUE)                                      0.07      0.01     0.05\nsd(IsWordFALSE)                                     0.11      0.02     0.08\nsd(IsWordTRUE:PhonLev_c)                            0.01      0.00     0.00\nsd(IsWordFALSE:PhonLev_c)                           0.01      0.01     0.00\ncor(IsWordTRUE,IsWordFALSE)                         0.56      0.14     0.25\ncor(IsWordTRUE,IsWordTRUE:PhonLev_c)               -0.04      0.37    -0.72\ncor(IsWordFALSE,IsWordTRUE:PhonLev_c)              -0.06      0.37    -0.73\ncor(IsWordTRUE,IsWordFALSE:PhonLev_c)              -0.12      0.34    -0.73\ncor(IsWordFALSE,IsWordFALSE:PhonLev_c)             -0.29      0.35    -0.83\ncor(IsWordTRUE:PhonLev_c,IsWordFALSE:PhonLev_c)     0.04      0.38    -0.68\n                                                u-95% CI Rhat Bulk_ESS Tail_ESS\nsd(IsWordTRUE)                                      0.09 1.00     1672     2460\nsd(IsWordFALSE)                                     0.14 1.00     1453     2297\nsd(IsWordTRUE:PhonLev_c)                            0.02 1.00     2433     1442\nsd(IsWordFALSE:PhonLev_c)                           0.02 1.00     1595     1446\ncor(IsWordTRUE,IsWordFALSE)                         0.80 1.00     1199     1989\ncor(IsWordTRUE,IsWordTRUE:PhonLev_c)                0.69 1.00     4944     2715\ncor(IsWordFALSE,IsWordTRUE:PhonLev_c)               0.65 1.00     4708     3065\ncor(IsWordTRUE,IsWordFALSE:PhonLev_c)               0.59 1.00     4670     2622\ncor(IsWordFALSE,IsWordFALSE:PhonLev_c)              0.50 1.00     3757     2670\ncor(IsWordTRUE:PhonLev_c,IsWordFALSE:PhonLev_c)     0.73 1.00     3205     2757\n\nRegression Coefficients:\n                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS\nIsWordTRUE                6.85      0.01     6.82     6.88 1.00     1246\nIsWordFALSE               6.97      0.02     6.93     7.01 1.00     1552\nIsWordTRUE:PhonLev_c      0.03      0.01     0.02     0.04 1.00     5067\nIsWordFALSE:PhonLev_c     0.02      0.01     0.01     0.03 1.00     6071\n                      Tail_ESS\nIsWordTRUE                1997\nIsWordFALSE               2216\nIsWordTRUE:PhonLev_c      2707\nIsWordFALSE:PhonLev_c     2723\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.26      0.00     0.26     0.27 1.00     5289     3176\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/06_group_level.html#conditional-posterior-probability-distributions",
+    "href": "slides/06_group_level.html#conditional-posterior-probability-distributions",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Conditional posterior probability distributions",
+    "text": "Conditional posterior probability distributions\n\nconditional_effects(brm_5, \"PhonLev_c:IsWord\")"
+  },
+  {
+    "objectID": "slides/06_group_level.html#getting-group-level-adjustments",
+    "href": "slides/06_group_level.html#getting-group-level-adjustments",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Getting group-level adjustments",
+    "text": "Getting group-level adjustments\n\nbrm_5_shrunk &lt;- brm_5 |&gt;\n  spread_draws(r_Subject[Subject,term]) |&gt;\n  mean_qi() |&gt;\n  mutate(source = \"shrunk\")\n\ngmean_RT &lt;- mean(mald$RT_log, na.rm = TRUE)\n\noriginal &lt;- mald |&gt;\n  group_by(Subject) |&gt;\n  summarise(\n    mean_RT = mean(RT_log) ,\n    sd_RT = sd(RT_log),\n    lower = mean_RT - 1.96 * sd_RT,\n    upper = mean_RT + 1.96 * sd_RT\n  )"
+  },
+  {
+    "objectID": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.",
+    "href": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Plotting group-level adjustments for IsWordTRUE.",
+    "text": "Plotting group-level adjustments for IsWordTRUE.\n\nbrm_5_shrunk |&gt;\n  filter(term %in% c(\"IsWordTRUE\")) |&gt;\n  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  geom_point(size = 2) +\n  geom_errorbarh(aes(xmin = .lower, xmax = .upper)) +\n  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = \"red\", size = 2, alpha = 0.6) +\n  facet_grid(cols = vars(term)) +\n  labs(\n    title = \"By-subject conditional mode for Intercept\",\n    x = \"Conditional mode\",\n    y = \"Subject\",\n    caption = str_wrap(\"The red dots mark the by-subject mean RT from the raw data.\")\n  ) +\n  xlim(-.4, .4)"
+  },
+  {
+    "objectID": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.-1",
+    "href": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.-1",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Plotting group-level adjustments for IsWordTRUE.",
+    "text": "Plotting group-level adjustments for IsWordTRUE.\n\nbrm_5_shrunk |&gt;\n  filter(term %in% c(\"IsWordFALSE\")) |&gt;\n  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  geom_point(size = 2) +\n  geom_errorbarh(aes(xmin = .lower, xmax = .upper)) +\n  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = \"red\", size = 2, alpha = 0.6) +\n  facet_grid(cols = vars(term)) +\n  labs(\n    title = \"By-subject conditional mode for Intercept\",\n    x = \"Conditional mode\",\n    y = \"Subject\",\n    caption = str_wrap(\"The red dots mark the by-subject mean RT from the raw data.\")\n  ) +\n  xlim(-.4, .4)"
   }
 ]

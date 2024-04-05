@@ -25,8 +25,6 @@ library(ggeffects)
 library(brms)
 library(tidybayes)
 library(bayesplot)
-library(googlesheets4)
-gs4_deauth()
 library(HDInterval)
 library(truncdist)
 library(marginaleffects)
@@ -149,29 +147,11 @@ plot_comparisons(brm_4a, variables = "IsWord", condition = "PhonLev", conf_level
 ```
 
 
-
-## Interactions: priors
-
-```{r}
-#| label: brm-4-priors
-
-get_prior(
-  RT ~ IsWord * PhonLev,
-  family = gaussian,
-  data = mald
-)
-```
-
-## Interactions: priors with no intercept
+## Posterior predictive checks
 
 ```{r}
-#| label: brm-4-priors-2
+#| label: brm-4a-pp
 
-get_prior(
-  RT ~ 0 + IsWord + IsWord:PhonLev,
-  family = gaussian,
-  data = mald
-)
+pp_check(brm_4a, ndraws = 100)
 ```
-
 
