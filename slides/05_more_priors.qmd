@@ -167,13 +167,13 @@ $$
 brm_4b_priors <- c(
   prior(normal(7, 0.5), class = b, coef = IsWordFALSE),
   prior(normal(7, 0.5), class = b, coef = IsWordTRUE),
-  prior(normal(0, 0.1), class = b, coef = `IsWordFALSE:PhonLev`),
-  prior(normal(0, 0.1), class = b, coef = `IsWordTRUE:PhonLev`),
+  prior(normal(0, 0.1), class = b, coef = `IsWordFALSE:PhonLev_c`),
+  prior(normal(0, 0.1), class = b, coef = `IsWordTRUE:PhonLev_c`),
   prior(cauchy(0, 0.02), class = sigma)
 )
 
 brm_4b_priorpp <- brm(
-  RT ~ 0 + IsWord + IsWord:PhonLev,
+  RT ~ 0 + IsWord + IsWord:PhonLev_c,
   family = lognormal,
   prior = brm_4b_priors,
   data = mald,
@@ -184,13 +184,21 @@ brm_4b_priorpp <- brm(
 )
 ```
 
-```{r}
-conditional_effects(brm_4b_priorpp, "PhonLev:IsWord")
-```
+## Prior predictive checks plot
 
 ```{r}
+#| label: brm-4b-priorpp-cond
+
+conditional_effects(brm_4b_priorpp, "PhonLev_c:IsWord")
+```
+
+## Run the model
+
+```{r}
+#| label: brm-4b
+
 brm_4b <- brm(
-  RT ~ 0 + IsWord + IsWord:PhonLev,
+  RT ~ 0 + IsWord + IsWord:PhonLev_c,
   family = lognormal,
   prior = brm_4b_priors,
   data = mald,
@@ -200,7 +208,29 @@ brm_4b <- brm(
 )
 ```
 
+## Model summary
+
 ```{r}
-conditional_effects(brm_4b, "PhonLev:IsWord")
+#| label: brm-4b-summ
+
+brm_4b
+```
+
+
+## Posterior predictive checks
+
+```{r}
+#| label: brm-4b-pp
+
+pp_check(brm_4b, ndraws = 50)
+```
+
+
+## Conditional posterior probabilies
+
+```{r}
+#| label: brm-4b-cond
+
+conditional_effects(brm_4b, "PhonLev_c:IsWord")
 ```
 
