@@ -677,5 +677,12 @@
     "title": "Introduction to Bayesian Linear Models",
     "section": "Conditional posterior probabilies",
     "text": "Conditional posterior probabilies\n\nconditional_effects(brm_4b, \"PhonLev_c:IsWord\")"
+  },
+  {
+    "objectID": "slides/01_basics.html#download-the-workshop-materials",
+    "href": "slides/01_basics.html#download-the-workshop-materials",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Download the workshop materials",
+    "text": "Download the workshop materials\n\n\nDownload the workshop repository from: https://github.com/stefanocoretta/learnBayes.\nIf you don’t use renv, delete the .Rprofile file before opening the RStudio project."
   }
 ]

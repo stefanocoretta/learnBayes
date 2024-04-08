@@ -79,6 +79,14 @@ Within the **Bayesian framework**, the main analysis output is:
 -   **Probability distributions** of predictors' parameters.
 :::
 
+## Download the workshop materials
+
+::: box-error
+- Download the workshop repository from: <https://github.com/stefanocoretta/learnBayes>.
+
+- If you don't use [renv](https://rstudio.github.io/renv/index.html), delete the `.Rprofile` file before opening the RStudio project.
+:::
+
 ## An example: MALD
 
 ::: box-tip
