@@ -224,11 +224,18 @@
     "text": "Troubleshooting\nIf you are having issues with installation, the best place to ask for help are:\n\nThe Stan Forums: https://discourse.mc-stan.org\nStackOverflow: https://stackoverflow.com\nAny search engine."
   },
   {
+    "objectID": "setup.html#download-the-materials",
+    "href": "setup.html#download-the-materials",
+    "title": "Pre-workshop set-up",
+    "section": "Download the materials",
+    "text": "Download the materials\nAll the materials of the workshop (data, code, slides) are in the workshop repository on GitHub.\nYou have two options:\n\nYou can fork the repository and clone it locally if you use git/GitHub.\nYou can simply download the repo by clicking on the Code button &gt; Download ZIP on GitHub.\n\nThe repo is an RStudio project. Before opening the project (by double-clicking on the learnBayes.Rproj file), you should delete the .Rprofile file if you don’t use renv (renv is an R environment manager) to disable renv."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Learn Bayesian Linear Models in R",
     "section": "",
-    "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook).\n\n\nDownload the materials\nAll the materials of the workshop (data, code, slides) are in the workshop repository on GitHub.\nYou have two options:\n\nYou can fork the repository and clone it locally if you use git/GitHub.\nYou can simply download the repo by clicking on the Code button &gt; Download ZIP on GitHub.\n\nThe repo is an RStudio project. Before opening the project (by double-clicking on the learnBayes.Rproj file), you should delete the .Rprofile file if you don’t use renv (renv is an R environment manager) to disable renv."
+    "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook).\n\n\n\n\n\n\n\nSoftware and materials\n\n\n\nPlease, check out the Setup page for instructions on how to set-up your laptop and how to download the workshop’s materials."
   },
   {
     "objectID": "slides/01_basics.html#section",

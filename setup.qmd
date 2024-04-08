@@ -7,6 +7,8 @@ Please, follow these instructions carefully to get ready **at least one day befo
 
 ::: callout-important
 Installing the necessary software takes a lot of space on your computer and can take a long of time (1-3 hours depending on the system).
+
+If you are using an externally-managed computer and you wish to just download the materials, check the [section](setup.qmd#download-the-materials) below.
 :::
 
 ## Pre-requisites
@@ -86,3 +88,15 @@ If you are having issues with installation, the best place to ask for help are:
 -   StackOverflow: <https://stackoverflow.com>
 
 -   Any search engine.
+
+## Download the materials
+
+All the materials of the workshop (data, code, slides) are in the workshop [repository](https://github.com/stefanocoretta/learnBayes) on GitHub.
+
+You have two options:
+
+1. You can fork the repository and clone it locally if you use git/GitHub.
+
+2. You can simply download the repo by clicking on the `Code` button > `Download ZIP` on GitHub.
+
+The repo is an RStudio project. Before opening the project (by double-clicking on the `learnBayes.Rproj` file), you should delete the `.Rprofile` file if you don't use [renv](https://rstudio.github.io/renv/index.html) (renv is an R environment manager) to disable renv.
