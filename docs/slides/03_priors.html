@@ -9,7 +9,7 @@
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-contrib/tachyonsextra-0.0.1/tachyonsextra.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.552">
+  <meta name="generator" content="quarto-1.4.553">
 
   <meta name="author" content="Stefano Coretta">
   <title>learnBayes - Introduction to Bayesian Linear Models</title>
@@ -497,7 +497,7 @@ Stefano Coretta
 \begin{align}
 \text{RT}_i &amp; \sim Gaussian(\mu, \sigma)\\
 \mu &amp; \sim Gaussian(\mu_1, \sigma_1)\\
-\sigma &amp; \sim Cauchy(0, \sigma_2)\\
+\sigma &amp; \sim Cauchy_{+}(0, \sigma_2)\\
 \end{align}
 \]</span></p>
 <div class="fragment">
@@ -516,7 +516,7 @@ Stefano Coretta
 <ul>
 <li><code>mean(c(500, 2500))</code> = 1500</li>
 </ul></li>
-<li><p>Get <span class="math inline">\(\sigma_2\)</span></p>
+<li><p>Get <span class="math inline">\(\sigma_1\)</span></p>
 <ul>
 <li><code>(2500 - 1500) / 2</code> = 500</li>
 </ul></li>
@@ -527,7 +527,7 @@ Stefano Coretta
 \begin{align}
 \text{RT}_i &amp; \sim Gaussian(\mu, \sigma)\\
 \mu &amp; \sim Gaussian(\mu_1 = 1500, \sigma_1 = 500)\\
-\sigma &amp; \sim Cauchy(0, \sigma_2)\\
+\sigma &amp; \sim Cauchy_{+}(0, \sigma_2)\\
 \end{align}
 \]</span></p>
 </div>

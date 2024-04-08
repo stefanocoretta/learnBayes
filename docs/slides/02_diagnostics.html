@@ -9,7 +9,7 @@
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-contrib/tachyonsextra-0.0.1/tachyonsextra.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.552">
+  <meta name="generator" content="quarto-1.4.553">
 
   <meta name="author" content="Stefano Coretta">
   <title>learnBayes - Introduction to Bayesian Linear Models</title>
@@ -487,16 +487,19 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="box-tip">
 <p>Quick and dirty diagnostics:</p>
 <ul>
-<li><p>MCMC traces: hairy caterpillars, no divergent transitions.</p></li>
-<li><p>$: should be as close to 1 as possible.</p></li>
-<li><p>Effective Sample Size (ESS): should be large enough.</p></li>
-<li><p>Posterior Predictive Checks: predicted outcome distribution should match the empirical distribution.</p></li>
+<li><p>MCMC traces: hairy caterpillars, <strong>no divergent transitions</strong>.</p></li>
+<li><p><span class="math inline">\(\hat{R}\)</span>: should be 1 (&gt; 1 means non-convergence).</p></li>
+<li><p>Effective Sample Size (<strong>ESS</strong>): should be large enough.</p></li>
+<li><p><strong>Posterior Predictive Checks</strong>: predicted outcome distribution should match the empirical distribution.</p></li>
 </ul>
 </div>
 <div class="fragment">
 <div class="box-warning">
 <ul>
-<li><p><code>brm()</code> warns you about divergent transition, <span class="math inline">\(\hat{R} &gt; 1\)</span> and low ESS.</p></li>
+<li><p><code>brm()</code> warns you about divergent transition, <span class="math inline">\(\hat{R} &gt; 1\)</span> and low ESS and how to fix them.</p>
+<ul>
+<li>This usually involves increasing the number of iterations and/or other MCMC tricks.</li>
+</ul></li>
 <li><p>Posterior predictive checks are based on visual inspection only.</p></li>
 </ul>
 </div>

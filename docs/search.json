@@ -1,5 +1,201 @@
 [
   {
+    "objectID": "slides/06_group_level.html#group-level-effects",
+    "href": "slides/06_group_level.html#group-level-effects",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Group-level effects",
+    "text": "Group-level effects\n\nGroup-level effects are the Bayesian equivalent of frequentist random effects.\nAs with the population-level effects, the interpretation of the group-level effects is the same as that of the frequentist random effects, but you have a full (posterior) probability distribution instead of a point estimate."
+  },
+  {
+    "objectID": "slides/06_group_level.html#group-level-priors",
+    "href": "slides/06_group_level.html#group-level-priors",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Group-level priors",
+    "text": "Group-level priors\n\nget_prior(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  data = mald\n)\n\n                prior class                  coef   group resp dpar nlpar lb ub\n               (flat)     b                                                    \n               (flat)     b           IsWordFALSE                              \n               (flat)     b IsWordFALSE:PhonLev_c                              \n               (flat)     b            IsWordTRUE                              \n               (flat)     b  IsWordTRUE:PhonLev_c                              \n               lkj(1)   cor                                                    \n               lkj(1)   cor                       Subject                      \n student_t(3, 0, 2.5)    sd                                                0   \n student_t(3, 0, 2.5)    sd                       Subject                  0   \n student_t(3, 0, 2.5)    sd           IsWordFALSE Subject                  0   \n student_t(3, 0, 2.5)    sd IsWordFALSE:PhonLev_c Subject                  0   \n student_t(3, 0, 2.5)    sd            IsWordTRUE Subject                  0   \n student_t(3, 0, 2.5)    sd  IsWordTRUE:PhonLev_c Subject                  0   \n student_t(3, 0, 2.5) sigma                                                0   \n       source\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default\n (vectorized)\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default\n\n\n\n\nbrm_5_priors &lt;- c(\n  prior(normal(7, 0.5), class = b, coef = IsWordFALSE),\n  prior(normal(7, 0.5), class = b, coef = IsWordTRUE),\n  prior(normal(0, 0.1), class = b, coef = `IsWordFALSE:PhonLev_c`),\n  prior(normal(0, 0.1), class = b, coef = `IsWordTRUE:PhonLev_c`),\n  prior(cauchy(0, 0.02), class = sigma),\n  prior(cauchy(0, 0.01), class = sd),\n  prior(lkj(2), class = cor)\n)"
+  },
+  {
+    "objectID": "slides/06_group_level.html#prior-predictive-checks",
+    "href": "slides/06_group_level.html#prior-predictive-checks",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior predictive checks",
+    "text": "Prior predictive checks\n\nbrm_5_priorpp &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  prior = brm_5_priors,\n  data = mald,\n  sample_prior = \"only\",\n  cores = 4,\n  file = \"data/cache/brm_5_priorpp\",\n  seed = my_seed\n)"
+  },
+  {
+    "objectID": "slides/06_group_level.html#prior-predictive-checks-plot",
+    "href": "slides/06_group_level.html#prior-predictive-checks-plot",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior predictive checks: plot",
+    "text": "Prior predictive checks: plot\n\nconditional_effects(brm_5_priorpp, \"PhonLev_c:IsWord\")"
+  },
+  {
+    "objectID": "slides/06_group_level.html#run-the-model",
+    "href": "slides/06_group_level.html#run-the-model",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Run the model",
+    "text": "Run the model\n\nbrm_5 &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  prior = brm_5_priors,\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_5\",\n  seed = my_seed\n)"
+  },
+  {
+    "objectID": "slides/06_group_level.html#model-summary",
+    "href": "slides/06_group_level.html#model-summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Model summary",
+    "text": "Model summary\n\nbrm_5\n\n Family: lognormal \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject) \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~Subject (Number of levels: 30) \n                                                Estimate Est.Error l-95% CI\nsd(IsWordTRUE)                                      0.07      0.01     0.05\nsd(IsWordFALSE)                                     0.11      0.02     0.08\nsd(IsWordTRUE:PhonLev_c)                            0.01      0.00     0.00\nsd(IsWordFALSE:PhonLev_c)                           0.01      0.01     0.00\ncor(IsWordTRUE,IsWordFALSE)                         0.56      0.14     0.25\ncor(IsWordTRUE,IsWordTRUE:PhonLev_c)               -0.04      0.37    -0.72\ncor(IsWordFALSE,IsWordTRUE:PhonLev_c)              -0.06      0.37    -0.73\ncor(IsWordTRUE,IsWordFALSE:PhonLev_c)              -0.12      0.34    -0.73\ncor(IsWordFALSE,IsWordFALSE:PhonLev_c)             -0.29      0.35    -0.83\ncor(IsWordTRUE:PhonLev_c,IsWordFALSE:PhonLev_c)     0.04      0.38    -0.68\n                                                u-95% CI Rhat Bulk_ESS Tail_ESS\nsd(IsWordTRUE)                                      0.09 1.00     1672     2460\nsd(IsWordFALSE)                                     0.14 1.00     1453     2297\nsd(IsWordTRUE:PhonLev_c)                            0.02 1.00     2433     1442\nsd(IsWordFALSE:PhonLev_c)                           0.02 1.00     1595     1446\ncor(IsWordTRUE,IsWordFALSE)                         0.80 1.00     1199     1989\ncor(IsWordTRUE,IsWordTRUE:PhonLev_c)                0.69 1.00     4944     2715\ncor(IsWordFALSE,IsWordTRUE:PhonLev_c)               0.65 1.00     4708     3065\ncor(IsWordTRUE,IsWordFALSE:PhonLev_c)               0.59 1.00     4670     2622\ncor(IsWordFALSE,IsWordFALSE:PhonLev_c)              0.50 1.00     3757     2670\ncor(IsWordTRUE:PhonLev_c,IsWordFALSE:PhonLev_c)     0.73 1.00     3205     2757\n\nRegression Coefficients:\n                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS\nIsWordTRUE                6.85      0.01     6.82     6.88 1.00     1246\nIsWordFALSE               6.97      0.02     6.93     7.01 1.00     1552\nIsWordTRUE:PhonLev_c      0.03      0.01     0.02     0.04 1.00     5067\nIsWordFALSE:PhonLev_c     0.02      0.01     0.01     0.03 1.00     6071\n                      Tail_ESS\nIsWordTRUE                1997\nIsWordFALSE               2216\nIsWordTRUE:PhonLev_c      2707\nIsWordFALSE:PhonLev_c     2723\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.26      0.00     0.26     0.27 1.00     5289     3176\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/06_group_level.html#conditional-posterior-probability-distributions",
+    "href": "slides/06_group_level.html#conditional-posterior-probability-distributions",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Conditional posterior probability distributions",
+    "text": "Conditional posterior probability distributions\n\nconditional_effects(brm_5, \"PhonLev_c:IsWord\")"
+  },
+  {
+    "objectID": "slides/06_group_level.html#getting-group-level-adjustments",
+    "href": "slides/06_group_level.html#getting-group-level-adjustments",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Getting group-level adjustments",
+    "text": "Getting group-level adjustments\n\nbrm_5_shrunk &lt;- brm_5 |&gt;\n  spread_draws(r_Subject[Subject,term]) |&gt;\n  mean_qi() |&gt;\n  mutate(source = \"shrunk\")\n\ngmean_RT &lt;- mean(mald$RT_log, na.rm = TRUE)\n\noriginal &lt;- mald |&gt;\n  group_by(Subject) |&gt;\n  summarise(\n    mean_RT = mean(RT_log) ,\n    sd_RT = sd(RT_log),\n    lower = mean_RT - 1.96 * sd_RT,\n    upper = mean_RT + 1.96 * sd_RT\n  )"
+  },
+  {
+    "objectID": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.",
+    "href": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Plotting group-level adjustments for IsWordTRUE.",
+    "text": "Plotting group-level adjustments for IsWordTRUE.\n\nbrm_5_shrunk |&gt;\n  filter(term %in% c(\"IsWordTRUE\")) |&gt;\n  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  geom_point(size = 2) +\n  geom_errorbarh(aes(xmin = .lower, xmax = .upper)) +\n  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = \"red\", size = 2, alpha = 0.6) +\n  facet_grid(cols = vars(term)) +\n  labs(\n    title = \"By-subject conditional mode for Intercept\",\n    x = \"Conditional mode\",\n    y = \"Subject\",\n    caption = str_wrap(\"The red dots mark the by-subject mean RT from the raw data.\")\n  ) +\n  xlim(-.4, .4)"
+  },
+  {
+    "objectID": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.-1",
+    "href": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.-1",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Plotting group-level adjustments for IsWordTRUE.",
+    "text": "Plotting group-level adjustments for IsWordTRUE.\n\nbrm_5_shrunk |&gt;\n  filter(term %in% c(\"IsWordFALSE\")) |&gt;\n  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  geom_point(size = 2) +\n  geom_errorbarh(aes(xmin = .lower, xmax = .upper)) +\n  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = \"red\", size = 2, alpha = 0.6) +\n  facet_grid(cols = vars(term)) +\n  labs(\n    title = \"By-subject conditional mode for Intercept\",\n    x = \"Conditional mode\",\n    y = \"Subject\",\n    caption = str_wrap(\"The red dots mark the by-subject mean RT from the raw data.\")\n  ) +\n  xlim(-.4, .4)"
+  },
+  {
+    "objectID": "slides/04_interactions.html#interactions-the-traditional-way",
+    "href": "slides/04_interactions.html#interactions-the-traditional-way",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Interactions: the traditional way",
+    "text": "Interactions: the traditional way\n\nbrm_4 &lt;- brm(\n  # RT ~ IsWord + PhoneLev + IsWord:PhonLev\n  RT ~ IsWord * PhonLev,\n  family = gaussian,\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_4\",\n  seed = my_seed\n)"
+  },
+  {
+    "objectID": "slides/04_interactions.html#interactions-the-traditional-way-model-summary",
+    "href": "slides/04_interactions.html#interactions-the-traditional-way-model-summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Interactions: the traditional way (model summary)",
+    "text": "Interactions: the traditional way (model summary)\n\nbrm_4\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ IsWord * PhonLev \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept             756.43     46.72   664.91   847.91 1.00     1659     2339\nIsWordFALSE           233.39     67.38    99.57   364.92 1.01     1435     1596\nPhonLev                31.85      6.52    19.11    44.57 1.00     1633     2368\nIsWordFALSE:PhonLev   -14.36      9.30   -32.23     4.09 1.00     1409     1692\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   339.71      4.26   331.39   348.18 1.00     2936     2600\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/04_interactions.html#interactions-no-intercept",
+    "href": "slides/04_interactions.html#interactions-no-intercept",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Interactions: no intercept",
+    "text": "Interactions: no intercept\n\nbrm_4a &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev,\n  family = gaussian,\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_4a\",\n  seed = my_seed\n)"
+  },
+  {
+    "objectID": "slides/04_interactions.html#interactions-no-intercept-model-summary",
+    "href": "slides/04_interactions.html#interactions-no-intercept-model-summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Interactions: no intercept (model summary)",
+    "text": "Interactions: no intercept (model summary)\n\nbrm_4a\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 0 + IsWord + IsWord:PhonLev \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIsWordTRUE            757.23     48.11   659.92   849.49 1.00     1809     1888\nIsWordFALSE           989.60     49.66   893.35  1089.27 1.00     1776     1971\nIsWordTRUE:PhonLev     31.75      6.71    18.79    44.99 1.00     1779     1948\nIsWordFALSE:PhonLev    17.51      6.86     3.67    31.05 1.00     1839     1988\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   339.52      4.29   330.97   347.98 1.00     2941     2292\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/04_interactions.html#conditional-posterior-probabilities",
+    "href": "slides/04_interactions.html#conditional-posterior-probabilities",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Conditional posterior probabilities",
+    "text": "Conditional posterior probabilities\n\nconditional_effects(brm_4a, \"PhonLev:IsWord\")"
+  },
+  {
+    "objectID": "slides/04_interactions.html#conditional-posterior-probabilities-spaghetti",
+    "href": "slides/04_interactions.html#conditional-posterior-probabilities-spaghetti",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Conditional posterior probabilities: spaghetti",
+    "text": "Conditional posterior probabilities: spaghetti\n\nbrm_4a_condp &lt;- conditional_effects(brm_4a, \"PhonLev:IsWord\", spaghetti = TRUE, ndraws = 100)\nplot(brm_4a_condp, plot = FALSE, spaghetti_args = list(linewidth = 2))[[1]] +\n  theme(\n    plot.background = element_rect(fill = \"black\"),\n    text = element_text(colour = \"white\")\n  )"
+  },
+  {
+    "objectID": "slides/04_interactions.html#conditional-posteriors-at-specific-values",
+    "href": "slides/04_interactions.html#conditional-posteriors-at-specific-values",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Conditional posteriors at specific values",
+    "text": "Conditional posteriors at specific values\n\nconds &lt;- tibble(\n  PhonLev = c(7.5, 10),\n  cond__ = c(\"PhonLev = 7.5\", \"PhonLev = 10\")\n)\n\nconditional_effects(brm_4a, \"IsWord\", conditions = conds)"
+  },
+  {
+    "objectID": "slides/04_interactions.html#comparisons-aka-contrasts-at-specific-values",
+    "href": "slides/04_interactions.html#comparisons-aka-contrasts-at-specific-values",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Comparisons (aka contrasts) at specific values",
+    "text": "Comparisons (aka contrasts) at specific values\n\n# library(marginaleffects)\n\ncomparisons(brm_4a, variables = \"IsWord\", newdata = datagrid(PhonLev = c(7.5, 10, 12)))\n\n\n   Term     Contrast PhonLev Estimate 2.5 % 97.5 % IsWord\n IsWord FALSE - TRUE     7.5    125.8 100.3    151   TRUE\n IsWord FALSE - TRUE    10.0     90.0  31.2    150   TRUE\n IsWord FALSE - TRUE    12.0     62.1 -32.5    155   TRUE\n\nColumns: rowid, term, contrast, estimate, conf.low, conf.high, PhonLev, predicted_lo, predicted_hi, predicted, tmp_idx, RT, IsWord \nType:  response"
+  },
+  {
+    "objectID": "slides/04_interactions.html#comparisons-aka-contrasts-70-cri",
+    "href": "slides/04_interactions.html#comparisons-aka-contrasts-70-cri",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Comparisons (aka contrasts): 70% CrI",
+    "text": "Comparisons (aka contrasts): 70% CrI\n\ncomparisons(brm_4a, variables = \"IsWord\", newdata = datagrid(PhonLev = c(7.5, 10, 12)), conf_level = 0.7)\n\n\n   Term     Contrast PhonLev Estimate 15.0 % 85.0 % IsWord\n IsWord FALSE - TRUE     7.5    125.8  112.2    139   TRUE\n IsWord FALSE - TRUE    10.0     90.0   58.6    121   TRUE\n IsWord FALSE - TRUE    12.0     62.1   11.4    111   TRUE\n\nColumns: rowid, term, contrast, estimate, conf.low, conf.high, PhonLev, predicted_lo, predicted_hi, predicted, tmp_idx, RT, IsWord \nType:  response"
+  },
+  {
+    "objectID": "slides/04_interactions.html#comparisons-aka-contrasts-along-phonlev",
+    "href": "slides/04_interactions.html#comparisons-aka-contrasts-along-phonlev",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Comparisons (aka contrasts) along PhonLev",
+    "text": "Comparisons (aka contrasts) along PhonLev\n\nplot_comparisons(brm_4a, variables = \"IsWord\", condition = \"PhonLev\", conf_level = 0.7)"
+  },
+  {
+    "objectID": "slides/04_interactions.html#posterior-predictive-checks",
+    "href": "slides/04_interactions.html#posterior-predictive-checks",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Posterior predictive checks",
+    "text": "Posterior predictive checks\n\npp_check(brm_4a, ndraws = 100)"
+  },
+  {
+    "objectID": "slides/02_diagnostics.html#mcmc-traces",
+    "href": "slides/02_diagnostics.html#mcmc-traces",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "MCMC traces",
+    "text": "MCMC traces\n\nplot(brm_2)"
+  },
+  {
+    "objectID": "slides/02_diagnostics.html#mcmc-traces-bad",
+    "href": "slides/02_diagnostics.html#mcmc-traces-bad",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "MCMC traces: bad",
+    "text": "MCMC traces: bad\nAn example of bad MCMC chain mixing.\n\n\nPicture from https://www.rdatagen.net/post/diagnosing-and-dealing-with-estimation-issues-in-the-bayesian-meta-analysis/."
+  },
+  {
+    "objectID": "slides/02_diagnostics.html#mcmc-traces-intercept",
+    "href": "slides/02_diagnostics.html#mcmc-traces-intercept",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "MCMC traces: intercept",
+    "text": "MCMC traces: intercept\n\nas.array(brm_2) %&gt;%\n  mcmc_trace(\"b_Intercept\", np = nuts_params(brm_2))"
+  },
+  {
+    "objectID": "slides/02_diagnostics.html#mcmc-traces-isword",
+    "href": "slides/02_diagnostics.html#mcmc-traces-isword",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "MCMC traces: IsWord",
+    "text": "MCMC traces: IsWord\n\nas.array(brm_2) %&gt;%\n  mcmc_trace(\"b_IsWordFALSE\", np = nuts_params(brm_2))"
+  },
+  {
+    "objectID": "slides/02_diagnostics.html#hatr-and-effective-sample-size-ess",
+    "href": "slides/02_diagnostics.html#hatr-and-effective-sample-size-ess",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "\\(\\hat{R}\\) and Effective Sample Size (ESS)",
+    "text": "\\(\\hat{R}\\) and Effective Sample Size (ESS)\n\nbrm_2\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ IsWord \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   964.38   998.37 1.00     3970     3032\nIsWordFALSE   132.87     12.63   107.91   156.87 1.00     3936     2937\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   341.21      4.48   332.33   349.82 1.00     4223     3006\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/02_diagnostics.html#posterior-predictive-checks",
+    "href": "slides/02_diagnostics.html#posterior-predictive-checks",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Posterior Predictive Checks",
+    "text": "Posterior Predictive Checks\n\npp_check(brm_2, ndraws = 20)"
+  },
+  {
+    "objectID": "slides/02_diagnostics.html#summary",
+    "href": "slides/02_diagnostics.html#summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Summary",
+    "text": "Summary\n\nQuick and dirty diagnostics:\n\nMCMC traces: hairy caterpillars, no divergent transitions.\n\\(\\hat{R}\\): should be 1 (&gt; 1 means non-convergence).\nEffective Sample Size (ESS): should be large enough.\nPosterior Predictive Checks: predicted outcome distribution should match the empirical distribution.\n\n\n\n\n\nbrm() warns you about divergent transition, \\(\\hat{R} &gt; 1\\) and low ESS and how to fix them.\n\nThis usually involves increasing the number of iterations and/or other MCMC tricks.\n\nPosterior predictive checks are based on visual inspection only."
+  },
+  {
     "objectID": "setup.html",
     "href": "setup.html",
     "title": "Pre-workshop set-up",
@@ -35,263 +231,207 @@
     "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook)."
   },
   {
-    "objectID": "slides/01_part_1.html#section",
-    "href": "slides/01_part_1.html#section",
+    "objectID": "slides/01_basics.html#section",
+    "href": "slides/01_basics.html#section",
     "title": "Introduction to Bayesian Linear Models",
     "section": "",
     "text": "One model to rule them all. One model to find them. One model to bring them all And in the darkness bind them.\n\n\n\n(No, I couldn’t translate ‘model’ into Black Speech, alas…)"
   },
   {
-    "objectID": "slides/01_part_1.html#now-enter-the-linear-model",
-    "href": "slides/01_part_1.html#now-enter-the-linear-model",
+    "objectID": "slides/01_basics.html#now-enter-the-linear-model",
+    "href": "slides/01_basics.html#now-enter-the-linear-model",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Now enter The Linear Model",
     "text": "Now enter The Linear Model"
   },
   {
-    "objectID": "slides/01_part_1.html#now-enter-the-bayesian-linear-model",
-    "href": "slides/01_part_1.html#now-enter-the-bayesian-linear-model",
+    "objectID": "slides/01_basics.html#now-enter-the-bayesian-linear-model",
+    "href": "slides/01_basics.html#now-enter-the-bayesian-linear-model",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Now enter The Bayesian Linear Model",
     "text": "Now enter The Bayesian Linear Model"
   },
   {
-    "objectID": "slides/01_part_1.html#all-about-the-bayes",
-    "href": "slides/01_part_1.html#all-about-the-bayes",
+    "objectID": "slides/01_basics.html#all-about-the-bayes",
+    "href": "slides/01_basics.html#all-about-the-bayes",
     "title": "Introduction to Bayesian Linear Models",
     "section": "All about the Bayes",
     "text": "All about the Bayes\n\nWithin the NHST (Frequentist) framework, the main analysis output is:\n\nPoint estimates of predictors’ parameters (with standard error).\nP-values. 😈\n\n\n\n\nWithin the Bayesian framework, the main analysis output is:\n\nProbability distributions of predictors’ parameters."
   },
   {
-    "objectID": "slides/01_part_1.html#an-example",
-    "href": "slides/01_part_1.html#an-example",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "An example",
-    "text": "An example\nMassive Auditory Lexical Decision (Tucker et al. 2019):\n\nMALD data set:\n\nAuditory Lexical Decision task with real and nonce English words.\nReaction times and accuracy.\nTotal 521 subjects; subset of 30 subjects, 100 observations each.\n\nLet’s investigate the effect of mean phone-level Levenshtein distance and lexical status (word vs non-word).\n\n\n\n\n# A tibble: 3,000 × 7\n   Subject Item         IsWord PhonLev    RT ACC       RT_log\n   &lt;chr&gt;   &lt;chr&gt;        &lt;fct&gt;    &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;      &lt;dbl&gt;\n 1 15345   nihnaxr      FALSE     5.84   945 correct     6.85\n 2 15345   skaep        FALSE     6.03  1046 incorrect   6.95\n 3 15345   grandparents TRUE     10.3    797 correct     6.68\n 4 15345   sehs         FALSE     5.88  2134 correct     7.67\n 5 15345   cousin       TRUE      5.78   597 correct     6.39\n 6 15345   blowup       TRUE      6.03   716 correct     6.57\n 7 15345   hhehrnzmaxn  FALSE     7.30  1985 correct     7.59\n 8 15345   mantic       TRUE      6.21  1591 correct     7.37\n 9 15345   notable      TRUE      6.82   620 correct     6.43\n10 15345   prowthihviht FALSE     7.68  1205 correct     7.09\n# ℹ 2,990 more rows"
-  },
-  {
-    "objectID": "slides/01_part_1.html#an-example-mald",
-    "href": "slides/01_part_1.html#an-example-mald",
+    "objectID": "slides/01_basics.html#an-example-mald",
+    "href": "slides/01_basics.html#an-example-mald",
     "title": "Introduction to Bayesian Linear Models",
     "section": "An example: MALD",
     "text": "An example: MALD\n\nMassive Auditory Lexical Decision (MALD) data (Tucker et al. 2019):\n\nAuditory Lexical Decision task with real and nonce English words.\nReaction times and accuracy.\nTotal 521 subjects; subset of 30 subjects, 100 observations each.\n\n\n\n\nmald\n\n# A tibble: 3,000 × 7\n   Subject Item         IsWord PhonLev    RT ACC       RT_log\n   &lt;chr&gt;   &lt;chr&gt;        &lt;fct&gt;    &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;      &lt;dbl&gt;\n 1 15345   nihnaxr      FALSE     5.84   945 correct     6.85\n 2 15345   skaep        FALSE     6.03  1046 incorrect   6.95\n 3 15345   grandparents TRUE     10.3    797 correct     6.68\n 4 15345   sehs         FALSE     5.88  2134 correct     7.67\n 5 15345   cousin       TRUE      5.78   597 correct     6.39\n 6 15345   blowup       TRUE      6.03   716 correct     6.57\n 7 15345   hhehrnzmaxn  FALSE     7.30  1985 correct     7.59\n 8 15345   mantic       TRUE      6.21  1591 correct     7.37\n 9 15345   notable      TRUE      6.82   620 correct     6.43\n10 15345   prowthihviht FALSE     7.68  1205 correct     7.09\n# ℹ 2,990 more rows"
   },
   {
-    "objectID": "slides/01_part_1.html#mald-phone-level-distance-and-lexical-status",
-    "href": "slides/01_part_1.html#mald-phone-level-distance-and-lexical-status",
+    "objectID": "slides/01_basics.html#mald-phone-level-distance-and-lexical-status",
+    "href": "slides/01_basics.html#mald-phone-level-distance-and-lexical-status",
     "title": "Introduction to Bayesian Linear Models",
     "section": "MALD: phone-level distance and lexical status",
     "text": "MALD: phone-level distance and lexical status\nLet’s investigate the effects of:\n\nPhonLev: mean phone-level Levenshtein distance.\nIsWord: lexical status (real word vs nonce word).\n\nOn:\n\nRT: reaction times.\nACC: accuracy."
   },
   {
-    "objectID": "slides/01_part_1.html#mald-phone-level-distance-and-lexical-status-1",
-    "href": "slides/01_part_1.html#mald-phone-level-distance-and-lexical-status-1",
+    "objectID": "slides/01_basics.html#mald-phone-level-distance-and-lexical-status-1",
+    "href": "slides/01_basics.html#mald-phone-level-distance-and-lexical-status-1",
     "title": "Introduction to Bayesian Linear Models",
     "section": "MALD: phone-level distance and lexical status",
     "text": "MALD: phone-level distance and lexical status\n\nmald |&gt; \n  ggplot(aes(PhonLev, RT)) +\n  geom_point(alpha = 0.1) +\n  geom_smooth(aes(colour = IsWord, fill = IsWord), method = \"lm\", formula = y ~ x) +\n  labs(\n    x = \"Phone-level distance\", y = \"RT (ms)\"\n  )"
   },
   {
-    "objectID": "slides/01_part_1.html#a-frequentist-linear-model",
-    "href": "slides/01_part_1.html#a-frequentist-linear-model",
+    "objectID": "slides/01_basics.html#a-frequentist-linear-model",
+    "href": "slides/01_basics.html#a-frequentist-linear-model",
     "title": "Introduction to Bayesian Linear Models",
     "section": "A frequentist linear model",
     "text": "A frequentist linear model\n\nlm_1 &lt;- lmer(\n  RT ~\n    PhonLev +\n    IsWord +\n    PhonLev:IsWord +\n    (1 | Subject),\n  data = mald\n)"
   },
   {
-    "objectID": "slides/01_part_1.html#a-frequentist-linear-model-summary",
-    "href": "slides/01_part_1.html#a-frequentist-linear-model-summary",
+    "objectID": "slides/01_basics.html#a-frequentist-linear-model-summary",
+    "href": "slides/01_basics.html#a-frequentist-linear-model-summary",
     "title": "Introduction to Bayesian Linear Models",
     "section": "A frequentist linear model: summary",
     "text": "A frequentist linear model: summary\n\nsummary(lm_1)\n\nLinear mixed model fit by REML ['lmerMod']\nFormula: RT ~ PhonLev + IsWord + PhonLev:IsWord + (1 | Subject)\n   Data: mald\n\nREML criterion at convergence: 43232.4\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-3.5511 -0.5985 -0.2439  0.3185  5.6906 \n\nRandom effects:\n Groups   Name        Variance Std.Dev.\n Subject  (Intercept)  11032   105.0   \n Residual             104648   323.5   \nNumber of obs: 3000, groups:  Subject, 30\n\nFixed effects:\n                    Estimate Std. Error t value\n(Intercept)          754.965     49.687  15.195\nPhonLev               32.148      6.389   5.032\nIsWordFALSE          212.440     65.453   3.246\nPhonLev:IsWordFALSE  -11.620      9.076  -1.280\n\nCorrelation of Fixed Effects:\n            (Intr) PhonLv IWFALS\nPhonLev     -0.907              \nIsWordFALSE -0.647  0.690       \nPhL:IWFALSE  0.640 -0.705 -0.983"
   },
   {
-    "objectID": "slides/01_part_1.html#a-frequentist-linear-model-plot-predictions",
-    "href": "slides/01_part_1.html#a-frequentist-linear-model-plot-predictions",
+    "objectID": "slides/01_basics.html#a-frequentist-linear-model-plot-predictions",
+    "href": "slides/01_basics.html#a-frequentist-linear-model-plot-predictions",
     "title": "Introduction to Bayesian Linear Models",
     "section": "A frequentist linear model: plot predictions",
     "text": "A frequentist linear model: plot predictions\n\nggpredict(lm_1, terms = c(\"PhonLev\", \"IsWord\")) %&gt;%\n  plot()"
   },
   {
-    "objectID": "slides/01_part_1.html#increase-model-complexity",
-    "href": "slides/01_part_1.html#increase-model-complexity",
+    "objectID": "slides/01_basics.html#increase-model-complexity",
+    "href": "slides/01_basics.html#increase-model-complexity",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Increase model complexity",
     "text": "Increase model complexity\nTry it yourself! Does it work?\n\nlm_2 &lt;- lmer(\n  RT ~\n    PhonLev +\n    IsWord +\n    PhonLev:IsWord +\n    (PhonLev + IsWord | Subject),\n  data = mald\n)\n\n\n\n\nWarning in checkConv(attr(opt, \"derivs\"), opt$par, ctrl = control$checkConv, :\nModel failed to converge with max|grad| = 0.0430116 (tol = 0.002, component 1)"
   },
   {
-    "objectID": "slides/01_part_1.html#section-1",
-    "href": "slides/01_part_1.html#section-1",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "",
-    "text": "Let’s go Bayesian!"
-  },
-  {
-    "objectID": "slides/01_part_1.html#a-bayesian-linear-model",
-    "href": "slides/01_part_1.html#a-bayesian-linear-model",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "A Bayesian linear model",
-    "text": "A Bayesian linear model\n\nbrm_1 &lt;- brm(\n  RT ~\n    PhonLev +\n    IsWord +\n    PhonLev:IsWord +\n    (PhonLev + IsWord | Subject),\n  data = mald,\n  family = gaussian()\n)"
-  },
-  {
-    "objectID": "slides/01_part_1.html#a-bayesian-linear-model-summary",
-    "href": "slides/01_part_1.html#a-bayesian-linear-model-summary",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "A Bayesian linear model: summary",
-    "text": "A Bayesian linear model: summary\n\nbrm_1\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ PhonLev + IsWord + PhonLev:IsWord + (PhonLev + IsWord | Subject) \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~Subject (Number of levels: 30) \n                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS\nsd(Intercept)                 98.77     33.49    44.25   177.00 1.01     1156\nsd(PhonLev)                    7.76      5.03     0.47    19.03 1.01      465\nsd(IsWordFALSE)               97.43     19.11    62.96   139.07 1.00     1804\ncor(Intercept,PhonLev)        -0.42      0.44    -0.93     0.68 1.00     1522\ncor(Intercept,IsWordFALSE)     0.53      0.27    -0.05     0.94 1.01      589\ncor(PhonLev,IsWordFALSE)      -0.36      0.44    -0.94     0.65 1.02      384\n                           Tail_ESS\nsd(Intercept)                  1261\nsd(PhonLev)                    1031\nsd(IsWordFALSE)                2778\ncor(Intercept,PhonLev)         2153\ncor(Intercept,IsWordFALSE)     1515\ncor(PhonLev,IsWordFALSE)       1057\n\nRegression Coefficients:\n                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept             755.18     49.73   659.14   853.47 1.00     2234     1457\nPhonLev                31.94      6.60    18.84    44.46 1.00     2510     2759\nIsWordFALSE           208.11     67.09    75.56   339.99 1.00     2523     2380\nPhonLev:IsWordFALSE   -11.10      9.04   -28.42     6.65 1.00     2493     2788\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   320.27      4.25   312.03   328.73 1.00     5408     2783\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
-  },
-  {
-    "objectID": "slides/01_part_1.html#lets-start-small",
-    "href": "slides/01_part_1.html#lets-start-small",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Let’s start small",
-    "text": "Let’s start small\nTry it yourself!\n\nbrm_2 &lt;- brm(\n  # formula = outcome ~ predictor\n  RT ~ IsWord,\n  data = mald,\n  # Specify the distribution family of the outcome\n  family = gaussian()\n)\n\n\n\n\nThe model estimates the probability distributions of the effects of each predictor.\nTo do so, a sampling algorithm is used (Markov Chain Monte Carlo, MCMC)."
-  },
-  {
-    "objectID": "slides/01_part_1.html#mcmc-what",
-    "href": "slides/01_part_1.html#mcmc-what",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "MCMC what?",
-    "text": "MCMC what?\nMarkov Chain Monte Carlo\n\nMCMC simulation: https://chi-feng.github.io/mcmc-demo/app.html\nMore on MCMC: http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/"
-  },
-  {
-    "objectID": "slides/01_part_1.html#technicalities",
-    "href": "slides/01_part_1.html#technicalities",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Technicalities",
-    "text": "Technicalities\n\nbrm_2 &lt;- brm(\n  RT ~ IsWord,\n  data = mald,\n  family = gaussian(),\n  \n  # TECHNICAL STUFF\n  # Save model output to file\n  file = \"./data/cache/brm_2.rds\",\n  # Number of MCMC chains\n  chains = 4, \n  # Number of iterations per chain\n  iter = 2000,\n  # Number of cores to use (one per chain)\n  cores = 4\n)\n\n\nYou can find out how many cores your laptop has with parallel::detectCores()."
-  },
-  {
-    "objectID": "slides/01_part_1.html#a-bayesian-linear-model-plot-predictions",
-    "href": "slides/01_part_1.html#a-bayesian-linear-model-plot-predictions",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "A Bayesian linear model: plot predictions",
-    "text": "A Bayesian linear model: plot predictions\n\nconditional_effects(brm_1, effects = \"PhonLev:IsWord\")"
-  },
-  {
-    "objectID": "slides/01_part_1.html#interpreting-the-summary",
-    "href": "slides/01_part_1.html#interpreting-the-summary",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Interpreting the summary",
-    "text": "Interpreting the summary\n\n\nRegression Coefficients:\n            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   964.38   998.37 1.00     3970     3032\nIsWordFALSE   132.87     12.63   107.91   156.87 1.00     3936     2937\n\n\n\nIntercept: There is a 95% probability that (based on model and data) the mean RT when the word is real is between 964 and 999 ms.\n\nThe probability distribution of the intercept has mean = 981 ms and SD = 9 (rounded).\n\n\n\n\nIsWordFALSE: At 95% confidence, the difference in RT between non-words and real words is between +109 and +158 ms (based on model and data).\n\nThe probability distribution of IsWordFALSE has mean = 133 ms and SD = 13 (rounded)."
-  },
-  {
-    "objectID": "slides/01_part_1.html#interpreting-the-summary-1",
-    "href": "slides/01_part_1.html#interpreting-the-summary-1",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Interpreting the summary",
-    "text": "Interpreting the summary\n\n\nRegression Coefficients:\n            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   964.38   998.37 1.00     3970     3032\nIsWordFALSE   132.87     12.63   107.91   156.87 1.00     3936     2937\n\n\n\nIntercept: There is a 95% probability that (based on model and data) the mean RT when the word is real is between 964 and 999 ms.\n\nThe probability distribution of the intercept has mean = 981 ms and SD = 9 (rounded).\n\n\n\n\nIsWordFALSE: At 95% confidence, the difference in RT between non-words and real words is between +109 and +158 ms (based on model and data).\n\nThe probability distribution of IsWordFALSE has mean = 133 ms and SD = 13 (rounded)."
-  },
-  {
-    "objectID": "slides/01_part_1.html#posterior-probabilities",
-    "href": "slides/01_part_1.html#posterior-probabilities",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Posterior probabilities",
-    "text": "Posterior probabilities\n\n\nThese are posterior probability distributions.\nThey are always conditional on model and data.\nThe summary reports 95% Credible Intervals, but you can get other intervals too (there is nothing special about 95%).\n\n\n\n\nsummary(brm_2, prob = 0.8)\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ IsWord \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n            Estimate Est.Error l-80% CI u-80% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   970.04   992.96 1.00     3970     3032\nIsWordFALSE   132.87     12.63   116.58   148.84 1.00     3936     2937\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-80% CI u-80% CI Rhat Bulk_ESS Tail_ESS\nsigma   341.21      4.48   335.59   346.97 1.00     4223     3006\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
-  },
-  {
-    "objectID": "slides/01_part_1.html#lets-go-bayesian",
-    "href": "slides/01_part_1.html#lets-go-bayesian",
+    "objectID": "slides/01_basics.html#lets-go-bayesian",
+    "href": "slides/01_basics.html#lets-go-bayesian",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Let’s go Bayesian!",
     "text": "Let’s go Bayesian!\n…like the Bayesian Rats!"
   },
   {
-    "objectID": "slides/01_part_1.html#the-model-summary",
-    "href": "slides/01_part_1.html#the-model-summary",
+    "objectID": "slides/01_basics.html#a-bayesian-linear-model",
+    "href": "slides/01_basics.html#a-bayesian-linear-model",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "A Bayesian linear model",
+    "text": "A Bayesian linear model\n\nbrm_1 &lt;- brm(\n  RT ~\n    PhonLev +\n    IsWord +\n    PhonLev:IsWord +\n    (PhonLev + IsWord | Subject),\n  data = mald,\n  family = gaussian()\n)"
+  },
+  {
+    "objectID": "slides/01_basics.html#a-bayesian-linear-model-summary",
+    "href": "slides/01_basics.html#a-bayesian-linear-model-summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "A Bayesian linear model: summary",
+    "text": "A Bayesian linear model: summary\n\nbrm_1\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ PhonLev + IsWord + PhonLev:IsWord + (PhonLev + IsWord | Subject) \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~Subject (Number of levels: 30) \n                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS\nsd(Intercept)                 98.77     33.49    44.25   177.00 1.01     1156\nsd(PhonLev)                    7.76      5.03     0.47    19.03 1.01      465\nsd(IsWordFALSE)               97.43     19.11    62.96   139.07 1.00     1804\ncor(Intercept,PhonLev)        -0.42      0.44    -0.93     0.68 1.00     1522\ncor(Intercept,IsWordFALSE)     0.53      0.27    -0.05     0.94 1.01      589\ncor(PhonLev,IsWordFALSE)      -0.36      0.44    -0.94     0.65 1.02      384\n                           Tail_ESS\nsd(Intercept)                  1261\nsd(PhonLev)                    1031\nsd(IsWordFALSE)                2778\ncor(Intercept,PhonLev)         2153\ncor(Intercept,IsWordFALSE)     1515\ncor(PhonLev,IsWordFALSE)       1057\n\nRegression Coefficients:\n                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept             755.18     49.73   659.14   853.47 1.00     2234     1457\nPhonLev                31.94      6.60    18.84    44.46 1.00     2510     2759\nIsWordFALSE           208.11     67.09    75.56   339.99 1.00     2523     2380\nPhonLev:IsWordFALSE   -11.10      9.04   -28.42     6.65 1.00     2493     2788\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   320.27      4.25   312.03   328.73 1.00     5408     2783\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/01_basics.html#a-bayesian-linear-model-plot-predictions",
+    "href": "slides/01_basics.html#a-bayesian-linear-model-plot-predictions",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "A Bayesian linear model: plot predictions",
+    "text": "A Bayesian linear model: plot predictions\n\nconditional_effects(brm_1, effects = \"PhonLev:IsWord\")"
+  },
+  {
+    "objectID": "slides/01_basics.html#lets-start-small",
+    "href": "slides/01_basics.html#lets-start-small",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Let’s start small",
+    "text": "Let’s start small\nTry it yourself!\n\nbrm_2 &lt;- brm(\n  # formula = outcome ~ predictor\n  RT ~ IsWord,\n  data = mald,\n  # Specify the distribution family of the outcome\n  family = gaussian()\n)\n\n\n\n\nThe model estimates the probability distributions of the effects of each predictor.\nTo do so, a sampling algorithm is used (Markov Chain Monte Carlo, MCMC)."
+  },
+  {
+    "objectID": "slides/01_basics.html#mcmc-what",
+    "href": "slides/01_basics.html#mcmc-what",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "MCMC what?",
+    "text": "MCMC what?\nMarkov Chain Monte Carlo\n\nMCMC simulation: https://chi-feng.github.io/mcmc-demo/app.html\nMore on MCMC: http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/"
+  },
+  {
+    "objectID": "slides/01_basics.html#technicalities",
+    "href": "slides/01_basics.html#technicalities",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Technicalities",
+    "text": "Technicalities\n\nbrm_2 &lt;- brm(\n  RT ~ IsWord,\n  data = mald,\n  family = gaussian(),\n  \n  # TECHNICAL STUFF\n  # Save model output to file\n  file = \"./data/cache/brm_2.rds\",\n  # Number of MCMC chains\n  chains = 4, \n  # Number of iterations per chain\n  iter = 2000,\n  # Number of cores to use (one per chain)\n  cores = 4\n)\n\n\nYou can find out how many cores your laptop has with parallel::detectCores()."
+  },
+  {
+    "objectID": "slides/01_basics.html#the-model-summary",
+    "href": "slides/01_basics.html#the-model-summary",
     "title": "Introduction to Bayesian Linear Models",
     "section": "The model summary",
     "text": "The model summary\n\nbrm_2\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ IsWord \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   964.38   998.37 1.00     3970     3032\nIsWordFALSE   132.87     12.63   107.91   156.87 1.00     3936     2937\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   341.21      4.48   332.33   349.82 1.00     4223     3006\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
   },
   {
-    "objectID": "slides/01_part_1.html#quick-plot",
-    "href": "slides/01_part_1.html#quick-plot",
+    "objectID": "slides/01_basics.html#interpreting-the-summary",
+    "href": "slides/01_basics.html#interpreting-the-summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Interpreting the summary",
+    "text": "Interpreting the summary\n\n\nRegression Coefficients:\n            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   964.38   998.37 1.00     3970     3032\nIsWordFALSE   132.87     12.63   107.91   156.87 1.00     3936     2937\n\n\n\nIntercept: There is a 95% probability that (based on model and data) the mean RT when the word is real is between 964 and 999 ms.\n\nThe probability distribution of the intercept has mean = 981 ms and SD = 9 (rounded).\n\n\n\n\nIsWordFALSE: At 95% confidence, the difference in RT between non-words and real words is between +109 and +158 ms (based on model and data).\n\nThe probability distribution of IsWordFALSE has mean = 133 ms and SD = 13 (rounded)."
+  },
+  {
+    "objectID": "slides/01_basics.html#posterior-probabilities",
+    "href": "slides/01_basics.html#posterior-probabilities",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Posterior probabilities",
+    "text": "Posterior probabilities\n\n\nThese are posterior probability distributions.\nThey are always conditional on model and data.\nThe summary reports 95% Credible Intervals, but you can get other intervals too (there is nothing special about 95%).\n\n\n\n\nsummary(brm_2, prob = 0.8)\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ IsWord \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n            Estimate Est.Error l-80% CI u-80% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   970.04   992.96 1.00     3970     3032\nIsWordFALSE   132.87     12.63   116.58   148.84 1.00     3936     2937\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-80% CI u-80% CI Rhat Bulk_ESS Tail_ESS\nsigma   341.21      4.48   335.59   346.97 1.00     4223     3006\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/01_basics.html#quick-plot",
+    "href": "slides/01_basics.html#quick-plot",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Quick plot",
     "text": "Quick plot\n\nplot(brm_2, combo = c(\"dens\", \"trace\"))"
   },
   {
-    "objectID": "slides/01_part_1.html#extract-the-mcmc-draws",
-    "href": "slides/01_part_1.html#extract-the-mcmc-draws",
+    "objectID": "slides/01_basics.html#extract-the-mcmc-draws",
+    "href": "slides/01_basics.html#extract-the-mcmc-draws",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Extract the MCMC draws",
     "text": "Extract the MCMC draws\n\nbrm_2_draws &lt;- as_draws_df(brm_2)\nbrm_2_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 6 variables\n   b_Intercept b_IsWordFALSE sigma Intercept lprior   lp__\n1          981           144   349      1052    -13 -21763\n2          989           131   343      1053    -13 -21761\n3          973           138   338      1040    -13 -21761\n4          983           126   337      1045    -13 -21761\n5          996           114   346      1052    -13 -21762\n6          966           156   339      1042    -13 -21762\n7          973           140   343      1042    -13 -21761\n8          996           127   344      1058    -13 -21762\n9          990           123   340      1050    -13 -21761\n10         970           145   341      1042    -13 -21761\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
   },
   {
-    "objectID": "slides/01_part_1.html#get-parameters",
-    "href": "slides/01_part_1.html#get-parameters",
+    "objectID": "slides/01_basics.html#get-parameters",
+    "href": "slides/01_basics.html#get-parameters",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Get parameters",
     "text": "Get parameters\nTo list all the names of the parameters in a model, use:\n\nvariables(brm_2)\n\n[1] \"b_Intercept\"   \"b_IsWordFALSE\" \"sigma\"         \"Intercept\"    \n[5] \"lprior\"        \"lp__\""
   },
   {
-    "objectID": "slides/01_part_1.html#posterior-distributions",
-    "href": "slides/01_part_1.html#posterior-distributions",
+    "objectID": "slides/01_basics.html#posterior-distributions-intercept",
+    "href": "slides/01_basics.html#posterior-distributions-intercept",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "Posterior distributions",
-    "text": "Posterior distributions\nNow you can plot the draws using ggplot2.\n\nbrm_2_draws %&gt;%\n  ggplot(aes(b_Intercept)) +\n  stat_halfeye(fill = \"#214d65\", alpha = 0.8) +\n  scale_x_continuous() +\n  labs(title = \"Posterior distribution of Intercept\")"
+    "section": "Posterior distributions: intercept",
+    "text": "Posterior distributions: intercept\nNow you can plot the draws using ggplot2.\n\nbrm_2_draws %&gt;%\n  ggplot(aes(b_Intercept)) +\n  stat_halfeye(fill = \"#214d65\", alpha = 0.8) +\n  scale_x_continuous() +\n  labs(title = \"Posterior distribution of Intercept\")"
   },
   {
-    "objectID": "slides/01_part_1.html#posterior-distributions-output",
-    "href": "slides/01_part_1.html#posterior-distributions-output",
+    "objectID": "slides/01_basics.html#posterior-distributions-intercept-output",
+    "href": "slides/01_basics.html#posterior-distributions-intercept-output",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "Posterior distributions",
-    "text": "Posterior distributions"
+    "section": "Posterior distributions: intercept",
+    "text": "Posterior distributions: intercept"
   },
   {
-    "objectID": "slides/02_diagnostics.html#mcmc-traces",
-    "href": "slides/02_diagnostics.html#mcmc-traces",
+    "objectID": "slides/01_basics.html#posterior-distribution-iswordfalse",
+    "href": "slides/01_basics.html#posterior-distribution-iswordfalse",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "MCMC traces",
-    "text": "MCMC traces\n\nplot(brm_2)"
+    "section": "Posterior distribution: IsWordFalse",
+    "text": "Posterior distribution: IsWordFalse\n\nbrm_2_draws %&gt;%\n  ggplot(aes(b_IsWordFALSE)) +\n  stat_halfeye(fill = \"#624B27\", alpha = 0.8) +\n  scale_x_continuous() +\n  labs(title = \"Posterior distribution of IsWord: FALSE - TRUE\")"
   },
   {
-    "objectID": "slides/02_diagnostics.html#mcmc-traces-bad",
-    "href": "slides/02_diagnostics.html#mcmc-traces-bad",
+    "objectID": "slides/01_basics.html#posterior-distribution-iswordfalse-output",
+    "href": "slides/01_basics.html#posterior-distribution-iswordfalse-output",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "MCMC traces: bad",
-    "text": "MCMC traces: bad\nAn example of bad MCMC chain mixing.\n\n\nPicture from https://www.rdatagen.net/post/diagnosing-and-dealing-with-estimation-issues-in-the-bayesian-meta-analysis/."
+    "section": "Posterior distribution: IsWordFalse",
+    "text": "Posterior distribution: IsWordFalse"
   },
   {
-    "objectID": "slides/02_diagnostics.html#mcmc-traces-intercept",
-    "href": "slides/02_diagnostics.html#mcmc-traces-intercept",
+    "objectID": "slides/01_basics.html#conditional-posterior-probabilities",
+    "href": "slides/01_basics.html#conditional-posterior-probabilities",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "MCMC traces: intercept",
-    "text": "MCMC traces: intercept\n\nas.array(brm_2) %&gt;%\n  mcmc_trace(\"b_Intercept\", np = nuts_params(brm_2))"
-  },
-  {
-    "objectID": "slides/02_diagnostics.html#mcmc-traces-isword",
-    "href": "slides/02_diagnostics.html#mcmc-traces-isword",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "MCMC traces: IsWord",
-    "text": "MCMC traces: IsWord\n\nas.array(brm_2) %&gt;%\n  mcmc_trace(\"b_IsWordFALSE\", np = nuts_params(brm_2))"
-  },
-  {
-    "objectID": "slides/02_diagnostics.html#hatr-and-effective-sample-size",
-    "href": "slides/02_diagnostics.html#hatr-and-effective-sample-size",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "\\(\\hat{R}\\) and Effective Sample Size",
-    "text": "\\(\\hat{R}\\) and Effective Sample Size\n\nbrm_2\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ IsWord \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   964.38   998.37 1.00     3970     3032\nIsWordFALSE   132.87     12.63   107.91   156.87 1.00     3936     2937\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   341.21      4.48   332.33   349.82 1.00     4223     3006\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
-  },
-  {
-    "objectID": "slides/02_diagnostics.html#hatr-and-effective-sample-size-ess",
-    "href": "slides/02_diagnostics.html#hatr-and-effective-sample-size-ess",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "\\(\\hat{R}\\) and Effective Sample Size (ESS)",
-    "text": "\\(\\hat{R}\\) and Effective Sample Size (ESS)\n\nbrm_2\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ IsWord \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     981.35      8.73   964.38   998.37 1.00     3970     3032\nIsWordFALSE   132.87     12.63   107.91   156.87 1.00     3936     2937\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   341.21      4.48   332.33   349.82 1.00     4223     3006\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
-  },
-  {
-    "objectID": "slides/02_diagnostics.html#posterior-predictive-checks",
-    "href": "slides/02_diagnostics.html#posterior-predictive-checks",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Posterior Predictive Checks",
-    "text": "Posterior Predictive Checks\n\npp_check(brm_2, ndraws = 20)"
-  },
-  {
-    "objectID": "slides/02_diagnostics.html#summary",
-    "href": "slides/02_diagnostics.html#summary",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Summary",
-    "text": "Summary\n\nQuick and dirty diagnostics:\n\nMCMC traces: hairy caterpillars, no divergent transitions.\n$: should be as close to 1 as possible.\nEffective Sample Size (ESS): should be large enough.\nPosterior Predictive Checks: predicted outcome distribution should match the empirical distribution.\n\n\n\n\n\nbrm() warns you about divergent transition, \\(\\hat{R} &gt; 1\\) and low ESS.\nPosterior predictive checks are based on visual inspection only."
+    "section": "Conditional posterior probabilities",
+    "text": "Conditional posterior probabilities\n\nconditional_effects(brm_2, \"IsWord\")"
   },
   {
     "objectID": "slides/03_priors.html#bayesian-belief-update",
@@ -299,13 +439,6 @@
     "title": "Introduction to Bayesian Linear Models",
     "section": "Bayesian belief update",
     "text": "Bayesian belief update"
-  },
-  {
-    "objectID": "slides/03_priors.html#section",
-    "href": "slides/03_priors.html#section",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "",
-    "text": "library(htmltools)\n\nHTML('&lt;section id=\"Priors\" data-background-iframe=\"https://seeing-theory.brown.edu/bayesian-inference/index.html#section3\" data-background-interactive&gt;\n&lt;/section&gt;')"
   },
   {
     "objectID": "slides/03_priors.html#lets-start-small",
@@ -375,14 +508,14 @@
     "href": "slides/03_priors.html#priors-of-the-parameters",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Priors of the parameters",
-    "text": "Priors of the parameters\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1, \\sigma_1)\\\\\n\\sigma & \\sim Cauchy(0, \\sigma_2)\\\\\n\\end{align}\n\\]\n\n\nLet’s pick \\(\\mu_1\\) and \\(\\sigma_1\\).\nWe can use the empirical rule."
+    "text": "Priors of the parameters\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1, \\sigma_1)\\\\\n\\sigma & \\sim Cauchy_{+}(0, \\sigma_2)\\\\\n\\end{align}\n\\]\n\n\nLet’s pick \\(\\mu_1\\) and \\(\\sigma_1\\).\nWe can use the empirical rule."
   },
   {
     "objectID": "slides/03_priors.html#prior-for-mu",
     "href": "slides/03_priors.html#prior-for-mu",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Prior for \\(\\mu\\)",
-    "text": "Prior for \\(\\mu\\)\n\n\nLet’s say that the mean is between 500 and 2500 ms at 95% confidence.\nGet \\(\\mu_1\\)\n\nmean(c(500, 2500)) = 1500\n\nGet \\(\\sigma_2\\)\n\n(2500 - 1500) / 2 = 500\n\n\n\n\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1 = 1500, \\sigma_1 = 500)\\\\\n\\sigma & \\sim Cauchy(0, \\sigma_2)\\\\\n\\end{align}\n\\]"
+    "text": "Prior for \\(\\mu\\)\n\n\nLet’s say that the mean is between 500 and 2500 ms at 95% confidence.\nGet \\(\\mu_1\\)\n\nmean(c(500, 2500)) = 1500\n\nGet \\(\\sigma_1\\)\n\n(2500 - 1500) / 2 = 500\n\n\n\n\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1 = 1500, \\sigma_1 = 500)\\\\\n\\sigma & \\sim Cauchy_{+}(0, \\sigma_2)\\\\\n\\end{align}\n\\]"
   },
   {
     "objectID": "slides/03_priors.html#prior-for-mu-plot",
@@ -462,157 +595,87 @@
     "text": "Summary\n\n\nPriors are probability distributions that convey prior knowledge about the model parameters.\nGaussian family\n\n\\(\\mu\\): Gaussian prior.\n\\(\\sigma\\): (Truncated) Cauchy prior (but also Student-t and others).\n\nUse the empirical rule to work out Gaussian priors and the HDIinterval::inverseCDF() function for other families.\nPrior predictive checks are fundamental and should be run during the study design, before data collection (or in any case without being informed by the data)."
   },
   {
-    "objectID": "slides/04_interactions.html#interactions-the-traditional-way",
-    "href": "slides/04_interactions.html#interactions-the-traditional-way",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Interactions: the traditional way",
-    "text": "Interactions: the traditional way\n\nbrm_4 &lt;- brm(\n  # RT ~ IsWord + PhoneLev + IsWord:PhonLev\n  RT ~ IsWord * PhonLev,\n  family = gaussian,\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_4\",\n  seed = my_seed\n)"
-  },
-  {
-    "objectID": "slides/04_interactions.html#interactions-the-traditional-way-model-summary",
-    "href": "slides/04_interactions.html#interactions-the-traditional-way-model-summary",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Interactions: the traditional way (model summary)",
-    "text": "Interactions: the traditional way (model summary)\n\nbrm_4\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ IsWord * PhonLev \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept             756.43     46.72   664.91   847.91 1.00     1659     2339\nIsWordFALSE           233.39     67.38    99.57   364.92 1.01     1435     1596\nPhonLev                31.85      6.52    19.11    44.57 1.00     1633     2368\nIsWordFALSE:PhonLev   -14.36      9.30   -32.23     4.09 1.00     1409     1692\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   339.71      4.26   331.39   348.18 1.00     2936     2600\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
-  },
-  {
-    "objectID": "slides/04_interactions.html#interactions-no-intercept",
-    "href": "slides/04_interactions.html#interactions-no-intercept",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Interactions: no intercept",
-    "text": "Interactions: no intercept\n\nbrm_4a &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev,\n  family = gaussian,\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_4a\",\n  seed = my_seed\n)"
-  },
-  {
-    "objectID": "slides/04_interactions.html#interactions-no-intercept-model-summary",
-    "href": "slides/04_interactions.html#interactions-no-intercept-model-summary",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Interactions: no intercept (model summary)",
-    "text": "Interactions: no intercept (model summary)\n\nbrm_4a\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 0 + IsWord + IsWord:PhonLev \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIsWordTRUE            757.23     48.11   659.92   849.49 1.00     1809     1888\nIsWordFALSE           989.60     49.66   893.35  1089.27 1.00     1776     1971\nIsWordTRUE:PhonLev     31.75      6.71    18.79    44.99 1.00     1779     1948\nIsWordFALSE:PhonLev    17.51      6.86     3.67    31.05 1.00     1839     1988\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma   339.52      4.29   330.97   347.98 1.00     2941     2292\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
-  },
-  {
-    "objectID": "slides/04_interactions.html#conditional-posterior-probabilities",
-    "href": "slides/04_interactions.html#conditional-posterior-probabilities",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Conditional posterior probabilities",
-    "text": "Conditional posterior probabilities\n\nconditional_effects(brm_4a, \"PhonLev:IsWord\")"
-  },
-  {
-    "objectID": "slides/04_interactions.html#conditional-posterior-probabilities-spaghetti",
-    "href": "slides/04_interactions.html#conditional-posterior-probabilities-spaghetti",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Conditional posterior probabilities: spaghetti",
-    "text": "Conditional posterior probabilities: spaghetti\n\nbrm_4a_condp &lt;- conditional_effects(brm_4a, \"PhonLev:IsWord\", spaghetti = TRUE, ndraws = 100)\nplot(brm_4a_condp, plot = FALSE, spaghetti_args = list(linewidth = 2))[[1]] +\n  theme(\n    plot.background = element_rect(fill = \"black\"),\n    text = element_text(colour = \"white\")\n  )"
-  },
-  {
-    "objectID": "slides/04_interactions.html#conditional-posteriors-at-specific-values",
-    "href": "slides/04_interactions.html#conditional-posteriors-at-specific-values",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Conditional posteriors at specific values",
-    "text": "Conditional posteriors at specific values\n\nconds &lt;- tibble(\n  PhonLev = c(7.5, 10),\n  cond__ = c(\"PhonLev = 7.5\", \"PhonLev = 10\")\n)\n\nconditional_effects(brm_4a, \"IsWord\", conditions = conds)"
-  },
-  {
-    "objectID": "slides/04_interactions.html#comparisons-aka-contrasts-at-specific-values",
-    "href": "slides/04_interactions.html#comparisons-aka-contrasts-at-specific-values",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Comparisons (aka contrasts) at specific values",
-    "text": "Comparisons (aka contrasts) at specific values\n\n# library(marginaleffects)\n\ncomparisons(brm_4a, variables = \"IsWord\", newdata = datagrid(PhonLev = c(7.5, 10, 12)))\n\n\n   Term     Contrast PhonLev Estimate 2.5 % 97.5 % IsWord\n IsWord FALSE - TRUE     7.5    125.8 100.3    151   TRUE\n IsWord FALSE - TRUE    10.0     90.0  31.2    150   TRUE\n IsWord FALSE - TRUE    12.0     62.1 -32.5    155   TRUE\n\nColumns: rowid, term, contrast, estimate, conf.low, conf.high, PhonLev, predicted_lo, predicted_hi, predicted, tmp_idx, RT, IsWord \nType:  response"
-  },
-  {
-    "objectID": "slides/04_interactions.html#comparisons-aka-contrasts-70-cri",
-    "href": "slides/04_interactions.html#comparisons-aka-contrasts-70-cri",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Comparisons (aka contrasts): 70% CrI",
-    "text": "Comparisons (aka contrasts): 70% CrI\n\ncomparisons(brm_4a, variables = \"IsWord\", newdata = datagrid(PhonLev = c(7.5, 10, 12)), conf_level = 0.7)\n\n\n   Term     Contrast PhonLev Estimate 15.0 % 85.0 % IsWord\n IsWord FALSE - TRUE     7.5    125.8  112.2    139   TRUE\n IsWord FALSE - TRUE    10.0     90.0   58.6    121   TRUE\n IsWord FALSE - TRUE    12.0     62.1   11.4    111   TRUE\n\nColumns: rowid, term, contrast, estimate, conf.low, conf.high, PhonLev, predicted_lo, predicted_hi, predicted, tmp_idx, RT, IsWord \nType:  response"
-  },
-  {
-    "objectID": "slides/04_interactions.html#comparisons-aka-contrasts-along-phonlev",
-    "href": "slides/04_interactions.html#comparisons-aka-contrasts-along-phonlev",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Comparisons (aka contrasts) along PhonLev",
-    "text": "Comparisons (aka contrasts) along PhonLev\n\nplot_comparisons(brm_4a, variables = \"IsWord\", condition = \"PhonLev\", conf_level = 0.7)"
-  },
-  {
-    "objectID": "slides/04_interactions.html#interactions-priors",
-    "href": "slides/04_interactions.html#interactions-priors",
+    "objectID": "slides/05_more_priors.html#interactions-priors",
+    "href": "slides/05_more_priors.html#interactions-priors",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Interactions: priors",
-    "text": "Interactions: priors\n\nget_prior(\n  RT ~ IsWord * PhonLev,\n  family = gaussian,\n  data = mald\n)\n\n                    prior     class                coef group resp dpar nlpar\n                   (flat)         b                                          \n                   (flat)         b         IsWordFALSE                      \n                   (flat)         b IsWordFALSE:PhonLev                      \n                   (flat)         b             PhonLev                      \n student_t(3, 952, 220.9) Intercept                                          \n   student_t(3, 0, 220.9)     sigma                                          \n lb ub       source\n            default\n       (vectorized)\n       (vectorized)\n       (vectorized)\n            default\n  0         default"
+    "text": "Interactions: priors\n\nget_prior(\n  RT ~ IsWord * PhonLev,\n  family = lognormal,\n  data = mald\n)\n\n                  prior     class                coef group resp dpar nlpar lb\n                 (flat)         b                                             \n                 (flat)         b         IsWordFALSE                         \n                 (flat)         b IsWordFALSE:PhonLev                         \n                 (flat)         b             PhonLev                         \n student_t(3, 6.9, 2.5) Intercept                                             \n   student_t(3, 0, 2.5)     sigma                                            0\n ub       source\n         default\n    (vectorized)\n    (vectorized)\n    (vectorized)\n         default\n         default"
   },
   {
-    "objectID": "slides/04_interactions.html#interactions-priors-with-no-intercept",
-    "href": "slides/04_interactions.html#interactions-priors-with-no-intercept",
+    "objectID": "slides/05_more_priors.html#interactions-priors-with-no-intercept",
+    "href": "slides/05_more_priors.html#interactions-priors-with-no-intercept",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Interactions: priors with no intercept",
-    "text": "Interactions: priors with no intercept\n\nget_prior(\n  RT ~ 0 + IsWord + IsWord:PhonLev,\n  family = gaussian,\n  data = mald\n)\n\n                  prior class                coef group resp dpar nlpar lb ub\n                 (flat)     b                                                \n                 (flat)     b         IsWordFALSE                            \n                 (flat)     b IsWordFALSE:PhonLev                            \n                 (flat)     b          IsWordTRUE                            \n                 (flat)     b  IsWordTRUE:PhonLev                            \n student_t(3, 0, 220.9) sigma                                            0   \n       source\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default"
+    "text": "Interactions: priors with no intercept\n\nget_prior(\n  RT ~ 0 + IsWord + IsWord:PhonLev,\n  family = lognormal,\n  data = mald\n)\n\n                prior class                coef group resp dpar nlpar lb ub\n               (flat)     b                                                \n               (flat)     b         IsWordFALSE                            \n               (flat)     b IsWordFALSE:PhonLev                            \n               (flat)     b          IsWordTRUE                            \n               (flat)     b  IsWordTRUE:PhonLev                            \n student_t(3, 0, 2.5) sigma                                            0   \n       source\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default"
   },
   {
-    "objectID": "slides/06_group_level.html#group-level-effects",
-    "href": "slides/06_group_level.html#group-level-effects",
+    "objectID": "slides/05_more_priors.html#the-model-and-the-priors",
+    "href": "slides/05_more_priors.html#the-model-and-the-priors",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "Group-level effects",
-    "text": "Group-level effects\n\nGroup-level effects are the Bayesian equivalent of frequentist random effects.\nAs with the population-level effects, the interpretation of the group-level effects is the same as that of the frequentist random effects, but you have a full (posterior) probability distribution instead of a point estimate."
+    "section": "The model and the priors",
+    "text": "The model and the priors\n\\[\n\\begin{align}\n\\text{RT_i} & \\sim LN(\\mu_i, \\sigma) \\\\\nlog(\\mu_i) & = \\beta_{1_{IW[i]}} + \\beta_{2_{IW[i]}} \\cdot \\text{PhonLev}_i \\\\\n\\beta_{1_{IW[T]}} & \\sim Gaussian(\\mu_1, \\sigma_1) \\\\\n\\beta_{1_{IW[F]}} & \\sim Gaussian(\\mu_2, \\sigma_2) \\\\\n\\beta_{2_{IW[T]}} & \\sim Gaussian(\\mu_3, \\sigma_3) \\\\\n\\beta_{2_{IW[F]}} & \\sim Gaussian(\\mu_4, \\sigma_4) \\\\\n\\sigma & \\sim Cauchy_{+}(0, \\sigma_5)\n\\end{align}\n\\]"
   },
   {
-    "objectID": "slides/06_group_level.html#group-level-priors",
-    "href": "slides/06_group_level.html#group-level-priors",
+    "objectID": "slides/05_more_priors.html#centring-numeric-predictors",
+    "href": "slides/05_more_priors.html#centring-numeric-predictors",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "Group-level priors",
-    "text": "Group-level priors\n\nget_prior(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  data = mald\n)\n\n                prior class                  coef   group resp dpar nlpar lb ub\n               (flat)     b                                                    \n               (flat)     b           IsWordFALSE                              \n               (flat)     b IsWordFALSE:PhonLev_c                              \n               (flat)     b            IsWordTRUE                              \n               (flat)     b  IsWordTRUE:PhonLev_c                              \n               lkj(1)   cor                                                    \n               lkj(1)   cor                       Subject                      \n student_t(3, 0, 2.5)    sd                                                0   \n student_t(3, 0, 2.5)    sd                       Subject                  0   \n student_t(3, 0, 2.5)    sd           IsWordFALSE Subject                  0   \n student_t(3, 0, 2.5)    sd IsWordFALSE:PhonLev_c Subject                  0   \n student_t(3, 0, 2.5)    sd            IsWordTRUE Subject                  0   \n student_t(3, 0, 2.5)    sd  IsWordTRUE:PhonLev_c Subject                  0   \n student_t(3, 0, 2.5) sigma                                                0   \n       source\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default\n (vectorized)\n      default\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n (vectorized)\n      default\n\n\n\n\nbrm_5_priors &lt;- c(\n  prior(normal(7, 0.5), class = b, coef = IsWordFALSE),\n  prior(normal(7, 0.5), class = b, coef = IsWordTRUE),\n  prior(normal(0, 0.1), class = b, coef = `IsWordFALSE:PhonLev_c`),\n  prior(normal(0, 0.1), class = b, coef = `IsWordTRUE:PhonLev_c`),\n  prior(cauchy(0, 0.02), class = sigma),\n  prior(cauchy(0, 0.01), class = sd),\n  prior(lkj(2), class = cor)\n)"
+    "section": "Centring numeric predictors",
+    "text": "Centring numeric predictors\n\n\nPhonLev is numeric, so for the \\(\\beta_{1_{IW[i]}}\\) priors, we need to think about the mean log-RT when PhonLev is 0.\nLet’s centre PhonLev, so that we need to think about the mean log_RT when PhonLev is at its mean.\n\n\n\n\nmean(mald$PhonLev)\n\n[1] 7.092255\n\nmald &lt;- mald |&gt; \n  mutate(PhonLev_c = PhonLev - mean(PhonLev))"
   },
   {
-    "objectID": "slides/06_group_level.html#prior-predictive-checks",
-    "href": "slides/06_group_level.html#prior-predictive-checks",
+    "objectID": "slides/05_more_priors.html#the-model-revised",
+    "href": "slides/05_more_priors.html#the-model-revised",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "The model (revised)",
+    "text": "The model (revised)\n\\[\n\\begin{align}\n\\text{RT_i} & \\sim LN(\\mu_i, \\sigma) \\\\\nlog(\\mu_i) & = \\beta_{1_{IW[i]}} + \\beta_{2_{IW[i]}} \\cdot (\\text{PhonLev}_i - mean(\\text{PhonLev})) \\\\\n\\end{align}\n\\] ## Prior for \\(\\beta_i\\)\n\n\nLet’s say again that the mean RT is between 500 and 2500 ms at 95% confidence. Now let’s log these.\nIn logs: log(500) = 6.2 and log(2500) = 7.8\nGet \\(\\mu_1\\) and \\(\\mu_2\\)\n\nmean(c(6.2, 7.8)) = 7\n\nGet \\(\\sigma_1\\) and \\(\\sigma_2\\)\n\n(7.8 - 7) / 2 = 0.4 (let’s round to 0.5)\n\n\n\n\n\\[\n\\begin{align}\n\\text{RT_i} & \\sim LN(\\mu_i, \\sigma) \\\\\nlog(\\mu_i) & = \\beta_{1_{IW[i]}} + \\beta_{2_{IW[i]}} \\cdot (\\text{PhonLev}_i - mean(\\text{PhonLev})) \\\\\n\\beta_{1_{IW[T]}} & \\sim Gaussian(7, 0.5) \\\\\n\\beta_{1_{IW[F]}} & \\sim Gaussian(7, 0.5) \\\\\n\\end{align}\n\\]"
+  },
+  {
+    "objectID": "slides/05_more_priors.html#prior-for-beta_2",
+    "href": "slides/05_more_priors.html#prior-for-beta_2",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior for \\(\\beta_2\\)",
+    "text": "Prior for \\(\\beta_2\\)\n\n\nLet’s assume no expectation about the effect of PhonLev, apart from that can be negative or positive or null, and not very large.\n\\(Gaussian(0, 0.1)\\).\n\nThis means we are 95% “confident” that the effect of PhonLev on log-RTs is between -0.2 and +0.2 for each unit increase of PhonLev.\n800 * exp(0.2) = 800 * 1.22 = 976 i.e. a (976 - 800 =) 176 ms increase per unit increase. (Also 800 * (1.22 - 1)).\n\n\n\n\n\\[\n\\begin{align}\n\\text{RT_i} & \\sim LN(\\mu_i, \\sigma) \\\\\nlog(\\mu_i) & = \\beta_{1_{IW[i]}} + \\beta_{2_{IW[i]}} \\cdot (\\text{PhonLev}_i - mean(\\text{PhonLev})) \\\\\n\\beta_{1_{IW[T]}} & \\sim Gaussian(7, 0.5) \\\\\n\\beta_{1_{IW[F]}} & \\sim Gaussian(7, 0.5) \\\\\n\\beta_{2_{IW[T]}} & \\sim Gaussian(0, 0.1) \\\\\n\\beta_{2_{IW[F]}} & \\sim Gaussian(0, 0.1) \\\\\n\\end{align}\n\\]"
+  },
+  {
+    "objectID": "slides/05_more_priors.html#prior-predictive-checks",
+    "href": "slides/05_more_priors.html#prior-predictive-checks",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Prior predictive checks",
-    "text": "Prior predictive checks\n\nbrm_5_priorpp &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  prior = brm_5_priors,\n  data = mald,\n  sample_prior = \"only\",\n  cores = 4,\n  file = \"data/cache/brm_5_priorpp\",\n  seed = my_seed\n)"
+    "text": "Prior predictive checks\n\nbrm_4b_priors &lt;- c(\n  prior(normal(7, 0.5), class = b, coef = IsWordFALSE),\n  prior(normal(7, 0.5), class = b, coef = IsWordTRUE),\n  prior(normal(0, 0.1), class = b, coef = `IsWordFALSE:PhonLev_c`),\n  prior(normal(0, 0.1), class = b, coef = `IsWordTRUE:PhonLev_c`),\n  prior(cauchy(0, 0.02), class = sigma)\n)\n\nbrm_4b_priorpp &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c,\n  family = lognormal,\n  prior = brm_4b_priors,\n  data = mald,\n  sample_prior = \"only\",\n  cores = 4,\n  file = \"data/cache/brm_4b_priorpp\",\n  seed = my_seed\n)"
   },
   {
-    "objectID": "slides/06_group_level.html#prior-predictive-checks-plot",
-    "href": "slides/06_group_level.html#prior-predictive-checks-plot",
+    "objectID": "slides/05_more_priors.html#prior-predictive-checks-plot",
+    "href": "slides/05_more_priors.html#prior-predictive-checks-plot",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "Prior predictive checks: plot",
-    "text": "Prior predictive checks: plot\n\nconditional_effects(brm_5_priorpp, \"PhonLev_c:IsWord\")"
+    "section": "Prior predictive checks plot",
+    "text": "Prior predictive checks plot\n\nconditional_effects(brm_4b_priorpp, \"PhonLev_c:IsWord\")"
   },
   {
-    "objectID": "slides/06_group_level.html#run-the-model",
-    "href": "slides/06_group_level.html#run-the-model",
+    "objectID": "slides/05_more_priors.html#run-the-model",
+    "href": "slides/05_more_priors.html#run-the-model",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Run the model",
-    "text": "Run the model\n\nbrm_5 &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject),\n  family = lognormal,\n  prior = brm_5_priors,\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_5\",\n  seed = my_seed\n)"
+    "text": "Run the model\n\nbrm_4b &lt;- brm(\n  RT ~ 0 + IsWord + IsWord:PhonLev_c,\n  family = lognormal,\n  prior = brm_4b_priors,\n  data = mald,\n  cores = 4,\n  file = \"data/cache/brm_4b\",\n  seed = my_seed\n)"
   },
   {
-    "objectID": "slides/06_group_level.html#model-summary",
-    "href": "slides/06_group_level.html#model-summary",
+    "objectID": "slides/05_more_priors.html#model-summary",
+    "href": "slides/05_more_priors.html#model-summary",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Model summary",
-    "text": "Model summary\n\nbrm_5\n\n Family: lognormal \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject) \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~Subject (Number of levels: 30) \n                                                Estimate Est.Error l-95% CI\nsd(IsWordTRUE)                                      0.07      0.01     0.05\nsd(IsWordFALSE)                                     0.11      0.02     0.08\nsd(IsWordTRUE:PhonLev_c)                            0.01      0.00     0.00\nsd(IsWordFALSE:PhonLev_c)                           0.01      0.01     0.00\ncor(IsWordTRUE,IsWordFALSE)                         0.56      0.14     0.25\ncor(IsWordTRUE,IsWordTRUE:PhonLev_c)               -0.04      0.37    -0.72\ncor(IsWordFALSE,IsWordTRUE:PhonLev_c)              -0.06      0.37    -0.73\ncor(IsWordTRUE,IsWordFALSE:PhonLev_c)              -0.12      0.34    -0.73\ncor(IsWordFALSE,IsWordFALSE:PhonLev_c)             -0.29      0.35    -0.83\ncor(IsWordTRUE:PhonLev_c,IsWordFALSE:PhonLev_c)     0.04      0.38    -0.68\n                                                u-95% CI Rhat Bulk_ESS Tail_ESS\nsd(IsWordTRUE)                                      0.09 1.00     1672     2460\nsd(IsWordFALSE)                                     0.14 1.00     1453     2297\nsd(IsWordTRUE:PhonLev_c)                            0.02 1.00     2433     1442\nsd(IsWordFALSE:PhonLev_c)                           0.02 1.00     1595     1446\ncor(IsWordTRUE,IsWordFALSE)                         0.80 1.00     1199     1989\ncor(IsWordTRUE,IsWordTRUE:PhonLev_c)                0.69 1.00     4944     2715\ncor(IsWordFALSE,IsWordTRUE:PhonLev_c)               0.65 1.00     4708     3065\ncor(IsWordTRUE,IsWordFALSE:PhonLev_c)               0.59 1.00     4670     2622\ncor(IsWordFALSE,IsWordFALSE:PhonLev_c)              0.50 1.00     3757     2670\ncor(IsWordTRUE:PhonLev_c,IsWordFALSE:PhonLev_c)     0.73 1.00     3205     2757\n\nRegression Coefficients:\n                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS\nIsWordTRUE                6.85      0.01     6.82     6.88 1.00     1246\nIsWordFALSE               6.97      0.02     6.93     7.01 1.00     1552\nIsWordTRUE:PhonLev_c      0.03      0.01     0.02     0.04 1.00     5067\nIsWordFALSE:PhonLev_c     0.02      0.01     0.01     0.03 1.00     6071\n                      Tail_ESS\nIsWordTRUE                1997\nIsWordFALSE               2216\nIsWordTRUE:PhonLev_c      2707\nIsWordFALSE:PhonLev_c     2723\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.26      0.00     0.26     0.27 1.00     5289     3176\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+    "text": "Model summary\n\nbrm_4b\n\n Family: lognormal \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 0 + IsWord + IsWord:PhonLev_c \n   Data: mald (Number of observations: 3000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS\nIsWordTRUE                6.85      0.01     6.84     6.86 1.00     4894\nIsWordFALSE               6.97      0.01     6.95     6.98 1.00     5171\nIsWordTRUE:PhonLev_c      0.03      0.01     0.02     0.04 1.00     5139\nIsWordFALSE:PhonLev_c     0.02      0.01     0.01     0.03 1.00     5870\n                      Tail_ESS\nIsWordTRUE                3055\nIsWordFALSE               3022\nIsWordTRUE:PhonLev_c      3388\nIsWordFALSE:PhonLev_c     3001\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.28      0.00     0.27     0.29 1.00     4232     3160\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
   },
   {
-    "objectID": "slides/06_group_level.html#conditional-posterior-probability-distributions",
-    "href": "slides/06_group_level.html#conditional-posterior-probability-distributions",
+    "objectID": "slides/05_more_priors.html#posterior-predictive-checks",
+    "href": "slides/05_more_priors.html#posterior-predictive-checks",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "Conditional posterior probability distributions",
-    "text": "Conditional posterior probability distributions\n\nconditional_effects(brm_5, \"PhonLev_c:IsWord\")"
+    "section": "Posterior predictive checks",
+    "text": "Posterior predictive checks\n\npp_check(brm_4b, ndraws = 50)"
   },
   {
-    "objectID": "slides/06_group_level.html#getting-group-level-adjustments",
-    "href": "slides/06_group_level.html#getting-group-level-adjustments",
+    "objectID": "slides/05_more_priors.html#conditional-posterior-probabilies",
+    "href": "slides/05_more_priors.html#conditional-posterior-probabilies",
     "title": "Introduction to Bayesian Linear Models",
-    "section": "Getting group-level adjustments",
-    "text": "Getting group-level adjustments\n\nbrm_5_shrunk &lt;- brm_5 |&gt;\n  spread_draws(r_Subject[Subject,term]) |&gt;\n  mean_qi() |&gt;\n  mutate(source = \"shrunk\")\n\ngmean_RT &lt;- mean(mald$RT_log, na.rm = TRUE)\n\noriginal &lt;- mald |&gt;\n  group_by(Subject) |&gt;\n  summarise(\n    mean_RT = mean(RT_log) ,\n    sd_RT = sd(RT_log),\n    lower = mean_RT - 1.96 * sd_RT,\n    upper = mean_RT + 1.96 * sd_RT\n  )"
-  },
-  {
-    "objectID": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.",
-    "href": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Plotting group-level adjustments for IsWordTRUE.",
-    "text": "Plotting group-level adjustments for IsWordTRUE.\n\nbrm_5_shrunk |&gt;\n  filter(term %in% c(\"IsWordTRUE\")) |&gt;\n  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  geom_point(size = 2) +\n  geom_errorbarh(aes(xmin = .lower, xmax = .upper)) +\n  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = \"red\", size = 2, alpha = 0.6) +\n  facet_grid(cols = vars(term)) +\n  labs(\n    title = \"By-subject conditional mode for Intercept\",\n    x = \"Conditional mode\",\n    y = \"Subject\",\n    caption = str_wrap(\"The red dots mark the by-subject mean RT from the raw data.\")\n  ) +\n  xlim(-.4, .4)"
-  },
-  {
-    "objectID": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.-1",
-    "href": "slides/06_group_level.html#plotting-group-level-adjustments-for-iswordtrue.-1",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Plotting group-level adjustments for IsWordTRUE.",
-    "text": "Plotting group-level adjustments for IsWordTRUE.\n\nbrm_5_shrunk |&gt;\n  filter(term %in% c(\"IsWordFALSE\")) |&gt;\n  ggplot(aes(r_Subject, reorder(as.character(Subject), r_Subject))) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  geom_point(size = 2) +\n  geom_errorbarh(aes(xmin = .lower, xmax = .upper)) +\n  geom_point(data = original, aes(mean_RT - gmean_RT, Subject), colour = \"red\", size = 2, alpha = 0.6) +\n  facet_grid(cols = vars(term)) +\n  labs(\n    title = \"By-subject conditional mode for Intercept\",\n    x = \"Conditional mode\",\n    y = \"Subject\",\n    caption = str_wrap(\"The red dots mark the by-subject mean RT from the raw data.\")\n  ) +\n  xlim(-.4, .4)"
+    "section": "Conditional posterior probabilies",
+    "text": "Conditional posterior probabilies\n\nconditional_effects(brm_4b, \"PhonLev_c:IsWord\")"
   }
 ]

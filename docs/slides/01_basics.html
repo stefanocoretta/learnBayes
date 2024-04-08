@@ -9,7 +9,7 @@
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-contrib/tachyonsextra-0.0.1/tachyonsextra.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.552">
+  <meta name="generator" content="quarto-1.4.553">
 
   <meta name="author" content="Stefano Coretta">
   <title>learnBayes - Introduction to Bayesian Linear Models</title>
@@ -393,7 +393,7 @@
 
 <section id="title-slide" data-background="var(--inverse)" class="quarto-title-block center">
   <h1 class="title">Introduction to Bayesian Linear Models</h1>
-  <p class="subtitle">Part 1</p>
+  <p class="subtitle">01 - Basics</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -508,7 +508,7 @@ Stefano Coretta
 <span id="cb3-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="01_part_1_files/figure-revealjs/dist-stat-1.png" width="960" class="r-stretch"></section>
+<img data-src="01_basics_files/figure-revealjs/dist-stat-1.png" width="960" class="r-stretch"></section>
 <section id="a-frequentist-linear-model" class="slide level2">
 <h2>A frequentist linear model</h2>
 <div class="cell">
@@ -565,7 +565,7 @@ PhL:IWFALSE  0.640 -0.705 -0.983</code></pre>
 <span id="cb7-2"><a></a>  <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="01_part_1_files/figure-revealjs/lm-1-pred-1.png" width="960" class="r-stretch"></section>
+<img data-src="01_basics_files/figure-revealjs/lm-1-pred-1.png" width="960" class="r-stretch"></section>
 <section id="increase-model-complexity" class="slide level2">
 <h2>Increase model complexity</h2>
 <p><strong>Try it yourself!</strong> Does it work?</p>
@@ -663,7 +663,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">conditional_effects</span>(brm_1, <span class="at">effects =</span> <span class="st">"PhonLev:IsWord"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="01_part_1_files/figure-revealjs/brm-1-plot-1.png" width="960" class="r-stretch"></section>
+<img data-src="01_basics_files/figure-revealjs/brm-1-plot-1.png" width="960" class="r-stretch"></section>
 <section id="lets-start-small" class="slide level2">
 <h2>Let’s start small</h2>
 <p><strong>Try it yourself!</strong></p>
@@ -810,7 +810,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">plot</span>(brm_2, <span class="at">combo =</span> <span class="fu">c</span>(<span class="st">"dens"</span>, <span class="st">"trace"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="01_part_1_files/figure-revealjs/brm-2-plot-1.png" width="960" class="r-stretch"></section>
+<img data-src="01_basics_files/figure-revealjs/brm-2-plot-1.png" width="960" class="r-stretch"></section>
 <section id="extract-the-mcmc-draws" class="slide level2">
 <h2>Extract the MCMC draws</h2>
 <div class="cell">
@@ -845,8 +845,8 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 </section>
-<section id="posterior-distributions" class="slide level2">
-<h2>Posterior distributions</h2>
+<section id="posterior-distributions-intercept" class="slide level2">
+<h2>Posterior distributions: intercept</h2>
 <p>Now you can plot the draws using ggplot2.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>brm_2_draws <span class="sc">%&gt;%</span></span>
@@ -856,22 +856,48 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb26-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Posterior distribution of Intercept"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
+</section>
+<section id="posterior-distributions-intercept-output" class="slide level2 output-location-slide"><h2>Posterior distributions: intercept</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="01_basics_files/figure-revealjs/brm-2-int-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div></section><section id="posterior-distribution-iswordfalse" class="slide level2">
+<h2>Posterior distribution: <code>IsWordFalse</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>brm_2_draws <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(b_IsWordFALSE)) <span class="sc">+</span></span>
+<span id="cb27-3"><a></a>  <span class="fu">stat_halfeye</span>(<span class="at">fill =</span> <span class="st">"#624B27"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb27-4"><a></a>  <span class="fu">scale_x_continuous</span>() <span class="sc">+</span></span>
+<span id="cb27-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Posterior distribution of IsWord: FALSE - TRUE"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
-<div class="quarto-auto-generated-content">
+</section>
+<section id="posterior-distribution-iswordfalse-output" class="slide level2 output-location-slide"><h2>Posterior distribution: <code>IsWordFalse</code></h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="01_basics_files/figure-revealjs/brm-2-isword-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div></section><section id="conditional-posterior-probabilities" class="slide level2">
+<h2>Conditional posterior probabilities</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">conditional_effects</span>(brm_2, <span class="st">"IsWord"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+
+<img data-src="01_basics_files/figure-revealjs/brm-2-cond-1.png" width="960" class="r-stretch"><div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
 </div>
 </section>
-    <section id="posterior-distributions-output" class="slide level2 output-location-slide"><h2>Posterior distributions</h2><div class="cell output-location-slide">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="01_part_1_files/figure-revealjs/brm-2-int-g-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div></section></div>
+    </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>

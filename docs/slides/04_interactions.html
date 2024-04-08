@@ -9,7 +9,7 @@
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-contrib/tachyonsextra-0.0.1/tachyonsextra.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.552">
+  <meta name="generator" content="quarto-1.4.553">
 
   <meta name="author" content="Stefano Coretta">
   <title>learnBayes - Introduction to Bayesian Linear Models</title>
@@ -564,59 +564,14 @@ Type:  response </code></pre>
 
 </div>
 <img data-src="04_interactions_files/figure-revealjs/brm-4a-comp-phonlev-1.png" width="960" class="r-stretch"></section>
-<section id="interactions-priors" class="slide level2">
-<h2>Interactions: priors</h2>
+<section id="posterior-predictive-checks" class="slide level2">
+<h2>Posterior predictive checks</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">get_prior</span>(</span>
-<span id="cb15-2"><a></a>  RT <span class="sc">~</span> IsWord <span class="sc">*</span> PhonLev,</span>
-<span id="cb15-3"><a></a>  <span class="at">family =</span> gaussian,</span>
-<span id="cb15-4"><a></a>  <span class="at">data =</span> mald</span>
-<span id="cb15-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                    prior     class                coef group resp dpar nlpar
-                   (flat)         b                                          
-                   (flat)         b         IsWordFALSE                      
-                   (flat)         b IsWordFALSE:PhonLev                      
-                   (flat)         b             PhonLev                      
- student_t(3, 952, 220.9) Intercept                                          
-   student_t(3, 0, 220.9)     sigma                                          
- lb ub       source
-            default
-       (vectorized)
-       (vectorized)
-       (vectorized)
-            default
-  0         default</code></pre>
-</div>
-</div>
-</section>
-<section id="interactions-priors-with-no-intercept" class="slide level2">
-<h2>Interactions: priors with no intercept</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">get_prior</span>(</span>
-<span id="cb17-2"><a></a>  RT <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev,</span>
-<span id="cb17-3"><a></a>  <span class="at">family =</span> gaussian,</span>
-<span id="cb17-4"><a></a>  <span class="at">data =</span> mald</span>
-<span id="cb17-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                  prior class                coef group resp dpar nlpar lb ub
-                 (flat)     b                                                
-                 (flat)     b         IsWordFALSE                            
-                 (flat)     b IsWordFALSE:PhonLev                            
-                 (flat)     b          IsWordTRUE                            
-                 (flat)     b  IsWordTRUE:PhonLev                            
- student_t(3, 0, 220.9) sigma                                            0   
-       source
-      default
- (vectorized)
- (vectorized)
- (vectorized)
- (vectorized)
-      default</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">pp_check</span>(brm_4a, <span class="at">ndraws =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
 
-<div class="quarto-auto-generated-content">
+<img data-src="04_interactions_files/figure-revealjs/brm-4a-pp-1.png" width="960" class="r-stretch"><div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>

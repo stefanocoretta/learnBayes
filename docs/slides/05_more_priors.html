@@ -407,47 +407,50 @@ Stefano Coretta
 </div>
 
 </section>
-<section id="group-level-effects" class="slide level2">
-<h2>Group-level effects</h2>
-<div class="box-note">
-<p><strong>Group-level effects</strong> are the Bayesian equivalent of frequentist random effects.</p>
-<p>As with the population-level effects, the interpretation of the group-level effects is the same as that of the frequentist random effects, but you have a full (posterior) probability distribution instead of a point estimate.</p>
-</div>
-</section>
-<section id="group-level-priors" class="slide level2">
-<h2>Group-level priors</h2>
+<section id="interactions-priors" class="slide level2">
+<h2>Interactions: priors</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">get_prior</span>(</span>
-<span id="cb1-2"><a></a>  RT <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev_c <span class="sc">+</span> (<span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev_c <span class="sc">|</span> Subject),</span>
+<span id="cb1-2"><a></a>  RT <span class="sc">~</span> IsWord <span class="sc">*</span> PhonLev,</span>
 <span id="cb1-3"><a></a>  <span class="at">family =</span> lognormal,</span>
 <span id="cb1-4"><a></a>  <span class="at">data =</span> mald</span>
 <span id="cb1-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                prior class                  coef   group resp dpar nlpar lb ub
-               (flat)     b                                                    
-               (flat)     b           IsWordFALSE                              
-               (flat)     b IsWordFALSE:PhonLev_c                              
-               (flat)     b            IsWordTRUE                              
-               (flat)     b  IsWordTRUE:PhonLev_c                              
-               lkj(1)   cor                                                    
-               lkj(1)   cor                       Subject                      
- student_t(3, 0, 2.5)    sd                                                0   
- student_t(3, 0, 2.5)    sd                       Subject                  0   
- student_t(3, 0, 2.5)    sd           IsWordFALSE Subject                  0   
- student_t(3, 0, 2.5)    sd IsWordFALSE:PhonLev_c Subject                  0   
- student_t(3, 0, 2.5)    sd            IsWordTRUE Subject                  0   
- student_t(3, 0, 2.5)    sd  IsWordTRUE:PhonLev_c Subject                  0   
- student_t(3, 0, 2.5) sigma                                                0   
+<pre><code>                  prior     class                coef group resp dpar nlpar lb
+                 (flat)         b                                             
+                 (flat)         b         IsWordFALSE                         
+                 (flat)         b IsWordFALSE:PhonLev                         
+                 (flat)         b             PhonLev                         
+ student_t(3, 6.9, 2.5) Intercept                                             
+   student_t(3, 0, 2.5)     sigma                                            0
+ ub       source
+         default
+    (vectorized)
+    (vectorized)
+    (vectorized)
+         default
+         default</code></pre>
+</div>
+</div>
+</section>
+<section id="interactions-priors-with-no-intercept" class="slide level2">
+<h2>Interactions: priors with no intercept</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">get_prior</span>(</span>
+<span id="cb3-2"><a></a>  RT <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev,</span>
+<span id="cb3-3"><a></a>  <span class="at">family =</span> lognormal,</span>
+<span id="cb3-4"><a></a>  <span class="at">data =</span> mald</span>
+<span id="cb3-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                prior class                coef group resp dpar nlpar lb ub
+               (flat)     b                                                
+               (flat)     b         IsWordFALSE                            
+               (flat)     b IsWordFALSE:PhonLev                            
+               (flat)     b          IsWordTRUE                            
+               (flat)     b  IsWordTRUE:PhonLev                            
+ student_t(3, 0, 2.5) sigma                                            0   
        source
       default
- (vectorized)
- (vectorized)
- (vectorized)
- (vectorized)
-      default
- (vectorized)
-      default
- (vectorized)
  (vectorized)
  (vectorized)
  (vectorized)
@@ -455,108 +458,169 @@ Stefano Coretta
       default</code></pre>
 </div>
 </div>
+</section>
+<section id="the-model-and-the-priors" class="slide level2">
+<h2>The model and the priors</h2>
+<p><span class="math display">\[
+\begin{align}
+\text{RT_i} &amp; \sim LN(\mu_i, \sigma) \\
+log(\mu_i) &amp; = \beta_{1_{IW[i]}} + \beta_{2_{IW[i]}} \cdot \text{PhonLev}_i \\
+\beta_{1_{IW[T]}} &amp; \sim Gaussian(\mu_1, \sigma_1) \\
+\beta_{1_{IW[F]}} &amp; \sim Gaussian(\mu_2, \sigma_2) \\
+\beta_{2_{IW[T]}} &amp; \sim Gaussian(\mu_3, \sigma_3) \\
+\beta_{2_{IW[F]}} &amp; \sim Gaussian(\mu_4, \sigma_4) \\
+\sigma &amp; \sim Cauchy_{+}(0, \sigma_5)
+\end{align}
+\]</span></p>
+</section>
+<section id="centring-numeric-predictors" class="slide level2">
+<h2>Centring numeric predictors</h2>
+<div class="box-note">
+<ul>
+<li><p><code>PhonLev</code> is numeric, so for the <span class="math inline">\(\beta_{1_{IW[i]}}\)</span> priors, we need to think about the mean log-RT when <code>PhonLev</code> is 0.</p></li>
+<li><p>Let’s centre <code>PhonLev</code>, so that we need to think about the mean log_RT when <code>PhonLev</code> is at its mean.</p></li>
+</ul>
+</div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>brm_5_priors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb3-2"><a></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">7</span>, <span class="fl">0.5</span>), <span class="at">class =</span> b, <span class="at">coef =</span> IsWordFALSE),</span>
-<span id="cb3-3"><a></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">7</span>, <span class="fl">0.5</span>), <span class="at">class =</span> b, <span class="at">coef =</span> IsWordTRUE),</span>
-<span id="cb3-4"><a></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.1</span>), <span class="at">class =</span> b, <span class="at">coef =</span> <span class="st">`</span><span class="at">IsWordFALSE:PhonLev_c</span><span class="st">`</span>),</span>
-<span id="cb3-5"><a></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.1</span>), <span class="at">class =</span> b, <span class="at">coef =</span> <span class="st">`</span><span class="at">IsWordTRUE:PhonLev_c</span><span class="st">`</span>),</span>
-<span id="cb3-6"><a></a>  <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">0</span>, <span class="fl">0.02</span>), <span class="at">class =</span> sigma),</span>
-<span id="cb3-7"><a></a>  <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">0</span>, <span class="fl">0.01</span>), <span class="at">class =</span> sd),</span>
-<span id="cb3-8"><a></a>  <span class="fu">prior</span>(<span class="fu">lkj</span>(<span class="dv">2</span>), <span class="at">class =</span> cor)</span>
-<span id="cb3-9"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">mean</span>(mald<span class="sc">$</span>PhonLev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.092255</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>mald <span class="ot">&lt;-</span> mald <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a></a>  <span class="fu">mutate</span>(<span class="at">PhonLev_c =</span> PhonLev <span class="sc">-</span> <span class="fu">mean</span>(PhonLev))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="the-model-revised" class="slide level2">
+<h2>The model (revised)</h2>
+<p><span class="math display">\[
+\begin{align}
+\text{RT_i} &amp; \sim LN(\mu_i, \sigma) \\
+log(\mu_i) &amp; = \beta_{1_{IW[i]}} + \beta_{2_{IW[i]}} \cdot (\text{PhonLev}_i - mean(\text{PhonLev})) \\
+\end{align}
+\]</span> ## Prior for <span class="math inline">\(\beta_i\)</span></p>
+<div class="box-note">
+<ul>
+<li><p>Let’s say again that the mean RT is between 500 and 2500 ms at 95% confidence. Now let’s log these.</p></li>
+<li><p>In logs: <code>log(500) = 6.2</code> and <code>log(2500) = 7.8</code></p></li>
+<li><p>Get <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\mu_2\)</span></p>
+<ul>
+<li><code>mean(c(6.2, 7.8))</code> = 7</li>
+</ul></li>
+<li><p>Get <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(\sigma_2\)</span></p>
+<ul>
+<li><code>(7.8 - 7) / 2</code> = 0.4 (let’s round to 0.5)</li>
+</ul></li>
+</ul>
+</div>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{align}
+\text{RT_i} &amp; \sim LN(\mu_i, \sigma) \\
+log(\mu_i) &amp; = \beta_{1_{IW[i]}} + \beta_{2_{IW[i]}} \cdot (\text{PhonLev}_i - mean(\text{PhonLev})) \\
+\beta_{1_{IW[T]}} &amp; \sim Gaussian(7, 0.5) \\
+\beta_{1_{IW[F]}} &amp; \sim Gaussian(7, 0.5) \\
+\end{align}
+\]</span></p>
+</div>
+</section>
+<section id="prior-for-beta_2" class="slide level2">
+<h2>Prior for <span class="math inline">\(\beta_2\)</span></h2>
+<div class="box-note">
+<ul>
+<li><p>Let’s assume no expectation about the effect of <code>PhonLev</code>, apart from that can be negative or positive or null, and not very large.</p></li>
+<li><p><span class="math inline">\(Gaussian(0, 0.1)\)</span>.</p>
+<ul>
+<li><p>This means we are 95% “confident” that the effect of <code>PhonLev</code> on log-RTs is between -0.2 and +0.2 for each unit increase of <code>PhonLev</code>.</p></li>
+<li><p><code>800 * exp(0.2) = 800 * 1.22 = 976</code> i.e.&nbsp;a (<code>976 - 800 =</code>) 176 ms increase per unit increase. (Also <code>800 * (1.22 - 1)</code>).</p></li>
+</ul></li>
+</ul>
+</div>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{align}
+\text{RT_i} &amp; \sim LN(\mu_i, \sigma) \\
+log(\mu_i) &amp; = \beta_{1_{IW[i]}} + \beta_{2_{IW[i]}} \cdot (\text{PhonLev}_i - mean(\text{PhonLev})) \\
+\beta_{1_{IW[T]}} &amp; \sim Gaussian(7, 0.5) \\
+\beta_{1_{IW[F]}} &amp; \sim Gaussian(7, 0.5) \\
+\beta_{2_{IW[T]}} &amp; \sim Gaussian(0, 0.1) \\
+\beta_{2_{IW[F]}} &amp; \sim Gaussian(0, 0.1) \\
+\end{align}
+\]</span></p>
 </div>
 </section>
 <section id="prior-predictive-checks" class="slide level2">
 <h2>Prior predictive checks</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>brm_5_priorpp <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb4-2"><a></a>  RT <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev_c <span class="sc">+</span> (<span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev_c <span class="sc">|</span> Subject),</span>
-<span id="cb4-3"><a></a>  <span class="at">family =</span> lognormal,</span>
-<span id="cb4-4"><a></a>  <span class="at">prior =</span> brm_5_priors,</span>
-<span id="cb4-5"><a></a>  <span class="at">data =</span> mald,</span>
-<span id="cb4-6"><a></a>  <span class="at">sample_prior =</span> <span class="st">"only"</span>,</span>
-<span id="cb4-7"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb4-8"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/brm_5_priorpp"</span>,</span>
-<span id="cb4-9"><a></a>  <span class="at">seed =</span> my_seed</span>
-<span id="cb4-10"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>brm_4b_priors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb8-2"><a></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">7</span>, <span class="fl">0.5</span>), <span class="at">class =</span> b, <span class="at">coef =</span> IsWordFALSE),</span>
+<span id="cb8-3"><a></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">7</span>, <span class="fl">0.5</span>), <span class="at">class =</span> b, <span class="at">coef =</span> IsWordTRUE),</span>
+<span id="cb8-4"><a></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.1</span>), <span class="at">class =</span> b, <span class="at">coef =</span> <span class="st">`</span><span class="at">IsWordFALSE:PhonLev_c</span><span class="st">`</span>),</span>
+<span id="cb8-5"><a></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.1</span>), <span class="at">class =</span> b, <span class="at">coef =</span> <span class="st">`</span><span class="at">IsWordTRUE:PhonLev_c</span><span class="st">`</span>),</span>
+<span id="cb8-6"><a></a>  <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">0</span>, <span class="fl">0.02</span>), <span class="at">class =</span> sigma)</span>
+<span id="cb8-7"><a></a>)</span>
+<span id="cb8-8"><a></a></span>
+<span id="cb8-9"><a></a>brm_4b_priorpp <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb8-10"><a></a>  RT <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev_c,</span>
+<span id="cb8-11"><a></a>  <span class="at">family =</span> lognormal,</span>
+<span id="cb8-12"><a></a>  <span class="at">prior =</span> brm_4b_priors,</span>
+<span id="cb8-13"><a></a>  <span class="at">data =</span> mald,</span>
+<span id="cb8-14"><a></a>  <span class="at">sample_prior =</span> <span class="st">"only"</span>,</span>
+<span id="cb8-15"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb8-16"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/brm_4b_priorpp"</span>,</span>
+<span id="cb8-17"><a></a>  <span class="at">seed =</span> my_seed</span>
+<span id="cb8-18"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="prior-predictive-checks-plot" class="slide level2">
-<h2>Prior predictive checks: plot</h2>
+<h2>Prior predictive checks plot</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">conditional_effects</span>(brm_5_priorpp, <span class="st">"PhonLev_c:IsWord"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">conditional_effects</span>(brm_4b_priorpp, <span class="st">"PhonLev_c:IsWord"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="06_group_level_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
+<img data-src="05_more_priors_files/figure-revealjs/brm-4b-priorpp-cond-1.png" width="960" class="r-stretch"></section>
 <section id="run-the-model" class="slide level2">
 <h2>Run the model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>brm_5 <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb6-2"><a></a>  RT <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev_c <span class="sc">+</span> (<span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev_c <span class="sc">|</span> Subject),</span>
-<span id="cb6-3"><a></a>  <span class="at">family =</span> lognormal,</span>
-<span id="cb6-4"><a></a>  <span class="at">prior =</span> brm_5_priors,</span>
-<span id="cb6-5"><a></a>  <span class="at">data =</span> mald,</span>
-<span id="cb6-6"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb6-7"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/brm_5"</span>,</span>
-<span id="cb6-8"><a></a>  <span class="at">seed =</span> my_seed</span>
-<span id="cb6-9"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>brm_4b <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb10-2"><a></a>  RT <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> IsWord <span class="sc">+</span> IsWord<span class="sc">:</span>PhonLev_c,</span>
+<span id="cb10-3"><a></a>  <span class="at">family =</span> lognormal,</span>
+<span id="cb10-4"><a></a>  <span class="at">prior =</span> brm_4b_priors,</span>
+<span id="cb10-5"><a></a>  <span class="at">data =</span> mald,</span>
+<span id="cb10-6"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb10-7"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/brm_4b"</span>,</span>
+<span id="cb10-8"><a></a>  <span class="at">seed =</span> my_seed</span>
+<span id="cb10-9"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="model-summary" class="slide level2">
 <h2>Model summary</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>brm_5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>brm_4b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: lognormal 
   Links: mu = identity; sigma = identity 
-Formula: RT ~ 0 + IsWord + IsWord:PhonLev_c + (0 + IsWord + IsWord:PhonLev_c | Subject) 
+Formula: RT ~ 0 + IsWord + IsWord:PhonLev_c 
    Data: mald (Number of observations: 3000) 
   Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
          total post-warmup draws = 4000
 
-Multilevel Hyperparameters:
-~Subject (Number of levels: 30) 
-                                                Estimate Est.Error l-95% CI
-sd(IsWordTRUE)                                      0.07      0.01     0.05
-sd(IsWordFALSE)                                     0.11      0.02     0.08
-sd(IsWordTRUE:PhonLev_c)                            0.01      0.00     0.00
-sd(IsWordFALSE:PhonLev_c)                           0.01      0.01     0.00
-cor(IsWordTRUE,IsWordFALSE)                         0.56      0.14     0.25
-cor(IsWordTRUE,IsWordTRUE:PhonLev_c)               -0.04      0.37    -0.72
-cor(IsWordFALSE,IsWordTRUE:PhonLev_c)              -0.06      0.37    -0.73
-cor(IsWordTRUE,IsWordFALSE:PhonLev_c)              -0.12      0.34    -0.73
-cor(IsWordFALSE,IsWordFALSE:PhonLev_c)             -0.29      0.35    -0.83
-cor(IsWordTRUE:PhonLev_c,IsWordFALSE:PhonLev_c)     0.04      0.38    -0.68
-                                                u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(IsWordTRUE)                                      0.09 1.00     1672     2460
-sd(IsWordFALSE)                                     0.14 1.00     1453     2297
-sd(IsWordTRUE:PhonLev_c)                            0.02 1.00     2433     1442
-sd(IsWordFALSE:PhonLev_c)                           0.02 1.00     1595     1446
-cor(IsWordTRUE,IsWordFALSE)                         0.80 1.00     1199     1989
-cor(IsWordTRUE,IsWordTRUE:PhonLev_c)                0.69 1.00     4944     2715
-cor(IsWordFALSE,IsWordTRUE:PhonLev_c)               0.65 1.00     4708     3065
-cor(IsWordTRUE,IsWordFALSE:PhonLev_c)               0.59 1.00     4670     2622
-cor(IsWordFALSE,IsWordFALSE:PhonLev_c)              0.50 1.00     3757     2670
-cor(IsWordTRUE:PhonLev_c,IsWordFALSE:PhonLev_c)     0.73 1.00     3205     2757
-
 Regression Coefficients:
                       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-IsWordTRUE                6.85      0.01     6.82     6.88 1.00     1246
-IsWordFALSE               6.97      0.02     6.93     7.01 1.00     1552
-IsWordTRUE:PhonLev_c      0.03      0.01     0.02     0.04 1.00     5067
-IsWordFALSE:PhonLev_c     0.02      0.01     0.01     0.03 1.00     6071
+IsWordTRUE                6.85      0.01     6.84     6.86 1.00     4894
+IsWordFALSE               6.97      0.01     6.95     6.98 1.00     5171
+IsWordTRUE:PhonLev_c      0.03      0.01     0.02     0.04 1.00     5139
+IsWordFALSE:PhonLev_c     0.02      0.01     0.01     0.03 1.00     5870
                       Tail_ESS
-IsWordTRUE                1997
-IsWordFALSE               2216
-IsWordTRUE:PhonLev_c      2707
-IsWordFALSE:PhonLev_c     2723
+IsWordTRUE                3055
+IsWordFALSE               3022
+IsWordTRUE:PhonLev_c      3388
+IsWordFALSE:PhonLev_c     3001
 
 Further Distributional Parameters:
       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sigma     0.26      0.00     0.26     0.27 1.00     5289     3176
+sigma     0.28      0.00     0.27     0.29 1.00     4232     3160
 
 Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -564,76 +628,21 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 </section>
-<section id="conditional-posterior-probability-distributions" class="slide level2">
-<h2>Conditional posterior probability distributions</h2>
+<section id="posterior-predictive-checks" class="slide level2">
+<h2>Posterior predictive checks</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">conditional_effects</span>(brm_5, <span class="st">"PhonLev_c:IsWord"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">pp_check</span>(brm_4b, <span class="at">ndraws =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="06_group_level_files/figure-revealjs/brm-5-cond-1.png" width="960" class="r-stretch"></section>
-<section id="getting-group-level-adjustments" class="slide level2">
-<h2>Getting group-level adjustments</h2>
+<img data-src="05_more_priors_files/figure-revealjs/brm-4b-pp-1.png" width="960" class="r-stretch"></section>
+<section id="conditional-posterior-probabilies" class="slide level2">
+<h2>Conditional posterior probabilies</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>brm_5_shrunk <span class="ot">&lt;-</span> brm_5 <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a></a>  <span class="fu">spread_draws</span>(r_Subject[Subject,term]) <span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a></a>  <span class="fu">mean_qi</span>() <span class="sc">|&gt;</span></span>
-<span id="cb10-4"><a></a>  <span class="fu">mutate</span>(<span class="at">source =</span> <span class="st">"shrunk"</span>)</span>
-<span id="cb10-5"><a></a></span>
-<span id="cb10-6"><a></a>gmean_RT <span class="ot">&lt;-</span> <span class="fu">mean</span>(mald<span class="sc">$</span>RT_log, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-7"><a></a></span>
-<span id="cb10-8"><a></a>original <span class="ot">&lt;-</span> mald <span class="sc">|&gt;</span></span>
-<span id="cb10-9"><a></a>  <span class="fu">group_by</span>(Subject) <span class="sc">|&gt;</span></span>
-<span id="cb10-10"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb10-11"><a></a>    <span class="at">mean_RT =</span> <span class="fu">mean</span>(RT_log) ,</span>
-<span id="cb10-12"><a></a>    <span class="at">sd_RT =</span> <span class="fu">sd</span>(RT_log),</span>
-<span id="cb10-13"><a></a>    <span class="at">lower =</span> mean_RT <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> sd_RT,</span>
-<span id="cb10-14"><a></a>    <span class="at">upper =</span> mean_RT <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> sd_RT</span>
-<span id="cb10-15"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="plotting-group-level-adjustments-for-iswordtrue." class="slide level2">
-<h2>Plotting group-level adjustments for <code>IsWordTRUE</code>.</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>brm_5_shrunk <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a></a>  <span class="fu">filter</span>(term <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"IsWordTRUE"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(r_Subject, <span class="fu">reorder</span>(<span class="fu">as.character</span>(Subject), r_Subject))) <span class="sc">+</span></span>
-<span id="cb11-4"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb11-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb11-6"><a></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> .lower, <span class="at">xmax =</span> .upper)) <span class="sc">+</span></span>
-<span id="cb11-7"><a></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> original, <span class="fu">aes</span>(mean_RT <span class="sc">-</span> gmean_RT, Subject), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb11-8"><a></a>  <span class="fu">facet_grid</span>(<span class="at">cols =</span> <span class="fu">vars</span>(term)) <span class="sc">+</span></span>
-<span id="cb11-9"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb11-10"><a></a>    <span class="at">title =</span> <span class="st">"By-subject conditional mode for Intercept"</span>,</span>
-<span id="cb11-11"><a></a>    <span class="at">x =</span> <span class="st">"Conditional mode"</span>,</span>
-<span id="cb11-12"><a></a>    <span class="at">y =</span> <span class="st">"Subject"</span>,</span>
-<span id="cb11-13"><a></a>    <span class="at">caption =</span> <span class="fu">str_wrap</span>(<span class="st">"The red dots mark the by-subject mean RT from the raw data."</span>)</span>
-<span id="cb11-14"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb11-15"><a></a>  <span class="fu">xlim</span>(<span class="sc">-</span>.<span class="dv">4</span>, .<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="06_group_level_files/figure-revealjs/brm-1-shrunk-iwtrue-1.png" width="960" class="r-stretch"></section>
-<section id="plotting-group-level-adjustments-for-iswordtrue.-1" class="slide level2">
-<h2>Plotting group-level adjustments for <code>IsWordTRUE</code>.</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>brm_5_shrunk <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a></a>  <span class="fu">filter</span>(term <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"IsWordFALSE"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb12-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(r_Subject, <span class="fu">reorder</span>(<span class="fu">as.character</span>(Subject), r_Subject))) <span class="sc">+</span></span>
-<span id="cb12-4"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb12-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb12-6"><a></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> .lower, <span class="at">xmax =</span> .upper)) <span class="sc">+</span></span>
-<span id="cb12-7"><a></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> original, <span class="fu">aes</span>(mean_RT <span class="sc">-</span> gmean_RT, Subject), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb12-8"><a></a>  <span class="fu">facet_grid</span>(<span class="at">cols =</span> <span class="fu">vars</span>(term)) <span class="sc">+</span></span>
-<span id="cb12-9"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb12-10"><a></a>    <span class="at">title =</span> <span class="st">"By-subject conditional mode for Intercept"</span>,</span>
-<span id="cb12-11"><a></a>    <span class="at">x =</span> <span class="st">"Conditional mode"</span>,</span>
-<span id="cb12-12"><a></a>    <span class="at">y =</span> <span class="st">"Subject"</span>,</span>
-<span id="cb12-13"><a></a>    <span class="at">caption =</span> <span class="fu">str_wrap</span>(<span class="st">"The red dots mark the by-subject mean RT from the raw data."</span>)</span>
-<span id="cb12-14"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb12-15"><a></a>  <span class="fu">xlim</span>(<span class="sc">-</span>.<span class="dv">4</span>, .<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">conditional_effects</span>(brm_4b, <span class="st">"PhonLev_c:IsWord"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 
-<img data-src="06_group_level_files/figure-revealjs/brm-1-shrunk-iwfalse-1.png" width="960" class="r-stretch"><div class="quarto-auto-generated-content">
+<img data-src="05_more_priors_files/figure-revealjs/brm-4b-cond-1.png" width="960" class="r-stretch"><div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
