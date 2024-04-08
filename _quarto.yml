@@ -11,6 +11,9 @@ project:
 website:
   title: "learnBayes"
   navbar:
+    tools:
+      - icon: github
+        href: "https://github.com/stefanocoretta/learnBayes"
     left:
       - href: index.qmd
         text: Home

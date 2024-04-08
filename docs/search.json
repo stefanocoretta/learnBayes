@@ -228,7 +228,7 @@
     "href": "index.html",
     "title": "Learn Bayesian Linear Models in R",
     "section": "",
-    "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook)."
+    "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook).\n\n\nDownload the materials\nAll the materials of the workshop (data, code, slides) are in the workshop repository on GitHub.\nYou have two options:\n\nYou can fork the repository and clone it locally if you use git/GitHub.\nYou can simply download the repo by clicking on the Code button &gt; Download ZIP on GitHub.\n\nThe repo is an RStudio project. Before opening the project (by double-clicking on the learnBayes.Rproj file), you should delete the .Rprofile file if you don’t use renv (renv is an R environment manager) to disable renv."
   },
   {
     "objectID": "slides/01_basics.html#section",
@@ -257,6 +257,13 @@
     "title": "Introduction to Bayesian Linear Models",
     "section": "All about the Bayes",
     "text": "All about the Bayes\n\nWithin the NHST (Frequentist) framework, the main analysis output is:\n\nPoint estimates of predictors’ parameters (with standard error).\nP-values. 😈\n\n\n\n\nWithin the Bayesian framework, the main analysis output is:\n\nProbability distributions of predictors’ parameters."
+  },
+  {
+    "objectID": "slides/01_basics.html#download-the-workshop-materials",
+    "href": "slides/01_basics.html#download-the-workshop-materials",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Download the workshop materials",
+    "text": "Download the workshop materials\n\n\nDownload the workshop repository from: https://github.com/stefanocoretta/learnBayes.\nIf you don’t use renv, delete the .Rprofile file before opening the RStudio project."
   },
   {
     "objectID": "slides/01_basics.html#an-example-mald",
@@ -677,12 +684,5 @@
     "title": "Introduction to Bayesian Linear Models",
     "section": "Conditional posterior probabilies",
     "text": "Conditional posterior probabilies\n\nconditional_effects(brm_4b, \"PhonLev_c:IsWord\")"
-  },
-  {
-    "objectID": "slides/01_basics.html#download-the-workshop-materials",
-    "href": "slides/01_basics.html#download-the-workshop-materials",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Download the workshop materials",
-    "text": "Download the workshop materials\n\n\nDownload the workshop repository from: https://github.com/stefanocoretta/learnBayes.\nIf you don’t use renv, delete the .Rprofile file before opening the RStudio project."
   }
 ]
