@@ -67,7 +67,7 @@ install.packages(c("tidyverse", "brms", "tidybayes", "extraDistr"))
 
 It will take several minutes to install the packages, depending on your system and configuration.
 
-**If after opening the Starter Kit in RStudio you get asked to install extra packages or software, please do so.**
+**If after opening the workshop project in RStudio you get asked to install extra packages or software, please do so.**
 
 ### Check your installation
 
@@ -95,8 +95,8 @@ All the materials of the workshop (data, code, slides) are in the workshop [repo
 
 You have two options:
 
-1. You can fork the repository and clone it locally if you use git/GitHub.
+1.  You can fork the repository and clone it locally if you use git/GitHub.
 
-2. You can simply download the repo by clicking on the `Code` button > `Download ZIP` on GitHub.
+2.  You can simply download the repo by clicking on the `Code` button \> `Download ZIP` on GitHub.
 
 The repo is an RStudio project. Before opening the project (by double-clicking on the `learnBayes.Rproj` file), you should delete the `.Rprofile` file if you don't use [renv](https://rstudio.github.io/renv/index.html) (renv is an R environment manager) to disable renv.
