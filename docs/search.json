@@ -238,6 +238,20 @@
     "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook).\n\n\n\n\n\n\n\nSoftware and materials\n\n\n\nPlease, check out the Setup page for instructions on how to set-up your laptop and how to download the workshop’s materials."
   },
   {
+    "objectID": "slides/01_basics.html#download-the-workshop-materials",
+    "href": "slides/01_basics.html#download-the-workshop-materials",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Download the workshop materials",
+    "text": "Download the workshop materials\n\n\nDownload the workshop repository from: https://github.com/stefanocoretta/learnBayes.\nIf you don’t use renv, delete the .Rprofile file before opening the RStudio project."
+  },
+  {
+    "objectID": "slides/01_basics.html#schedule",
+    "href": "slides/01_basics.html#schedule",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Schedule",
+    "text": "Schedule\n\n\n\ntime\n\n\n\n\n\n10:00-10:50 (50’)\nSession 1\n\n\n10:50-11:00 (10’)\nbreak\n\n\n11:00-12:00 (60’)\nSession 2\n\n\n12:00-13:00 (60’)\nLUNCH\n\n\n13:00-14:00 (60’)\nSession 3\n\n\n14:00-14:15 (15’)\nbreak\n\n\n14:15-16:00 (45’)\nSession 4\n\n\n16:00-16:45\nOPTIONAL consultation time"
+  },
+  {
     "objectID": "slides/01_basics.html#section",
     "href": "slides/01_basics.html#section",
     "title": "Introduction to Bayesian Linear Models",
@@ -264,13 +278,6 @@
     "title": "Introduction to Bayesian Linear Models",
     "section": "All about the Bayes",
     "text": "All about the Bayes\n\nWithin the NHST (Frequentist) framework, the main analysis output is:\n\nPoint estimates of predictors’ parameters (with standard error).\nP-values. 😈\n\n\n\n\nWithin the Bayesian framework, the main analysis output is:\n\nProbability distributions of predictors’ parameters."
-  },
-  {
-    "objectID": "slides/01_basics.html#download-the-workshop-materials",
-    "href": "slides/01_basics.html#download-the-workshop-materials",
-    "title": "Introduction to Bayesian Linear Models",
-    "section": "Download the workshop materials",
-    "text": "Download the workshop materials\n\n\nDownload the workshop repository from: https://github.com/stefanocoretta/learnBayes.\nIf you don’t use renv, delete the .Rprofile file before opening the RStudio project."
   },
   {
     "objectID": "slides/01_basics.html#an-example-mald",
@@ -448,6 +455,13 @@
     "text": "Conditional posterior probabilities\n\nconditional_effects(brm_2, \"IsWord\")"
   },
   {
+    "objectID": "slides/01_basics.html#summary",
+    "href": "slides/01_basics.html#summary",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Summary",
+    "text": "Summary\n\n\nBayesian statistics is a framework for doing inference (i.e. learning something about a population from a sample).\nThe Bayesian framework is based on estimating uncertainty with probability distributions on parameters.\nThe syntax you know from [g]lm[er]() works with brm() from the brms package.\nResults allow you to make statements like “There is a 95% probability that the difference between A and B is between q and w”."
+  },
+  {
     "objectID": "slides/03_priors.html#bayesian-belief-update",
     "href": "slides/03_priors.html#bayesian-belief-update",
     "title": "Introduction to Bayesian Linear Models",
@@ -529,7 +543,14 @@
     "href": "slides/03_priors.html#prior-for-mu",
     "title": "Introduction to Bayesian Linear Models",
     "section": "Prior for \\(\\mu\\)",
-    "text": "Prior for \\(\\mu\\)\n\n\nLet’s say that the mean is between 500 and 2500 ms at 95% confidence.\nGet \\(\\mu_1\\)\n\nmean(c(500, 2500)) = 1500\n\nGet \\(\\sigma_1\\)\n\n(2500 - 1500) / 2 = 500\n\n\n\n\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1 = 1500, \\sigma_1 = 500)\\\\\n\\sigma & \\sim Cauchy_{+}(0, \\sigma_2)\\\\\n\\end{align}\n\\]"
+    "text": "Prior for \\(\\mu\\)\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1, \\sigma_1)\\\\\n\\sigma & \\sim Cauchy_{+}(0, \\sigma_2)\\\\\n\\end{align}\n\\]\n\n\nLet’s say that the mean is between 500 and 2500 ms at 95% confidence.\nGet \\(\\mu_1\\)\n\nmean(c(500, 2500)) = 1500\n\nGet \\(\\sigma_1\\)\n\n(2500 - 1500) / 2 = 500"
+  },
+  {
+    "objectID": "slides/03_priors.html#prior-for-mu-1",
+    "href": "slides/03_priors.html#prior-for-mu-1",
+    "title": "Introduction to Bayesian Linear Models",
+    "section": "Prior for \\(\\mu\\)",
+    "text": "Prior for \\(\\mu\\)\n\\[\n\\begin{align}\n\\text{RT}_i & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Gaussian(\\mu_1 = 1500, \\sigma_1 = 500)\\\\\n\\sigma & \\sim Cauchy_{+}(0, \\sigma_2)\\\\\n\\end{align}\n\\]"
   },
   {
     "objectID": "slides/03_priors.html#prior-for-mu-plot",

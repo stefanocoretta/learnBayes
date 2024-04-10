@@ -407,6 +407,60 @@ Stefano Coretta
 </div>
 
 </section>
+<section id="download-the-workshop-materials" class="slide level2">
+<h2>Download the workshop materials</h2>
+<div class="box-error">
+<ul>
+<li><p>Download the workshop repository from: <a href="https://github.com/stefanocoretta/learnBayes" class="uri">https://github.com/stefanocoretta/learnBayes</a>.</p></li>
+<li><p>If you don’t use <a href="https://rstudio.github.io/renv/index.html">renv</a>, delete the <code>.Rprofile</code> file before opening the RStudio project.</p></li>
+</ul>
+</div>
+</section>
+<section id="schedule" class="slide level2">
+<h2>Schedule</h2>
+<table>
+<thead>
+<tr class="header">
+<th>time</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>10:00-10:50</strong> (50’)</td>
+<td>Session 1</td>
+</tr>
+<tr class="even">
+<td><strong>10:50-11:00</strong> (10’)</td>
+<td><em>break</em></td>
+</tr>
+<tr class="odd">
+<td><strong>11:00-12:00</strong> (60’)</td>
+<td>Session 2</td>
+</tr>
+<tr class="even">
+<td><strong>12:00-13:00</strong> (60’)</td>
+<td><em>LUNCH</em></td>
+</tr>
+<tr class="odd">
+<td><strong>13:00-14:00</strong> (60’)</td>
+<td>Session 3</td>
+</tr>
+<tr class="even">
+<td><strong>14:00-14:15</strong> (15’)</td>
+<td><em>break</em></td>
+</tr>
+<tr class="odd">
+<td><strong>14:15-16:00</strong> (45’)</td>
+<td>Session 4</td>
+</tr>
+<tr class="even">
+<td>16:00-16:45</td>
+<td>OPTIONAL consultation time</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="section" class="slide level2">
 <h2></h2>
 
@@ -449,15 +503,6 @@ Stefano Coretta
 <li><strong>Probability distributions</strong> of predictors’ parameters.</li>
 </ul>
 </div>
-</div>
-</section>
-<section id="download-the-workshop-materials" class="slide level2">
-<h2>Download the workshop materials</h2>
-<div class="box-error">
-<ul>
-<li><p>Download the workshop repository from: <a href="https://github.com/stefanocoretta/learnBayes" class="uri">https://github.com/stefanocoretta/learnBayes</a>.</p></li>
-<li><p>If you don’t use <a href="https://rstudio.github.io/renv/index.html">renv</a>, delete the <code>.Rprofile</code> file before opening the RStudio project.</p></li>
-</ul>
 </div>
 </section>
 <section id="an-example-mald" class="slide level2">
@@ -899,8 +944,19 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">conditional_effects</span>(brm_2, <span class="st">"IsWord"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
+<img data-src="01_basics_files/figure-revealjs/brm-2-cond-1.png" width="960" class="r-stretch"></section>
+<section id="summary" class="slide level2">
+<h2>Summary</h2>
+<div class="box-note">
+<ul>
+<li><p>Bayesian statistics is a <strong>framework for doing inference</strong> (i.e.&nbsp;learning something about a population from a sample).</p></li>
+<li><p>The Bayesian framework is based on <strong>estimating uncertainty with probability distributions</strong> on parameters.</p></li>
+<li><p>The <strong>syntax</strong> you know from <code>[g]lm[er]()</code> works with <code>brm()</code> from the brms package.</p></li>
+<li><p>Results allow you to make statements like “There is a 95% probability that the difference between A and B is between <em>q</em> and <em>w</em>”.</p></li>
+</ul>
+</div>
 
-<img data-src="01_basics_files/figure-revealjs/brm-2-cond-1.png" width="960" class="r-stretch"><div class="quarto-auto-generated-content">
+<div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>

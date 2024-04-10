@@ -509,6 +509,13 @@ Stefano Coretta
 </section>
 <section id="prior-for-mu" class="slide level2">
 <h2>Prior for <span class="math inline">\(\mu\)</span></h2>
+<p><span class="math display">\[
+\begin{align}
+\text{RT}_i &amp; \sim Gaussian(\mu, \sigma)\\
+\mu &amp; \sim Gaussian(\mu_1, \sigma_1)\\
+\sigma &amp; \sim Cauchy_{+}(0, \sigma_2)\\
+\end{align}
+\]</span></p>
 <div class="box-note">
 <ul>
 <li><p>Let’s say that the mean is between 500 and 2500 ms at 95% confidence.</p></li>
@@ -522,7 +529,9 @@ Stefano Coretta
 </ul></li>
 </ul>
 </div>
-<div class="fragment">
+</section>
+<section id="prior-for-mu-1" class="slide level2">
+<h2>Prior for <span class="math inline">\(\mu\)</span></h2>
 <p><span class="math display">\[
 \begin{align}
 \text{RT}_i &amp; \sim Gaussian(\mu, \sigma)\\
@@ -530,7 +539,6 @@ Stefano Coretta
 \sigma &amp; \sim Cauchy_{+}(0, \sigma_2)\\
 \end{align}
 \]</span></p>
-</div>
 </section>
 <section id="prior-for-mu-plot" class="slide level2">
 <h2>Prior for <span class="math inline">\(\mu\)</span>: plot</h2>

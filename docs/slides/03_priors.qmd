@@ -274,6 +274,14 @@ We can use the empirical rule.
 
 ## Prior for $\mu$
 
+$$
+\begin{align}
+\text{RT}_i & \sim Gaussian(\mu, \sigma)\\
+\mu & \sim Gaussian(\mu_1, \sigma_1)\\
+\sigma & \sim Cauchy_{+}(0, \sigma_2)\\
+\end{align}
+$$
+
 ::: box-note
 -   Let's say that the mean is between 500 and 2500 ms at 95% confidence.
 
@@ -286,7 +294,7 @@ We can use the empirical rule.
     -   `(2500 - 1500) / 2` = 500
 :::
 
-. . .
+## Prior for $\mu$
 
 $$
 \begin{align}

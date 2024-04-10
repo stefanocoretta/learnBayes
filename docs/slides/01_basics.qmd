@@ -28,6 +28,28 @@ library(tidybayes)
 library(bayesplot)
 ```
 
+## Download the workshop materials
+
+::: box-error
+-   Download the workshop repository from: <https://github.com/stefanocoretta/learnBayes>.
+
+-   If you don't use [renv](https://rstudio.github.io/renv/index.html), delete the `.Rprofile` file before opening the RStudio project.
+:::
+
+## Schedule
+
+| time                  |                            |
+|-----------------------|----------------------------|
+| **10:00-10:50** (50') | Session 1                  |
+| **10:50-11:00** (10') | *break*                    |
+| **11:00-12:00** (60') | Session 2                  |
+| **12:00-13:00** (60') | *LUNCH*                    |
+| **13:00-14:00** (60') | Session 3                  |
+| **14:00-14:15** (15') | *break*                    |
+| **14:15-16:00** (45') | Session 4                  |
+| 16:00-16:45           | OPTIONAL consultation time |
+
+
 ## 
 
 ![](/img/One_Ring_inscription.svg.png){fig-align="right" width="300"}
@@ -77,14 +99,6 @@ Within the **NHST (Frequentist) framework**, the main analysis output is:
 Within the **Bayesian framework**, the main analysis output is:
 
 -   **Probability distributions** of predictors' parameters.
-:::
-
-## Download the workshop materials
-
-::: box-error
-- Download the workshop repository from: <https://github.com/stefanocoretta/learnBayes>.
-
-- If you don't use [renv](https://rstudio.github.io/renv/index.html), delete the `.Rprofile` file before opening the RStudio project.
 :::
 
 ## An example: MALD
@@ -443,3 +457,14 @@ brm_2_draws %>%
 conditional_effects(brm_2, "IsWord")
 ```
 
+## Summary
+
+::: box-note
+-   Bayesian statistics is a **framework for doing inference** (i.e. learning something about a population from a sample).
+
+-   The Bayesian framework is based on **estimating uncertainty with probability distributions** on parameters.
+
+-   The **syntax** you know from `[g]lm[er]()` works with `brm()` from the brms package.
+
+-   Results allow you to make statements like "There is a 95% probability that the difference between A and B is between *q* and *w*".
+:::
