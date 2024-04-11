@@ -235,7 +235,7 @@
     "href": "index.html",
     "title": "Learn Bayesian Linear Models in R",
     "section": "",
-    "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook).\n\n\n\n\n\n\n\nSoftware and materials\n\n\n\nPlease, check out the Setup page for instructions on how to set-up your laptop and how to download the workshop’s materials."
+    "text": "This is the website of the workshop learnBayes.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a solid command of R and tidyverse packages, and familiarity with linear modelling (including interpreting coefficients and interactions, running linear models with binomial/Bernoulli family, aka logistic regression).\nIf you wish to revise any of these topics, we recommend the following resources:\n\nR for Data Science (online book).\nStatistics for Linguists in R (texbook).\n\n\n\n\n\n\n\nSoftware and materials\n\n\n\nPlease, check out the Set-up page for instructions on how to set-up your laptop and how to download the workshop’s materials."
   },
   {
     "objectID": "slides/01_basics.html#download-the-workshop-materials",

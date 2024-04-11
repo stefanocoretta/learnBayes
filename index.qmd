@@ -16,5 +16,5 @@ If you wish to revise any of these topics, we recommend the following resources:
 ::: callout-tip
 ## Software and materials
 
-Please, check out the [Setup](setup.qmd) page for instructions on how to set-up your laptop and how to download the workshop’s materials.
+Please, check out the [Set-up](setup.qmd) page for instructions on how to set-up your laptop and how to download the workshop’s materials.
 :::
