@@ -99,4 +99,10 @@ You have two options:
 
 2.  You can simply download the repo by clicking on the `Code` button \> `Download ZIP` on GitHub.
 
-The repo is an RStudio project. Before opening the project (by double-clicking on the `learnBayes.Rproj` file), you should delete the `.Rprofile` file if you don't use [renv](https://rstudio.github.io/renv/index.html) (renv is an R environment manager) to disable renv.
+::: callout-tip
+This is an RStudio project. You can open it by double clicking on the `learnGAM.Rproj` file.
+:::
+
+::: callout-important
+Before opening the RStudio project, please remove the `.Rprofile` file (if you can't see this file, you have to enable the show hidden files option on your operating system). This will deactivate renv (an R package manager).
+:::
