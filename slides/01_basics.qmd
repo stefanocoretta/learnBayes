@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Bayesian Linear Models"
+title: "Introduction to Bayesian regression models"
 subtitle: "01 - Basics"
 author: "Stefano Coretta"
 institute: "University of Edinburgh"
@@ -8,10 +8,12 @@ format:
   mono-light-revealjs:
     theme: [default, custom.scss]
     history: false
+    preview-links: true
 filters:
   - tachyonsextra
 execute: 
   echo: true
+bibliography: references.bib
 ---
 
 ```{r}
@@ -22,6 +24,7 @@ library(tidyverse)
 theme_set(theme_minimal())
 
 library(lme4)
+library(lmerTest)
 library(ggeffects)
 library(brms)
 library(tidybayes)
@@ -32,23 +35,20 @@ library(bayesplot)
 
 ::: box-error
 -   Download the workshop repository from: <https://github.com/stefanocoretta/learnBayes>.
-
--   If you don't use [renv](https://rstudio.github.io/renv/index.html), delete the `.Rprofile` file before opening the RStudio project.
 :::
 
 ## Schedule
 
-| time                  |                            |
-|-----------------------|----------------------------|
-| **10:00-10:50** (50') | Session 1                  |
-| **10:50-11:00** (10') | *break*                    |
-| **11:00-12:00** (60') | Session 2                  |
-| **12:00-13:00** (60') | *LUNCH*                    |
-| **13:00-14:00** (60') | Session 3                  |
-| **14:00-14:15** (15') | *break*                    |
-| **14:15-16:00** (45') | Session 4                  |
-| 16:00-16:45           | OPTIONAL consultation time |
-
+| Times | Topic |
+|-------|-------|
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
 
 ## 
 
@@ -64,7 +64,7 @@ One **model** to rule them all.<br> One **model** to find them.<br> One **model*
 (No, I couldn't translate 'model' into Black Speech, alas...)
 :::
 
-## Now enter The Linear Model
+## Now enter The Regression Model
 
 <p style="text-align:center">
 
@@ -74,7 +74,7 @@ One **model** to rule them all.<br> One **model** to find them.<br> One **model*
 
 </p>
 
-## Now enter The Bayesian Linear Model
+## Now enter The Bayesian Regression Model
 
 <p style="text-align:center">
 
@@ -90,7 +90,13 @@ One **model** to rule them all.<br> One **model** to find them.<br> One **model*
 Within the **NHST (Frequentist) framework**, the main analysis output is:
 
 -   **Point estimates** of predictors' parameters (with standard error).
--   **P-values**. 😈
+-   ***p*****-values**.
+:::
+
+. . .
+
+::: box-warning
+See @gigerenzer2004, @gigerenzer2004a, @gigerenzer2018 for problems with the "Null Ritual".
 :::
 
 . . .
@@ -104,14 +110,14 @@ Within the **Bayesian framework**, the main analysis output is:
 ## An example: MALD
 
 ::: box-tip
-[Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (MALD) data (Tucker et al. 2019):
+[Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (MALD) data [@tucker2019]:
 
 -   **Auditory Lexical Decision task** with real and nonce English words.
 -   Reaction times and accuracy.
 -   Total 521 subjects; subset of 30 subjects, 100 observations each.
 :::
 
-. . .
+## MALD data
 
 ```{r}
 #| label: mald
@@ -128,20 +134,39 @@ mald
 
 ## MALD: phone-level distance and lexical status
 
-Let's investigate the effects of:
+Let's investigate the effects of the following on Reaction Times (RTs):
 
--   `PhonLev`: mean phone-level Levenshtein distance.
+-   `PhonLev`: mean phone-level Levenshtein distance of the item from all other entries.
+    -   An alternative to neighbourhood density.
 -   `IsWord`: lexical status (real word vs nonce word).
 
-On:
+## What are your expectations?
 
--   `RT`: reaction times.
--   `ACC`: accuracy.
+<div>
+
+<iframe allowfullscreen frameborder="0" height="600px" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/682f25c769100c24662fef2a" width="100%">
+
+</iframe>
+
+</div>
+
+## What are your expectations?
+
+<div>
+
+<iframe allowfullscreen frameborder="0" height="600px" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/682f260f776b2a0921ae54ed" width="100%">
+
+</iframe>
+
+</div>
 
 ## MALD: phone-level distance and lexical status
 
 ```{r}
-#| label: dist-stat
+#| label: fig-dist-stat
+#| fig-asp: 0.75
+#| echo: false
+#| fig-cap: "Scatter plot of mean phon-level distance vs reaction times."
 
 mald |> 
   ggplot(aes(PhonLev, RT)) +
@@ -152,7 +177,7 @@ mald |>
   )
 ```
 
-## A frequentist linear model
+## A frequentist regression model
 
 ```{r}
 #| label: lm-1
@@ -167,7 +192,7 @@ lm_1 <- lmer(
 )
 ```
 
-## A frequentist linear model: summary
+## A frequentist regression model: summary
 
 ```{r}
 #| label: lm-1-summ
@@ -175,19 +200,20 @@ lm_1 <- lmer(
 summary(lm_1)
 ```
 
-## A frequentist linear model: plot predictions
+## A frequentist regression model: plot predictions
 
 ```{r}
-#| label: lm-1-pred
+#| label: fig-lm-1-pred
+#| fig-asp: 0.75
+#| fig-cap: "Predicted Reaction Times based on a frequentist regression model."
+#| echo: false
 #| message: false
 
-ggpredict(lm_1, terms = c("PhonLev", "IsWord")) %>%
+ggpredict(lm_1, terms = c("PhonLev", "IsWord")) |>
   plot()
 ```
 
 ## Increase model complexity
-
-**Try it yourself!** Does it work?
 
 ```{r}
 #| label: lm-2
@@ -198,7 +224,7 @@ lm_2 <- lmer(
     PhonLev +
     IsWord +
     PhonLev:IsWord +
-    (PhonLev + IsWord | Subject),
+    (PhonLev*IsWord | Subject),
   data = mald
 )
 ```
@@ -215,7 +241,7 @@ lm_2 <- lmer(
     PhonLev +
     IsWord +
     PhonLev:IsWord +
-    (PhonLev + IsWord | Subject),
+    (PhonLev*IsWord | Subject),
   data = mald
 )
 ```
@@ -230,22 +256,22 @@ lm_2 <- lmer(
 
 ## Let's go Bayesian! {background-color="var(--inverse)"}
 
-...like the Bayesian Rats!
-
 ![](/img/the-bayesian-rats.jpeg){fig-align="center" width="500"}
 
-## A Bayesian linear model
+## A Bayesian regression model
 
 ```{r}
 #| label: brm-1
 #| eval: false
+
+library(brms)
 
 brm_1 <- brm(
   RT ~
     PhonLev +
     IsWord +
     PhonLev:IsWord +
-    (PhonLev + IsWord | Subject),
+    (PhonLev * IsWord | Subject),
   data = mald,
   family = gaussian()
 )
@@ -260,32 +286,79 @@ brm_1 <- brm(
     PhonLev +
     IsWord +
     PhonLev:IsWord +
-    (PhonLev + IsWord | Subject),
+    (PhonLev * IsWord | Subject),
   data = mald,
   family = gaussian(),
   # Technical stuff
   cores = 4,
+  iter = 4000,
   file = "data/cache/brm_1"
 )
 ```
 
-## A Bayesian linear model: summary
+## A Bayesian regression model: summary
 
 ```{r}
 #| label: brm-1-summ
+#| warning: false
 
 brm_1
 ```
 
-## A Bayesian linear model: plot predictions
+## A Bayesian regression model: plot predictions
 
 ```{r}
-#| label: brm-1-plot
+#| label: fig-brm-1-plot
+#| fig-cap: "Predicted RTs based on a Bayesian regression model."
+#| fig-asp: 0.75
+#| echo: false
 
 conditional_effects(brm_1, effects = "PhonLev:IsWord")
 ```
 
-## Let's start small
+## Let's start small: A Gaussian model
+
+$$
+RT \sim Gaussian(\mu, \sigma)
+$$
+
+-   Reaction Times $RT$
+
+-   distributed according to $\sim$
+
+-   a Gaussian distribution $Gaussian()$
+
+-   with mean $\mu$ and standard deviation $\sigma$.
+
+. . .
+
+::: box-warning
+We start with a Gaussian model for pedagogical reasons. You would usually start with the model you need to answer your research questions.
+:::
+
+## Uncertainty of parameters
+
+$$
+\begin{align}
+RT & \sim Gaussian(\mu, \sigma)\\
+\mu & \sim Student(\mu_1, \sigma_1)\\
+\sigma & \sim Student(\mu_2, \sigma_2)
+\end{align}
+$$
+
+. . .
+
+::: box-note
+-   Uncertainty can be expressed with probability distributions, here Student-t distributions (the default in brms).
+
+-   The Gaussian model estimates the probability distributions of $\mu$ and $\sigma$ from the data.
+
+-   These probability distributions are called **posterior probability distributions**.
+
+-   They can be summarised with $\mu_1, \sigma_1, \mu_2, \sigma_2$.
+:::
+
+## Gaussian model of RTs
 
 **Try it yourself!**
 
@@ -294,8 +367,8 @@ conditional_effects(brm_1, effects = "PhonLev:IsWord")
 #| eval: false
 
 brm_2 <- brm(
-  # formula = outcome ~ predictor
-  RT ~ IsWord,
+  # formula = 
+  RT ~ 1,
   data = mald,
   # Specify the distribution family of the outcome
   family = gaussian()
@@ -305,7 +378,7 @@ brm_2 <- brm(
 . . .
 
 ::: box-tip
--   The model estimates the probability distributions of the effects of each predictor.
+-   The model estimates the probability distributions of $\mu$ and $\sigma$.
 
 -   To do so, a **sampling algorithm** is used (Markov Chain Monte Carlo, **MCMC**).
 :::
@@ -316,7 +389,11 @@ brm_2 <- brm(
 
 -   MCMC simulation: <https://chi-feng.github.io/mcmc-demo/app.html>
 
--   More on MCMC: <http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/>
+-   More on MCMC
+
+    -   <https://elizabethpankratz.github.io/bayes_stat/day1/mcmc.html>
+
+    -   <http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/>
 
 ## Technicalities
 
@@ -324,7 +401,7 @@ brm_2 <- brm(
 #| label: brm-2-explain
 
 brm_2 <- brm(
-  RT ~ IsWord,
+  RT ~ 1,
   data = mald,
   family = gaussian(),
   
@@ -352,7 +429,7 @@ You can find out how many cores your laptop has with `parallel::detectCores()`.
 brm_2
 ```
 
-## Interpreting the summary
+## Interpreting the summary: $\mu$
 
 ```{r}
 #| label: brm-2-summ-2
@@ -362,41 +439,59 @@ cat(capture.output(summary(brm_2))[8:11], sep = "\n")
 ```
 
 ::: box-warning
-`Intercept`: There is a **95% probability** that (based on model and data) the mean RT when the word is real is **between 964 and 999 ms**.
+`Intercept` is $\mu$.
 
--   The probability distribution of the intercept has mean = 981 ms and SD = 9 (rounded).
+$$
+\begin{align}
+RT & \sim Gaussian(\mu, \sigma)\\
+\mu & \sim Student(1046.57, 6.38)\\
+\end{align}
+$$
+
+-   The posterior probability distribution of $\mu$, i.e. of the mean RTs, is $Student(1047, 6)$.
+
+-   There is a **95% probability** that the mean RTs is **between 1034 and 1059 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $Student(1047, 6)$.
 :::
 
-. . .
+## Interpret the summary: $\sigma$
 
-::: box-tip
-`IsWordFALSE`: At **95% confidence**, the difference in RT between non-words and real words is **between +109 and +158 ms** (based on model and data).
+```{r}
+#| label: brm-2-summ-3
+#| echo: false
 
--   The probability distribution of `IsWordFALSE` has mean = 133 ms and SD = 13 (rounded).
+cat(capture.output(summary(brm_2))[12:14], sep = "\n")
+```
+
+::: box-warning
+`sigma` is $\sigma$.
+
+$$
+\begin{align}
+RT & \sim Gaussian(\mu, \sigma)\\
+\mu & \sim Student(1046.57, 6.38)\\
+\sigma & \sim Student(347.57, 4.52)
+\end{align}
+$$
+
+-   The posterior probability distribution of $\sigma$, i.e. of the standard deviation of RTs, is $Student(348, 5)$.
+
+-   There is a **95% probability** that the RT standard deviation is **between 339 and 357 ms**, conditional on the model and data.
 :::
-
-. . .
 
 ## Posterior probabilities
 
 ::: box-note
 -   These are **posterior probability distributions**.
 -   They are always conditional on model and data.
--   The summary reports **95% Credible Intervals**, but you can get other intervals too (there is nothing special about 95%).
+-   The summary reports **95% Credible Intervals (CrIs)**, but there is nothing special about 95% and you should obtain a set of intervals.
 :::
 
-. . .
+## Model plot
 
 ```{r}
-#| label: summ-80
-
-summary(brm_2, prob = 0.8)
-```
-
-## Quick plot
-
-```{r}
-#| label: brm-2-plot
+#| label: fig-brm-2-plot
+#| fig-cap: "Density and trace plot of the Bayesian Gaussian model `brm_2`."
+#| fig-asp: 0.75
 
 plot(brm_2, combo = c("dens", "trace"))
 
@@ -429,7 +524,7 @@ Now you can plot the draws using ggplot2.
 #| label: brm-2-int
 #| output-location: slide
 
-brm_2_draws %>%
+brm_2_draws |>
   ggplot(aes(b_Intercept)) +
   stat_halfeye(fill = "#214d65", alpha = 0.8) +
   scale_x_continuous() +
@@ -441,8 +536,9 @@ brm_2_draws %>%
 ```{r}
 #| label: brm-2-isword
 #| output-location: slide
+#| eval: false
 
-brm_2_draws %>%
+brm_2_draws |>
   ggplot(aes(b_IsWordFALSE)) +
   stat_halfeye(fill = "#624B27", alpha = 0.8) +
   scale_x_continuous() +
@@ -453,6 +549,7 @@ brm_2_draws %>%
 
 ```{r}
 #| label: brm-2-cond
+#| eval: false
 
 conditional_effects(brm_2, "IsWord")
 ```
@@ -468,3 +565,5 @@ conditional_effects(brm_2, "IsWord")
 
 -   Results allow you to make statements like "There is a 95% probability that the difference between A and B is between *q* and *w*".
 :::
+
+## References
