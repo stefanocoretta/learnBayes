@@ -1,0 +1,178 @@
+---
+title: "Introduction to Bayesian regression models"
+subtitle: "02 - Bayesian regression"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+    preview-links: true
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+bibliography: references.bib
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(lme4)
+library(lmerTest)
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+## Regression models
+
+::: box-note
+-   Simplest regression model:
+
+$$
+y \sim \beta_0 + \beta_1 \cdot x
+$$
+
+-   where $y$ and $x$ are numeric variables.
+
+-   <https://stefanocoretta.shinyapps.io/lines/>
+:::
+
+## MALD
+
+::: box-tip
+**Does the mean phone-level distance affect reaction times**?
+:::
+
+. . .
+
+::: box-note
+-   Mean phone-level distance is a proxy of word "uniqueness".
+
+-   More unique words should take longer to recognise as real words because there are less competitors (i.e. similar words) that can have a facilitatory effect on recognition.
+:::
+
+## MALD: `RT` and `PhonLev`
+
+```{r}
+#| label: mald
+#| echo: false
+
+mald <- readRDS("./data/mald.rds")
+```
+
+```{r}
+#| label: fig-dist-stat
+#| fig-asp: 0.75
+#| echo: false
+#| fig-cap: "Scatter plot of mean phone-level distance vs reaction times."
+
+mald |> 
+  ggplot(aes(PhonLev, RT)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth(method = "lm", formula = y ~ x) +
+  labs(
+    x = "Phone-level distance", y = "RT (ms)"
+  )
+```
+
+## MALD: regression
+
+$$
+RT \sim \beta_0 + \beta_1 \cdot \text{PhonLev}
+$$
+
+. . .
+
+or
+
+$$
+\begin{align}
+RT & \sim \beta_0 + \beta_1 \cdot \text{PhonLev} + \epsilon\\
+\epsilon & \sim Gaussian(0, \sigma)
+\end{align}
+$$
+
+. . .
+
+or
+
+$$
+\begin{align}
+RT & \sim Gaussian(\mu, \sigma)\\
+\mu & = \beta_0 + \beta_1 \cdot \text{PhonLev}\\
+\end{align}
+$$
+
+::: box-note
+The model estimates the posterior probability distributions of $\beta_0, \beta_1, \sigma$.
+:::
+
+## What are your expectations?
+
+```{=html}
+<iframe allowfullscreen frameborder="0" height="100%" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/68346b14678ad4313b2e2b05" width="100%"></iframe>
+```
+
+## MALD: regression
+
+```{r}
+#| label: brm-lev
+
+brm_lev <- brm(
+  RT ~ 1 + PhonLev,
+  data = mald,
+  family = "gaussian",
+  file = "./data/cache/brm_lev.rds",
+  chains = 4, 
+  iter = 2000,
+  cores = 4
+)
+
+summary(brm_lev)
+```
+
+## Interpret the summary: `Intercept`
+
+```{r}
+#| label: brm-lev-summ-int
+#| echo: false
+
+cat(capture.output(summary(brm_lev))[8:11], sep = "\n")
+```
+
+::: box-warning
+`Intercept` is $\beta_0$.
+
+-   $\beta_0$ is the expected mean RT when `PhonLev` is 0.
+
+-   The posterior probability distribution of $\beta_0$ is $Student(862, 35)$.
+
+-   There is a **95% probability** that the mean RTs when `PhonLev` is 0 is **between 793 and 929 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $Student(862, 35)$.
+:::
+
+## Interpret the summary: `PhonLev`
+
+```{r}
+#| label: brm-lev-summ-phonlev
+#| echo: false
+
+cat(capture.output(summary(brm_lev))[8:11], sep = "\n")
+```
+
+::: box-warning
+`PhonLev` is $\beta_1$.
+
+-   $\beta_1$ is the expected difference in RT *for each unit change* of `PhonLev`.
+
+-   The posterior probability distribution of $\beta_1$ is $\mathcal{P}(26, 5)$.
+
+-   There is a **95% probability** that each unit change of `PhonLev` corresponds to a change in mean RT **between +17 and +34 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $\mathcal{P}(862, 35)$.
+:::

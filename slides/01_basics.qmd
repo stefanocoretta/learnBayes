@@ -142,23 +142,20 @@ Let's investigate the effects of the following on Reaction Times (RTs):
 
 ## What are your expectations?
 
-<div>
-
+```{=html}
 <iframe allowfullscreen frameborder="0" height="600px" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/682f25c769100c24662fef2a" width="100%">
 
 </iframe>
-
-</div>
+```
 
 ## What are your expectations?
 
-<div>
 
+```{=html}
 <iframe allowfullscreen frameborder="0" height="600px" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/682f260f776b2a0921ae54ed" width="100%">
 
 </iframe>
-
-</div>
+```
 
 ## MALD: phone-level distance and lexical status
 
@@ -166,7 +163,7 @@ Let's investigate the effects of the following on Reaction Times (RTs):
 #| label: fig-dist-stat
 #| fig-asp: 0.75
 #| echo: false
-#| fig-cap: "Scatter plot of mean phon-level distance vs reaction times."
+#| fig-cap: "Scatter plot of mean phone-level distance vs reaction times."
 
 mald |> 
   ggplot(aes(PhonLev, RT)) +
@@ -429,7 +426,7 @@ You can find out how many cores your laptop has with `parallel::detectCores()`.
 brm_2
 ```
 
-## Interpreting the summary: $\mu$
+## Interpret the summary: $\mu$
 
 ```{r}
 #| label: brm-2-summ-2
