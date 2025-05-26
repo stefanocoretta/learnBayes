@@ -153,9 +153,9 @@ cat(capture.output(summary(brm_lev))[8:11], sep = "\n")
 
 -   $\beta_0$ is the expected mean RT when `PhonLev` is 0.
 
--   The posterior probability distribution of $\beta_0$ is $Student(862, 35)$.
+-   The posterior probability distribution of $\beta_0$ is $\mathcal{P}(862, 35)$.
 
--   There is a **95% probability** that the mean RTs when `PhonLev` is 0 is **between 793 and 929 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $Student(862, 35)$.
+-   There is a **95% probability** that the mean RTs when `PhonLev` is 0 is **between 793 and 929 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $\mathcal{P}(862, 35)$.
 :::
 
 ## Interpret the summary: `PhonLev`

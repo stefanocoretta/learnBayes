@@ -441,13 +441,13 @@ cat(capture.output(summary(brm_2))[8:11], sep = "\n")
 $$
 \begin{align}
 RT & \sim Gaussian(\mu, \sigma)\\
-\mu & \sim Student(1046.57, 6.38)\\
+\mu & \sim \mathcal{P}(1046.57, 6.38)\\
 \end{align}
 $$
 
--   The posterior probability distribution of $\mu$, i.e. of the mean RTs, is $Student(1047, 6)$.
+-   The posterior probability distribution of $\mu$, i.e. of the mean RTs, is $\mathcal{P}(1047, 6)$.
 
--   There is a **95% probability** that the mean RTs is **between 1034 and 1059 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $Student(1047, 6)$.
+-   There is a **95% probability** that the mean RTs is **between 1034 and 1059 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $\mathcal{P}(1047, 6)$.
 :::
 
 ## Interpret the summary: $\sigma$
@@ -465,12 +465,12 @@ cat(capture.output(summary(brm_2))[12:14], sep = "\n")
 $$
 \begin{align}
 RT & \sim Gaussian(\mu, \sigma)\\
-\mu & \sim Student(1046.57, 6.38)\\
-\sigma & \sim Student(347.57, 4.52)
+\mu & \sim \mathcal{P}(1046.57, 6.38)\\
+\sigma & \sim \mathcal{P}(347.57, 4.52)
 \end{align}
 $$
 
--   The posterior probability distribution of $\sigma$, i.e. of the standard deviation of RTs, is $Student(348, 5)$.
+-   The posterior probability distribution of $\sigma$, i.e. of the standard deviation of RTs, is $\mathcal{P}(348, 5)$.
 
 -   There is a **95% probability** that the RT standard deviation is **between 339 and 357 ms**, conditional on the model and data.
 :::
