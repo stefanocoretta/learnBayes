@@ -516,42 +516,30 @@ To list all the names of the parameters in a model, use:
 variables(brm_2)
 ```
 
-## Posterior distributions: intercept
+## Posterior distribution: mean RT
 
-Now you can plot the draws using ggplot2.
+Now you can plot the probability density of the draws using ggplot2.
 
 ```{r}
-#| label: brm-2-int
+#| label: brm-2-mean
 #| output-location: slide
 
 brm_2_draws |>
   ggplot(aes(b_Intercept)) +
-  stat_halfeye(fill = "#214d65", alpha = 0.8) +
-  scale_x_continuous() +
-  labs(title = "Posterior distribution of Intercept")
+  geom_density(fill = "#214d65", alpha = 0.8) +
+  labs(title = "Posterior distribution of mean RT")
 ```
 
-## Posterior distribution: `IsWordFalse`
+## Posterior distribution: sigma
 
 ```{r}
-#| label: brm-2-isword
+#| label: brm-2-sigma
 #| output-location: slide
-#| eval: false
 
 brm_2_draws |>
-  ggplot(aes(b_IsWordFALSE)) +
-  stat_halfeye(fill = "#624B27", alpha = 0.8) +
-  scale_x_continuous() +
-  labs(title = "Posterior distribution of IsWord: FALSE - TRUE")
-```
-
-## Conditional posterior probabilities
-
-```{r}
-#| label: brm-2-cond
-#| eval: false
-
-conditional_effects(brm_2, "IsWord")
+  ggplot(aes(sigma)) +
+  geom_density(fill = "#1F6357", alpha = 0.8) +
+  labs(title = "Posterior distribution of the SD")
 ```
 
 ## Summary
