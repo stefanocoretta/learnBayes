@@ -174,5 +174,108 @@ cat(capture.output(summary(brm_lev))[8:11], sep = "\n")
 
 -   The posterior probability distribution of $\beta_1$ is $\mathcal{P}(26, 5)$.
 
--   There is a **95% probability** that each unit change of `PhonLev` corresponds to a change in mean RT **between +17 and +34 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $\mathcal{P}(862, 35)$.
+-   There is a **95% probability** that each unit change of `PhonLev` corresponds to a change in mean RT **between +17 and +34 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $\mathcal{P}(26, 5)$.
 :::
+
+## Effect of `PhonLev` on RTs
+
+```{r}
+#| label: fig-brm-lev
+#| fig-asp: 0.75
+#| fig-cap: "Predicted effect of mean phone-level distance on RTs from a Bayesian regression model."
+
+conditional_effects(brm_lev, "PhonLev")
+```
+
+## MCMC draws
+
+```{r}
+#| label: brm-lev-draws
+
+brm_lev_draws <- as_draws_df(brm_lev)
+
+brm_lev_draws
+```
+
+## Predicted RTs at representative values of `PhonLev`
+
+```{r}
+#| label: brm-lev-draws-2
+
+range(mald$PhonLev)
+
+brm_lev_draws <- brm_lev_draws |> 
+  mutate(
+    # RTs when PhonLev is 5
+    rt_05 = b_Intercept + b_PhonLev * 5,
+    # RTs when PhonLev is 10
+    rt_10 = b_Intercept + b_PhonLev * 10,
+    # RTs when PhonLev is 15
+    rt_15 = b_Intercept + b_PhonLev * 15,
+  )
+```
+
+## Predicted RTs at representative values of `PhonLev`: plot
+
+```{r}
+#| label: fig-lev-5-10-15
+#| output-location: slide
+#| fig-cap: "Predicted RTs at representative values of mean phon-level distance."
+
+library(ggdist)
+
+brm_lev_draws |> 
+  select(rt_05, rt_10, rt_15) |> 
+  
+  # Pivot so to make plotting easier
+  pivot_longer(everything()) |> 
+  # Pivot creates a name column with values `rt_05, rt_10, rt_15`
+  # and a value column with the draws values
+  
+  ggplot(aes(value, name)) +
+  # Stat halfeye from ggdist
+  stat_halfeye() +
+  labs(
+    caption = "Point = median, thick line = 66% CrI, thin line = 95% CrI."
+  )
+```
+
+## Calculating CrIs from the draws
+
+```{r}
+#| label: brm-lev-cri
+#| warning: false
+
+library(posterior)
+
+brm_lev_cri <- brm_lev_draws |> 
+  select(rt_05, rt_10, rt_15) |> 
+  pivot_longer(everything()) |> 
+  group_by(name) |> 
+  summarise(
+    # Use quantile2() from posterior package
+    lo_95 = round(quantile2(value, 0.025)),
+    hi_95 = round(quantile2(value, 0.0975))
+  )
+
+brm_lev_cri
+```
+
+## Width of the CrIs
+
+```{r}
+#| label: brm-lev-cri-width
+
+brm_lev_cri |> 
+  mutate(
+    cri_width = hi_95 - lo_95
+  )
+```
+
+## Reporting
+
+> We fitted a Bayesian Gaussian regression model with brms [@burkner2017] in R 4.5.0 [@rcoreteam2025]. The model had reaction times as the outcome variable and mean phone-level distance as the only predictor. The model was fitted with 4 MCMC chains and 2000 iterations per chains. The default brms priors were used.
+>
+> According to the model results, for every increase of mean phone-level distance by 1 unit, reaction times increase by 17-34 ms, at 95% probability (\\(\\beta\\) = 26.05, SD = 4.85). The 95% CrIs of the predicted reaction times at representative values of mean distance are: 968-976 ms for mean distance = 5, 1092-1103 ms for mean distance = 10, 1177-1203 for mean distance = 15.
+
+## References
