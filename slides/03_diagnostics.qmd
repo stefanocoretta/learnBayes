@@ -1,0 +1,245 @@
+---
+title: "Introduction to Bayesian regression models"
+subtitle: "03 - Diagnostics"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(lme4)
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+## MCMC traces
+
+```{r}
+#| label: brm-lev
+#| echo: false
+
+brm_lev <- readRDS("data/cache/brm_lev.rds")
+```
+
+```{r}
+#| label: brm-2-plot
+
+plot(brm_lev)
+```
+
+## MCMC traces: bad
+
+An example of bad MCMC chain mixing.
+
+![](/img/trace_c.png){fig-align="center"}
+
+::: notes
+Picture from <https://www.rdatagen.net/post/diagnosing-and-dealing-with-estimation-issues-in-the-bayesian-meta-analysis/>.
+:::
+
+## MCMC traces: intercept
+
+```{r}
+#| label: brm-lev-trace-int
+
+as.array(brm_lev) %>%
+  mcmc_trace("b_Intercept", np = nuts_params(brm_lev))
+```
+
+## MCMC traces: `IsWord`
+
+```{r}
+#| label: brm-lev-trace-phonlev
+
+as.array(brm_lev) %>%
+  mcmc_trace("b_PhonLev", np = nuts_params(brm_lev))
+```
+
+## $\hat{R}$ and Effective Sample Size (ESS)
+
+```{r}
+#| label: brm-lev-rhat
+brm_lev
+```
+
+## brms warns you
+
+![](/img/brm-warnings.png){fig-align="center"}
+
+## What to do
+
+::: box-tip
+-   Increase the number of iterations (default is 2000): `iter = 4000`.
+
+-   Increase `adapt_delta` (an MCMC setting, default is 0.9, can only be between 0 and 1 exclusive).
+
+    -   `control = list(adapt_delta = 0.9999)`
+
+-   Increase `max_treedepth` (another MCMC settings, default is 10).
+
+    -   `control = list(max_treedepth = 15)`
+:::
+
+. . .
+
+::: box-warning
+These solutions increase the time needed to fit the model, which is a perfectly acceptable compromise.
+:::
+
+## Fictitious example
+
+``` r
+mod <- brm(
+  y ~ x,
+  data = dat,
+  iter = 4000,
+  control = list(adapt_delta = 0.9999, max_treedepth = 15)
+)
+```
+
+## Posterior Predictive Checks
+
+```{r}
+#| label: brm-lev-pp
+
+pp_check(brm_lev, ndraws = 20)
+```
+
+## Log-normal regression
+
+$$
+\begin{align}
+RT & \sim Lognormal(\mu, \sigma)\\
+log(\mu) & = \beta_0 + \beta_1 \cdot \text{PhonLev}\\
+\end{align}
+$$
+
+::: box-note
+-   Variables that can only be positive, like Reaction Times, cannot be Gaussian.
+
+-   A standard distribution for these variables is the log-normal distribution.
+:::
+
+## Log-normal regression: MALD
+
+```{r}
+#| label: brm-log
+
+mald <- readRDS("./data/mald.rds")
+
+brm_log <- brm(
+  RT ~ 1 + PhonLev,
+  data = mald,
+  family = lognormal,
+  cores = 4,
+  seed = 9812,
+  file = "data/cache/brm_log.rds"
+)
+
+```
+
+## Log-normal regression: summary
+
+```{r}
+#| label: brm-log-summary
+
+brm_log
+
+```
+
+## Posterior Predictive Checks: looks better!
+
+```{r}
+#| label: brm-log-pp
+
+pp_check(brm_log, ndraws = 10)
+```
+
+## Predicted RTs by `PhonLev`
+
+```{r}
+#| label: fig-brm-log
+#| fig-asp: 0.75
+#| fig-cap: "Predicted effect of mean phone-level distance on RTs from a Bayesian regression model."
+
+conditional_effects(brm_log)
+```
+
+## Predicted RTs at representative values of `PhonLev`
+
+```{r}
+#| label: brm-log-draws-2
+
+brm_log_draws <- as_draws_df(brm_log)
+
+brm_log_draws <- brm_log_draws |> 
+  mutate(
+    # RTs when PhonLev is 5
+    rt_05 = exp(b_Intercept + b_PhonLev * 5),
+    # RTs when PhonLev is 10
+    rt_10 = exp(b_Intercept + b_PhonLev * 10),
+    # RTs when PhonLev is 15
+    rt_15 = exp(b_Intercept + b_PhonLev * 15),
+  )
+```
+
+## Calculating CrIs from the draws
+
+```{r}
+#| label: brm-log-cri
+#| warning: false
+
+library(posterior)
+
+brm_log_cri <- brm_log_draws |> 
+  select(rt_05, rt_10, rt_15) |> 
+  pivot_longer(everything()) |> 
+  group_by(name) |> 
+  summarise(
+    # Use quantile2() from posterior package
+    lo_95 = round(quantile2(value, 0.025)),
+    hi_95 = round(quantile2(value, 0.0975))
+  )
+
+brm_log_cri
+```
+
+## Summary
+
+::: box-tip
+Quick and dirty diagnostics:
+
+-   MCMC traces: hairy caterpillars, **no divergent transitions**.
+
+-   $\hat{R}$: should be 1 (\> 1 means non-convergence).
+
+-   Effective Sample Size (**ESS**): should be large enough.
+
+-   **Posterior Predictive Checks**: predicted outcome distribution should match the empirical distribution.
+:::
+
+. . .
+
+::: box-warning
+-   `brm()` warns you about divergent transition, $\hat{R} > 1$ and low ESS and how to fix them.
+
+    -   This usually involves increasing the number of iterations and/or other MCMC tricks.
+
+-   Posterior predictive checks are based on visual inspection only.
+:::
