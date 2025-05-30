@@ -1,0 +1,252 @@
+---
+title: "Introduction to Bayesian regression models"
+subtitle: "04 - Categorical predictors"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(lme4)
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+## MALD again
+
+```{r}
+#| label: fig-mald-isword
+#| fig-asp: 0.75
+#| fig-cap: "RTs by lexical status."
+#| fig-align: "center"
+#| echo: false
+
+mald <- readRDS("./data/mald.rds")
+
+mald |> 
+  filter(RT > 500) |> 
+  ggplot(aes(IsWord, RT, fill = IsWord)) +
+  geom_jitter(width = 0.2, alpha = 0.2) +
+  geom_violin(width = 0.1) +
+  theme(legend.position = "none")
+```
+
+## MALD: `IsWord`
+
+::: box-tip
+**Does the lexical status of the target word (real or nonce) affect reaction times**?
+:::
+
+## Categorical predictors: treatment contrasts
+
+```{r}
+#| label: brm-cat
+
+brm_cat <- brm(
+  RT ~ 1 + PhonLev + IsWord,
+  data = mald,
+  family = lognormal,
+  cores = 4,
+  seed = 9812,
+  file = "data/cache/brm_cat.rds"
+)
+
+brm_cat
+```
+
+## Interpret treatment contrasts
+
+```{r}
+#| label: brm-cat-summ
+#| echo: false
+
+cat(capture.output(summary(brm_cat))[8:12], sep = "\n")
+```
+
+::: box-note
+-   `Intercept`: mean RT when `PhonLev` is 0 and `IsWord` = TRUE.
+
+-   `PhonLev`: change in mean RT for each unit increase in `PhonLev` (average across `IsWord`).
+
+-   `IsWordFalse`: difference in mean RT between `IsWord` = FALSE and TRUE (when `PhonLev` = 0).
+:::
+
+. . .
+
+::: box-warning
+So, does the lexical status of the word affect RTs?
+:::
+
+## Indexing categorical predictors
+
+$$
+\begin{align}
+RT_i & \sim Lognormal(\mu_i, \sigma)\\
+log(\mu_i) & = \beta_1 \cdot W_{\text{T}[i]} + \beta_2 \cdot W_{\text{F}[i]} + \beta_3 \cdot PL_i\\
+\end{align}
+$$
+
+. . .
+
+::: box-note
+-   $\beta_1$: mean RT when `IsWord` = TRUE ($W_{T}$).
+
+-   $\beta_1$: mean RT when `IsWord` = FALSE ($W_{F}$).
+
+-   $\beta_3$: change in RT for each unit increase of `PhonLev` ($PL$).
+:::
+
+## Indexing with intercept suppression
+
+```{r}
+#| label: brm-ind
+
+brm_ind <- brm(
+  RT ~ 0 + IsWord + PhonLev,
+  data = mald,
+  family = lognormal,
+  cores = 4,
+  seed = 6293,
+  file = "data/cache/brm_ind.rds"
+)
+
+brm_ind
+```
+
+## RTs by lexical status (at mean `PhonLev`)
+
+```{r}
+#| label: brm-ind-cond-mean
+
+conditional_effects(brm_ind, "IsWord")
+```
+
+## RTs by lexical status (`PhonLev` = 0)
+
+```{r}
+#| label: brm-ind-cond-0
+#| fig-asp: 0.75
+
+conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 0))
+```
+
+## RTs by lexical status (`PhonLev` = 5)
+
+```{r}
+#| label: brm-ind-cond-5
+
+conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 5))
+```
+
+## RTs by lexical status (`PhonLev` = 10)
+
+```{r}
+#| label: brm-ind-cond-10
+
+conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 10))
+```
+
+## RTs by lexical status (`PhonLev` = 14)
+
+```{r}
+#| label: brm-ind-cond-14
+
+conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 14))
+```
+
+## Calculate RT difference from the MCMC draws: calculate RTs
+
+```{r}
+#| label: brm-ind-draws
+
+brm_ind_draws <- as_draws_df(brm_ind) |> 
+  mutate(
+    # RT when PhonLev = 5 (min PhonLev)
+    rt_true_5 = exp(b_IsWordTRUE + b_PhonLev * 5),
+    rt_false_5 = exp(b_IsWordFALSE + b_PhonLev * 5),
+    # RT when PhonLev = 7 (mean PhonLev)
+    rt_true_7 = exp(b_IsWordTRUE + b_PhonLev * 7),
+    rt_false_7 = exp(b_IsWordFALSE + b_PhonLev * 7),
+    # RT when PhonLev = 14 (max PhonLev)
+    rt_true_14 = exp(b_IsWordTRUE + b_PhonLev * 14),
+    rt_false_14 = exp(b_IsWordFALSE + b_PhonLev * 14),
+  )
+```
+
+## Calculate RT difference from the MCMC draws: get difference
+
+```{r}
+#| label: brm-ind-draws-diff
+
+brm_ind_draws <- brm_ind_draws |> 
+  mutate(
+    rt_05_diff = rt_false_5 - rt_true_5,
+    rt_07_diff = rt_false_7 - rt_true_7,
+    rt_14_diff = rt_false_14 - rt_true_14,
+  )
+
+brm_ind_draws |> select(rt_05_diff:rt_14_diff)
+```
+
+## Calculate CrIs of difference
+
+```{r}
+#| label: brm-ind-cris
+
+library(posterior)
+
+brm_ind_draws |> 
+  select(rt_05_diff:rt_14_diff) |> 
+  pivot_longer(everything()) |> 
+  group_by(name) |> 
+  summarise(
+    # Use quantile2() from posterior package
+    lo_95 = round(quantile2(value, 0.025)),
+    hi_95 = round(quantile2(value, 0.0975))
+  )
+```
+
+## MALD: `IsWord`
+
+::: box-tip
+**Does the lexical status of the target word (real or nonce) affect reaction times**?
+:::
+
+. . .
+
+::: box-note
+Yes.
+:::
+
+## But...
+
+```{r}
+#| label: fig-mald-pl-w
+#| fig-asp: 0.75
+#| fig-cap: "RTs by lexical status and mean phone-level distance."
+#| fig-align: "center"
+#| echo: false
+
+mald |> 
+  filter(RT > 500) |> 
+  ggplot(aes(PhonLev, RT_log)) +
+  geom_point(alpha = 0.05) +
+  geom_smooth(aes(colour = IsWord), method = "lm", formula = "y~x")
+```
+

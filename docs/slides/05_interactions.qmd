@@ -1,0 +1,219 @@
+---
+title: "Introduction to Bayesian regression models"
+subtitle: "05 - Interactions"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+editor: source
+format:
+  mono-light-revealjs:
+    theme: [default, custom.scss]
+    history: false
+filters:
+  - tachyonsextra
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_minimal())
+
+library(lme4)
+library(ggeffects)
+library(brms)
+library(tidybayes)
+library(bayesplot)
+```
+
+## MALD
+
+```{r}
+#| label: fig-mald-pl-w
+#| fig-asp: 0.75
+#| fig-cap: "RTs by lexical status and mean phone-level distance."
+#| fig-align: "center"
+#| echo: false
+
+mald <- readRDS("./data/mald.rds")
+
+mald |> 
+  filter(RT > 500) |> 
+  ggplot(aes(PhonLev, RT_log)) +
+  geom_point(alpha = 0.05) +
+  geom_smooth(aes(colour = IsWord), method = "lm", formula = "y~x")
+```
+
+## MALD: `IsWord` and `PhonLev`
+
+::: box-tip
+**Research questions**
+
+1.  Does the lexical status of the word affect RTs?
+
+2.  Does the mean phone-level distance affect RTs?
+
+3.  Does the effect of mean phone-level distance differ depending on the lexical status?
+:::
+
+. . .
+
+::: box-warning
+For pedagogical reasons we fitted many regression models so far, but you should fit a single model to answer these questions.
+:::
+
+## Interactions
+
+$$
+\begin{align}
+RT_i & \sim Lognormal(\mu_i, \sigma_i)\\
+log(\mu_i) & = \beta_1 \cdot W_{\text{T}[i]} + \beta_2 \cdot W_{\text{F}[i]}\\
+& + \beta_3 \cdot PL_{W_\text{T}[i]} + \beta_4 \cdot PL_{W_\text{F}[i]}\\
+\end{align}
+$$
+
+::: box-note
+We allow the model to estimate the `PhonLev` effect for real words and nonce words separately:
+
+-   $\beta_3$ is the effect of `PhonLev` when the word is real ($PL_{W_\text{T}}$).
+
+-   $\beta_4$ is the effect of `PhonLev` in nonce words ($PL_{W_\text{F}}$).
+:::
+
+## Regression with interaction
+
+```{r}
+#| label: brm-int
+
+brm_int <- brm(
+  RT ~ 0 + IsWord + IsWord:PhonLev,
+  data = mald,
+  family = lognormal,
+  cores = 4,
+  seed = 9812,
+  file = "data/cache/brm_int.rds"
+)
+
+brm_int
+```
+
+## RQ 3: Does the effect of mean phone-level distance differ depending on the lexical status?
+
+```{r}
+#| label: brm-int-draws
+
+brm_int_draws <- as_draws_df(brm_int) |> 
+  mutate(
+    # Back ticks `` are necessary because the column names have colons ":"
+    
+    phonlev_diff = `b_IsWordFALSE:PhonLev` - `b_IsWordTRUE:PhonLev`
+  )
+```
+
+## Difference in effect of `PhonLev` in nonce vs real words
+
+```{r}
+#| label: fig-phonlev-diff
+#| fig-cap: "Predicted difference in `PhonLev` effect in nonce vs real words."
+#| output-location: slide
+
+brm_int_draws |> 
+  ggplot(aes(phonlev_diff)) +
+  stat_halfeye() +
+  labs(
+    x = "Difference (log)",
+    y = element_blank()
+  )
+```
+
+## CrIs of the difference in effect of `PhonLev`
+
+```{r}
+#| label: brm-int-cris
+library(posterior)
+
+brm_int_draws |> 
+  summarise(
+    lo_95 = quantile2(phonlev_diff, 0.025), hi_95 = quantile2(phonlev_diff, 0.975),
+    lo_90 = quantile2(phonlev_diff, 0.5), hi_90 = quantile2(phonlev_diff, 0.95),
+    lo_80 = quantile2(phonlev_diff, 0.1), hi_80 = quantile2(phonlev_diff, 0.9),
+    lo_70 = quantile2(phonlev_diff, 0.15), hi_70 = quantile2(phonlev_diff, 0.85)
+  ) |> 
+
+  # Some pivot magic to make it prettier
+  pivot_longer(everything()) |> 
+  separate(name, c("boundary", "interval")) |> 
+  pivot_wider(names_from = boundary) |> 
+  mutate(lo = round(lo, 4), hi = round(hi, 4))
+```
+
+## Plot the model predictions
+
+```{r}
+#| label: brm-int-cond
+conditional_effects(brm_int, "PhonLev:IsWord")
+```
+
+## Quantify the lexical status difference (log)
+
+```{r}
+#| label: phonlev-diff-5-10
+#| warning: false
+
+phonlev_diff_5_10 <- brm_int_draws |> 
+  mutate(
+    true_5 = b_IsWordTRUE + `b_IsWordTRUE:PhonLev` * 5,
+    false_5 = b_IsWordFALSE + `b_IsWordFALSE:PhonLev` * 5,
+    true_10 = b_IsWordTRUE + `b_IsWordTRUE:PhonLev` * 10,
+    false_10 = b_IsWordFALSE + `b_IsWordFALSE:PhonLev` * 10,
+    ft_5 = false_5 - true_5,
+    ft_10 = false_10 - true_10
+  ) |> 
+  select(ft_5, ft_10)
+
+phonlev_diff_5_10
+```
+
+## Plot the lexical status difference (log)
+
+```{r}
+#| label: fig-phonlev-diff-5-10
+
+phonlev_diff_5_10 |> 
+  pivot_longer(everything()) |> 
+  ggplot(aes(value, name)) +
+  stat_halfeye()
+```
+
+## Quantify the lexical status difference (ms)
+
+```{r}
+#| label: phonlev-diff-5-10-ms
+#| warning: false
+
+phonlev_diff_5_10_ms <- brm_int_draws |> 
+  mutate(
+    true_5 = exp(b_IsWordTRUE + `b_IsWordTRUE:PhonLev` * 5),
+    false_5 = exp(b_IsWordFALSE + `b_IsWordFALSE:PhonLev` * 5),
+    true_10 = exp(b_IsWordTRUE + `b_IsWordTRUE:PhonLev` * 10),
+    false_10 = exp(b_IsWordFALSE + `b_IsWordFALSE:PhonLev` * 10),
+    ft_5 = false_5 - true_5,
+    ft_10 = false_10 - true_10
+  ) |> 
+  select(ft_5, ft_10)
+
+phonlev_diff_5_10_ms
+```
+
+## Plot the lexical status difference (ms)
+
+```{r}
+#| label: fig-phonlev-diff-5-10-ms
+
+phonlev_diff_5_10_ms |> 
+  pivot_longer(everything()) |> 
+  ggplot(aes(value, name)) +
+  stat_halfeye()
+```

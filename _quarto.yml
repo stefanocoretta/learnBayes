@@ -23,16 +23,15 @@ website:
         menu:
           - href: "slides/01_basics.qmd"
             text: "01 - Basics"
-          - href: "slides/02_diagnostics.qmd"
-            text: "02 - Diagnostics"
-          - href: "slides/03_priors.qmd"
-            text: "03 - Priors"
-          - href: "slides/04_interactions.qmd"
-            text: "04 - Interactions"
-          - href: "slides/05_more_priors.qmd"
-            text: "05 - More on priors"
-          - href: "slides/06_group_level.qmd"
-            text: "06 - Group-level effects"
+          - href: "slides/02_regression.qmd"
+            text: "02 - Regression"
+          - href: "slides/03_diagnostics.qmd"
+            text: "03 - Diagnostics"
+          - href: "slides/04_categorical.qmd"
+            text: "04 - Categorical predictors"
+          - href: "slides/05_interactions.qmd"
+            text: "05 - Interactions"
+
 
 format:
   html:
