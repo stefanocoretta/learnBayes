@@ -1,0 +1,77 @@
+---
+title: "Full example (report)"
+author: "Stefano Coretta"
+editor: visual
+bibliography: references.bib
+format: 
+  html: 
+    number-sections: true
+    code-fold: true
+execute: 
+  warning: false
+  message: false
+---
+
+::: callout-warning
+This is an example of how to report a Bayesian regression analysis. It is in the shape of an academic paper, but several sections and figures that would normally appear in a standard article are omitted here given the focus is on how to report the regression analysis.
+
+This article is on a fictitious study of a subset of the MALD data [@tucker2019]. The data contains reaction times and accuracy from an auditory lexical decision task in English. Here we consider only the reaction times data.
+:::
+
+## Research questions  {#sec-rq}
+
+This study sets out to answer the following questions:
+
+1.  Does the lexical status of the word affect reaction times?
+
+2.  Does the mean phone-level Levinshtein distance affect reaction times?
+
+3.  Does the effect of mean phone-level distance on reaction times differ depending on the lexical status?
+
+## Results
+
+```{r}
+#| label: setup
+
+library(tidyverse)
+library(brms)
+
+```
+
+In order to answer the research questions presented in @sec-rq, we fitted a Bayesian regression model with brms [@burkner2017; @burkner2018] in R version 4.5.0 [@rcoreteam2025]. The model was first run with four MCMC chains and 2000 iterations, of which 1000 for warm-up. Since the resulting estimated sample size (ESS) was flagged by brms as too low, we refitted the model by increasing the number of iterations to 4000 (of which 2000 for warm-up). The model fully converged with $\hat{R}$ values of approximately 1 and sufficient ESS.
+
+```{r}
+#| label: rt-full
+
+mald <- readRDS("data/mald.rds") |> 
+  mutate(
+    PhonLev_c = PhonLev - mean(PhonLev)
+  )
+
+# Model with iter = 2000 gave warning of low ESS. Fit with iter = 4000.
+
+rt_full <- brm(
+  RT ~ 0 + IsWord + IsWord:PhonLev_c +
+    (0 + IsWord + IsWord:PhonLev_c | Subject),
+  family = lognormal,
+  data = mald,
+  cores = 4,
+  iter = 4000,
+  seed = 7238,
+  file = "data/cache/rt_full.rds"
+)
+```
+
+The model structure was the following: we used a log-normal distribution for the outcome variable, i.e. the reaction times (RTs). A log-normal distribution is a standard distribution for numeric variables that are bounded to positive values only, like reaction times [see e.g. @rosen2005]. We included the following predictors: lexical status of the target word (real vs nonce) and mean phone-level Levinshtein distance of the target word (range approx. 5-14). The lexical status predictor was coded using indexing rather than traditional contrasts [@mcelreath2019] by suppressing the model's intercept with the `0 +` syntax in the model's formula. The mean phone-level distance was centered by subtracting the grand mean of the mean phone-level distance. An interaction between lexical status and phone-level distance was also included. Furthermore, we included varying terms [aka random terms, see @gelman2005] by subject for lexical status, phone-level distance and the interaction between the two. We did not include by-word varying terms since the majority of data is from distinct words (the exceptions are 130 words of 2867 which have two or three observations in total, rather than one). We used the brms default priors. @tbl-rt-full-fixef reports the mean, standard deviation and lower and upper limits of the 95% Credible Interval (CrI) for the model's coefficients in logs (which is the scale returned by log-normal regressions). For ease of interpretation, we will also convert estimands into milliseconds where relevant.
+
+```{r}
+#| label: tbl-rt-full-fixef
+#| tbl-cap: "Posterior summaries of the model's coefficients (logs), with 95% Credible Intervals (lower and upper limits)."
+
+fixef(rt_full) |> 
+  as_tibble(rownames = "coefficient") |>
+  rename(mean = Estimate, SD = Est.Error, lower = Q2.5, upper = Q97.5) |> 
+  knitr::kable(digits = 2)
+```
+
+According to the model, the mean RT with real words (`IsWordTRUE`), when the mean phone-level distance is at its grand mean (approx `{r} round(mean(mald$PhonLev))`), is between `{r} round(exp(6.82))` and `{r} round(exp(6.88))` ms, at 95% probability. With nonce words (`IsWordFalse`) and average mean phone-level distance, the mean RT is between `{r} round(exp(6.92))` and `{r} round(exp(7.01))` ms, at 95% probability.
