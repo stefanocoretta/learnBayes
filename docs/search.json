@@ -753,7 +753,7 @@
     "href": "full-example/full-example-report.html",
     "title": "Full example (report)",
     "section": "",
-    "text": "Warning\n\n\n\nThis is an example of how to report a Bayesian regression analysis. It is in the shape of an academic paper, but several sections and figures that would normally appear in a standard article are omitted here given the focus is on how to report the regression analysis.\nThis article is on a fictitious study of a subset of the MALD data (Tucker et al. 2019). The data contains reaction times and accuracy from an auditory lexical decision task in English. Here we consider only the reaction times data."
+    "text": "Warning\n\n\n\nThis is an example of how to report a Bayesian regression analysis. It is in the shape of an academic paper, but several sections that would normally appear in a standard article are omitted here given the focus is on how to report the analysis."
   },
   {
     "objectID": "full-example/full-example-report.html#research-questions",

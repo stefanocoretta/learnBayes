@@ -1,5 +1,5 @@
 ---
-title: "Full example (report)"
+title: "Full example on how to report a Bayesian regression analysis"
 author: "Stefano Coretta"
 editor: visual
 bibliography: references.bib
@@ -18,7 +18,7 @@ This is an example of how to report a Bayesian regression analysis. It is in the
 This article is on a fictitious study of a subset of the MALD data [@tucker2019]. The data contains reaction times and accuracy from an auditory lexical decision task in English. Here we consider only the reaction times data.
 :::
 
-## Research questions  {#sec-rq}
+## Research questions {#sec-rq}
 
 This study sets out to answer the following questions:
 
@@ -105,10 +105,11 @@ rt_full_draws <- as_draws_df(rt_full) |>
   )
 
 round(quantile2(rt_full_draws$dist_diff), 3)
+round(quantile2(rt_full_draws$dist_diff, c(0.15, 0.85)), 3)
 
 ```
 
-As to the question of whether the effect of phone-level distance is different in real vs nonce words, the 95% CrI of the difference is \[-0.024, +0.003\]. The posterior distribution of the difference is shown in @fig-dist-diff.
+As to the question of whether the effect of phone-level distance is different in real vs nonce words, the 95% CrI of the difference is [-0.024, +0.003], spanning both negative and positive values, with an appreciable skew towards negative values. The density of the posterior distribution of the difference is shown in @fig-dist-diff. The median, 70% and 95% CrI are represented by the dot, the thick and think lines respectively at the bottom of the density. The 70% CrI of the difference is [-0.019, -0.002] which spans negative values only, thus indicating that we can be 70% confident that the difference in phone-level distance effect between nonce and real words is possibly negative, albeit with uncertain magnitude (i.e. the difference could be quite small if not negligible).
 
 ```{r}
 #| label: fig-dist-diff
@@ -123,3 +124,43 @@ rt_full_draws |>
   )
 
 ```
+
+```{r}
+#| label: phonlev-diff-5-10
+#| results: hide
+
+phonlev_diff_5_10 <- rt_full_draws |> 
+  mutate(
+    true_5 = exp(b_IsWordTRUE - `b_IsWordTRUE:PhonLev_c` * 2),
+    false_5 = exp(b_IsWordFALSE + `b_IsWordFALSE:PhonLev_c` * 2),
+    true_10 = exp(b_IsWordTRUE + `b_IsWordTRUE:PhonLev_c` * 3),
+    false_10 = exp(b_IsWordFALSE + `b_IsWordFALSE:PhonLev_c` * 3),
+    ft_5 = false_5 - true_5,
+    ft_10 = false_10 - true_10,
+    ft_10_5 = ft_10 - ft_5
+  ) |> 
+  select(ft_5, ft_10, ft_10_5)
+
+round(quantile2(phonlev_diff_5_10$ft_5))
+round(quantile2(phonlev_diff_5_10$ft_10))
+round(quantile2(phonlev_diff_5_10$ft_10_5))
+
+phonlev_diff_5_10_mean <- rt_full_draws |> 
+  mutate(
+    mean_PhonLev = mean(c(`b_IsWordTRUE:PhonLev_c`, `b_IsWordFALSE:PhonLev_c`)),
+    true_5 = exp(b_IsWordTRUE - mean_PhonLev * 2),
+    false_5 = exp(b_IsWordFALSE + mean_PhonLev * 2),
+    true_10 = exp(b_IsWordTRUE + mean_PhonLev * 3),
+    false_10 = exp(b_IsWordFALSE + mean_PhonLev * 3),
+    ft_5 = false_5 - true_5,
+    ft_10 = false_10 - true_10,
+    ft_10_5 = ft_10 - ft_5
+  ) |> 
+  select(ft_5, ft_10, ft_10_5)
+
+round(quantile2(phonlev_diff_5_10_mean$ft_5))
+round(quantile2(phonlev_diff_5_10_mean$ft_10))
+round(quantile2(phonlev_diff_5_10_mean$ft_10_5))
+```
+
+To illustrate what the difference in phone-level distance effect would look like in milliseconds, we calculated the 95% CrI of the difference in RTs between nonce and real words with phone-level distance = 5 vs with distance = 10. The 95% CrI (of the difference in RTs between nonce and real words) when the phone-level distance is 5 is \[+187, +267\] ms, while the 95% CrI when the phone-level distance is 10 is \[+42, +148\]. Now let's compare these 95% CrIs with CrIs calculated assuming the same effect of phone-level distance in real and nonce words (i.e. by using the mean of the phone-level distance effect in real and nonce words): 95% CrI with distance = 5 is \[+194, +265\] ms while 95% CrI with distance =10 is \[+92, +165\] ms. The comparison suggests that if indeed there is a difference in the effect of phone-level distance between real and nonce words, with magnitudes as suggested by the model, we would get an appreciable effect in the difference between real and nonce words depending on the phone-level distance, by which with higher phone-level distances the gap in RTs between nonce and real words would diminish. We find this to be theoretically relevant, but given the uncertainty in the estimated difference in phone-level distance effect, we leave this to future work.
