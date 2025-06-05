@@ -140,7 +140,7 @@ Let's investigate the effects of the following on Reaction Times (RTs):
     -   An alternative to neighbourhood density.
 -   `IsWord`: lexical status (real word vs nonce word).
 
-## What are your expectations?
+## 
 
 ```{=html}
 <iframe allowfullscreen frameborder="0" height="600px" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/682f25c769100c24662fef2a" width="100%">
@@ -148,8 +148,7 @@ Let's investigate the effects of the following on Reaction Times (RTs):
 </iframe>
 ```
 
-## What are your expectations?
-
+## 
 
 ```{=html}
 <iframe allowfullscreen frameborder="0" height="600px" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/682f260f776b2a0921ae54ed" width="100%">

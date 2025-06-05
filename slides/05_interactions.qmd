@@ -149,6 +149,12 @@ brm_int_draws |>
   mutate(lo = round(lo, 4), hi = round(hi, 4))
 ```
 
+## 
+
+```{=html}
+<iframe allowfullscreen frameborder="0" height="100%" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/6841e77495daccc49304b051" width="100%"></iframe>
+```
+
 ## Plot the model predictions
 
 ```{r}
@@ -217,3 +223,21 @@ phonlev_diff_5_10_ms |>
   ggplot(aes(value, name)) +
   stat_halfeye()
 ```
+
+## 
+
+```{=html}
+<iframe allowfullscreen frameborder="0" height="100%" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/6841e9ef95daccc49305b436" width="100%"></iframe>
+```
+
+## Summary
+
+::: box-note
+-   Bayesian statistics is a **framework for doing inference** (i.e. learning something about a population from a sample).
+
+-   The Bayesian framework is based on **estimating uncertainty with probability distributions** on parameters.
+
+-   Bayesian regressions are a flexible way to model data.
+
+-   What you learned today can be transferred to other types of regression models (Bernoulli, cumulative, ordinal, categorical, beta, ...).
+:::

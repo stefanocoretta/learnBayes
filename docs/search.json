@@ -88,7 +88,14 @@
     "href": "slides/05_interactions.html#plot-the-lexical-status-difference-ms",
     "title": "Introduction to Bayesian regression models",
     "section": "Plot the lexical status difference (ms)",
-    "text": "Plot the lexical status difference (ms)\n\nphonlev_diff_5_10_ms |&gt; \n  pivot_longer(everything()) |&gt; \n  ggplot(aes(value, name)) +\n  stat_halfeye()\n\n\n\n\n\nFigure 4"
+    "text": "Plot the lexical status difference (ms)\n\nphonlev_diff_5_10_ms |&gt; \n  pivot_longer(everything()) |&gt; \n  ggplot(aes(value, name)) +\n  stat_halfeye()\n\n\n\nFigure 4"
+  },
+  {
+    "objectID": "slides/05_interactions.html#summary",
+    "href": "slides/05_interactions.html#summary",
+    "title": "Introduction to Bayesian regression models",
+    "section": "Summary",
+    "text": "Summary\n\n\nBayesian statistics is a framework for doing inference (i.e. learning something about a population from a sample).\nThe Bayesian framework is based on estimating uncertainty with probability distributions on parameters.\nBayesian regressions are a flexible way to model data.\nWhat you learned today can be transferred to other types of regression models (Bernoulli, cumulative, ordinal, categorical, beta, …)."
   },
   {
     "objectID": "slides/03_diagnostics.html#mcmc-traces",
@@ -271,20 +278,6 @@
     "title": "Introduction to Bayesian regression models",
     "section": "MALD: phone-level distance and lexical status",
     "text": "MALD: phone-level distance and lexical status\nLet’s investigate the effects of the following on Reaction Times (RTs):\n\nPhonLev: mean phone-level Levenshtein distance of the item from all other entries.\n\nAn alternative to neighbourhood density.\n\nIsWord: lexical status (real word vs nonce word)."
-  },
-  {
-    "objectID": "slides/01_basics.html#what-are-your-expectations",
-    "href": "slides/01_basics.html#what-are-your-expectations",
-    "title": "Introduction to Bayesian regression models",
-    "section": "What are your expectations?",
-    "text": "What are your expectations?"
-  },
-  {
-    "objectID": "slides/01_basics.html#what-are-your-expectations-1",
-    "href": "slides/01_basics.html#what-are-your-expectations-1",
-    "title": "Introduction to Bayesian regression models",
-    "section": "What are your expectations?",
-    "text": "What are your expectations?"
   },
   {
     "objectID": "slides/01_basics.html#mald-phone-level-distance-and-lexical-status-1",
@@ -565,13 +558,6 @@
     "title": "Introduction to Bayesian regression models",
     "section": "MALD: regression",
     "text": "MALD: regression\n\\[\nRT \\sim \\beta_0 + \\beta_1 \\cdot \\text{PhonLev}\n\\]\n\nor\n\\[\n\\begin{align}\nRT & \\sim \\beta_0 + \\beta_1 \\cdot \\text{PhonLev} + \\epsilon\\\\\n\\epsilon & \\sim Gaussian(0, \\sigma)\n\\end{align}\n\\]\n\n\nor\n\\[\n\\begin{align}\nRT & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & = \\beta_0 + \\beta_1 \\cdot \\text{PhonLev}\\\\\n\\end{align}\n\\]\n\nThe model estimates the posterior probability distributions of \\(\\beta_0, \\beta_1, \\sigma\\)."
-  },
-  {
-    "objectID": "slides/02_regression.html#what-are-your-expectations",
-    "href": "slides/02_regression.html#what-are-your-expectations",
-    "title": "Introduction to Bayesian regression models",
-    "section": "What are your expectations?",
-    "text": "What are your expectations?"
   },
   {
     "objectID": "slides/02_regression.html#mald-regression-1",

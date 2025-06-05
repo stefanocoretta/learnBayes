@@ -115,7 +115,7 @@ $$
 The model estimates the posterior probability distributions of $\beta_0, \beta_1, \sigma$.
 :::
 
-## What are your expectations?
+## 
 
 ```{=html}
 <iframe allowfullscreen frameborder="0" height="100%" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/68346b14678ad4313b2e2b05" width="100%"></iframe>

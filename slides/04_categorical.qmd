@@ -129,6 +129,12 @@ brm_ind <- brm(
 brm_ind
 ```
 
+## 
+
+```{=html}
+<iframe allowfullscreen frameborder="0" height="100%" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/6841e529c67c5e375ae1a10d" width="100%"></iframe>
+```
+
 ## RTs by lexical status (at mean `PhonLev`)
 
 ```{r}
@@ -142,6 +148,7 @@ conditional_effects(brm_ind, "IsWord")
 ```{r}
 #| label: brm-ind-cond-0
 #| fig-asp: 0.75
+#| fig-align: center
 
 conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 0))
 ```
@@ -150,6 +157,8 @@ conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 0))
 
 ```{r}
 #| label: brm-ind-cond-5
+#| fig-asp: 0.75
+#| fig-align: center
 
 conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 5))
 ```
@@ -158,6 +167,8 @@ conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 5))
 
 ```{r}
 #| label: brm-ind-cond-10
+#| fig-asp: 0.75
+#| fig-align: center
 
 conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 10))
 ```
@@ -166,6 +177,8 @@ conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 10))
 
 ```{r}
 #| label: brm-ind-cond-14
+#| fig-asp: 0.75
+#| fig-align: center
 
 conditional_effects(brm_ind, "IsWord", conditions = list(PhonLev = 14))
 ```
@@ -220,6 +233,12 @@ brm_ind_draws |>
     lo_95 = round(quantile2(value, 0.025)),
     hi_95 = round(quantile2(value, 0.0975))
   )
+```
+
+## 
+
+```{=html}
+<iframe allowfullscreen frameborder="0" height="100%" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/6841e5b213eb1f765203c65d" width="100%"></iframe>
 ```
 
 ## MALD: `IsWord`
