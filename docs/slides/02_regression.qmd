@@ -177,6 +177,12 @@ cat(capture.output(summary(brm_lev))[8:11], sep = "\n")
 -   There is a **95% probability** that each unit change of `PhonLev` corresponds to a change in mean RT **between +17 and +34 ms**, conditional on the model and data. This is the 95% Credible Interval (CrI) of $\mathcal{P}(26, 5)$.
 :::
 
+## 
+
+```{=html}
+<iframe allowfullscreen frameborder="0" height="100%" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/6841e1577066f550294b8926" width="100%"></iframe>
+```
+
 ## Effect of `PhonLev` on RTs
 
 ```{r}
