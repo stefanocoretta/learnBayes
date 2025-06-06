@@ -31,7 +31,9 @@ website:
             text: "04 - Categorical predictors"
           - href: "slides/05_interactions.qmd"
             text: "05 - Interactions"
-
+      - href: full-example-report.qmd
+        text: Reporting
+      - href: learning.qmd
 
 format:
   html:

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Pre-workshop set-up – learnBayes</title>
+<title>Learning – learnBayes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,42 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
 }
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
 }
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
 }
-</style>
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -129,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./setup.html" aria-current="page"> 
+    <a class="nav-link" href="./setup.html"> 
 <span class="menu-text">Set-up</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -164,7 +149,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Reporting</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./learning.html"> 
+    <a class="nav-link active" href="./learning.html" aria-current="page"> 
 <span class="menu-text">Learning</span></a>
   </li>  
 </ul>
@@ -179,29 +164,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#pre-requisites" id="toc-pre-requisites" class="nav-link active" data-scroll-target="#pre-requisites">Pre-requisites</a></li>
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a>
-  <ul class="collapse">
-  <li><a href="#install-the-c-toolchain" id="toc-install-the-c-toolchain" class="nav-link" data-scroll-target="#install-the-c-toolchain">1. Install the C++ toolchain</a></li>
-  <li><a href="#install-the-r-packages" id="toc-install-the-r-packages" class="nav-link" data-scroll-target="#install-the-r-packages">2. Install the R packages</a></li>
-  <li><a href="#check-your-installation" id="toc-check-your-installation" class="nav-link" data-scroll-target="#check-your-installation">Check your installation</a></li>
-  </ul></li>
-  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
-  <li><a href="#download-the-materials" id="toc-download-the-materials" class="nav-link" data-scroll-target="#download-the-materials">Download the materials</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Pre-workshop set-up</h1>
+<h1 class="title">Learning</h1>
 </div>
 
 
@@ -218,115 +189,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Please, follow these instructions carefully to get ready <strong>at least one day before the workshop</strong>.</p>
-<div class="callout callout-style-default callout-important no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<p>Here you can find further learning materials, with a focus on regression models.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-burkner2025" class="csl-entry" role="listitem">
+Bürkner, Paul Christian. 2025. <em>The Brms Book: Applied Bayesian Regression Modelling Using r and Stan</em>. <a href="https://paulbuerkner.com/software/brms-book/brms-book.pdf">https://paulbuerkner.com/software/brms-book/brms-book.pdf</a>.
 </div>
-<div class="callout-title-container flex-fill">
-Important
+<div id="ref-burkner2018" class="csl-entry" role="listitem">
+Bürkner, Paul-Christian. 2018. <span>“Advanced Bayesian Multilevel Modeling with the r Package Brms.”</span> <em>The R Journal</em> 10 (1): 395411. <a href="https://doi.org/10.32614/RJ-2018-017">https://doi.org/10.32614/RJ-2018-017</a>.
 </div>
+<div id="ref-burkner2021" class="csl-entry" role="listitem">
+———. 2021. <span>“Bayesian Item Response Modeling in r with Brms and Stan.”</span> <em>Journal of Statistical Software</em> 100 (5). <a href="https://doi.org/10.18637/jss.v100.i05">https://doi.org/10.18637/jss.v100.i05</a>.
 </div>
-<div class="callout-body-container callout-body">
-<p>Installing the necessary software takes a lot of space on your computer and can take a long of time (1-3 hours depending on the system).</p>
+<div id="ref-burkner2019" class="csl-entry" role="listitem">
+Bürkner, Paul-Christian, and Matti Vuorre. 2019. <span>“Ordinal Regression Models in Psychology: A Tutorial.”</span> <em>Advances in Methods and Practices in Psychological Science</em> 2 (1): 77101. <a href="https://doi.org/10.1177/2515245918823199">https://doi.org/10.1177/2515245918823199</a>.
 </div>
+<div id="ref-coretta2025" class="csl-entry" role="listitem">
+Coretta, Stefano, and Paul-Christian Bürkner. n.d. <span>“Bayesian Beta Regressions with Brms in r: A Tutorial for Phoneticians.”</span> <a href="https://doi.org/10.31219/osf.io/f9rqg_v1">https://doi.org/10.31219/osf.io/f9rqg_v1</a>.
 </div>
-<section id="pre-requisites" class="level2">
-<h2 class="anchored" data-anchor-id="pre-requisites">Pre-requisites</h2>
-<p>Before installing the necessary software, make sure you have installed or updated the following software.</p>
-<ul>
-<li><p>The <strong>latest version of R</strong> (<a href="https://cloud.r-project.org" class="uri">https://cloud.r-project.org</a>).</p></li>
-<li><p>The <strong>latest version of RStudio</strong> (<a href="https://www.rstudio.com/products/rstudio/download/#download" class="uri">https://www.rstudio.com/products/rstudio/download/#download</a>).</p></li>
-<li><p>Your <strong>operating system is up-to-date</strong>.</p></li>
-</ul>
-</section>
-<section id="installation" class="level2">
-<h2 class="anchored" data-anchor-id="installation">Installation</h2>
-<div class="callout callout-style-default callout-important no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<div id="ref-mcelreath2020" class="csl-entry" role="listitem">
+McElreath, Richard. 2020. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. Second edition. Chapman &amp; Hall/CRC Texts in Statistical Science Series. Boca Raton: CRC Press.
 </div>
-<div class="callout-title-container flex-fill">
-Important
+<div id="ref-nicenboim2025" class="csl-entry" role="listitem">
+Nicenboim, Bruno, Daniel J. Schad, and Shravan Vasishth. 2025. <em>Introduction to Bayesian Data Analysis for Cognitive Science</em>. <a href="https://bruno.nicenboim.me/bayescogsci/">https://bruno.nicenboim.me/bayescogsci/</a>.
 </div>
+<div id="ref-verissimo2021" class="csl-entry" role="listitem">
+Verissimo, Joao. 2021. <span>“Analysis of Rating Scales: A Pervasive Problem in Bilingualism Research and a Solution with Bayesian Ordinal Models.”</span> <em>Bilingualism: Language and Cognition</em> 24 (5): 842848. <a href="https://doi.org/10.1017/S1366728921000316">https://doi.org/10.1017/S1366728921000316</a>.
 </div>
-<div class="callout-body-container callout-body">
-<p>If you have previously installed the C++ toolkit or if you have recently updated your OS, please follow these instructions to reinstall them.</p>
-</div>
-</div>
-<p>Now you will need to install a few packages and extra software.</p>
-<p>Here is an overview of what you will install:</p>
-<ol type="1">
-<li><p>C++ toolchain.</p></li>
-<li><p>R packages: tidyverse, brms.</p></li>
-</ol>
-<section id="install-the-c-toolchain" class="level3">
-<h3 class="anchored" data-anchor-id="install-the-c-toolchain">1. Install the C++ toolchain</h3>
-<p>The package brms used in the workshop requires a working C++ toolchain to compile models.</p>
-<section id="windows" class="level4">
-<h4 class="anchored" data-anchor-id="windows">Windows</h4>
-<p>For Windows, follow the instructions here: <a href="https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html" class="uri">https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html</a></p>
-</section>
-<section id="macos" class="level4">
-<h4 class="anchored" data-anchor-id="macos">macOS</h4>
-<p>For macOS, open the Terminal and write the following line then press enter/return:</p>
-<pre><code>xcode-select --install</code></pre>
-<p>You’ll see a panel that asks you to install the Xcode Command Line Tools. Install them. Downloading and installation will take 30 to 60 minutes.</p>
-</section>
-<section id="linux" class="level4">
-<h4 class="anchored" data-anchor-id="linux">Linux</h4>
-<p>For Linux, follow the instructions here: <a href="https://github.com/stan-dev/rstan/wiki/Configuring-C-Toolchain-for-Linux" class="uri">https://github.com/stan-dev/rstan/wiki/Configuring-C-Toolchain-for-Linux</a></p>
-</section>
-</section>
-<section id="install-the-r-packages" class="level3">
-<h3 class="anchored" data-anchor-id="install-the-r-packages">2. Install the R packages</h3>
-<p>You need to install the following packages:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"brms"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>It will take several minutes to install the packages, depending on your system and configuration.</p>
-<p><strong>If after opening the workshop project in RStudio you get asked to install extra packages or software, please do so.</strong></p>
-</section>
-<section id="check-your-installation" class="level3">
-<h3 class="anchored" data-anchor-id="check-your-installation">Check your installation</h3>
-<p>Run the following in the RStudio Console:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">example</span>(stan_model, <span class="at">package =</span> <span class="st">"rstan"</span>, <span class="at">run.dontrun =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If you see some strange looking text printed in the Console and then <code>fit</code> and <code>fit2</code> in the Environment, then you are sorted!</p>
-</section>
-</section>
-<section id="troubleshooting" class="level2">
-<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
-<p>If you are having issues with installation, the best place to ask for help are:</p>
-<ul>
-<li><p>The Stan Forums: <a href="https://discourse.mc-stan.org" class="uri">https://discourse.mc-stan.org</a></p></li>
-<li><p>StackOverflow: <a href="https://stackoverflow.com" class="uri">https://stackoverflow.com</a></p></li>
-<li><p>Any search engine.</p></li>
-</ul>
-</section>
-<section id="download-the-materials" class="level2">
-<h2 class="anchored" data-anchor-id="download-the-materials">Download the materials</h2>
-<p>All the materials of the workshop (data, code, slides) are in the workshop <a href="https://github.com/stefanocoretta/learnBayes">repository</a> on GitHub.</p>
-<p>You have two options:</p>
-<ol type="1">
-<li><p>You can fork the repository and clone it locally if you use git/GitHub.</p></li>
-<li><p>You can simply download the repo by clicking on the <code>Code</code> button &gt; <code>Download ZIP</code> on GitHub.</p></li>
-</ol>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This is an RStudio project. You can open it by double clicking on the <code>learnBayes.Rproj</code> file.</p>
+<div id="ref-winter2021" class="csl-entry" role="listitem">
+Winter, Bodo, and Paul-Christian Bürkner. 2021. <span>“Poisson Regression for Linguists: A Tutorial Introduction to Modelling Count Data with Brms.”</span> <em>Language and Linguistics Compass</em> 15 (11): e12439. <a href="https://doi.org/10.1111/lnc3.12439">https://doi.org/10.1111/lnc3.12439</a>.
 </div>
 </div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -1,0 +1,12 @@
+---
+title: "Learning"
+editor: visual
+bibliography: references.bib
+nocite: |
+  @mcelreath2020, @burkner2018, @burkner2019, @burkner2021, @burkner2025, @winter2021, @coretta2025, @verissimo2021, @nicenboim2025
+---
+
+Here you can find further learning materials, with a focus on regression models.
+
+::: {#refs}
+:::
