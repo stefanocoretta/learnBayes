@@ -228,7 +228,7 @@
     "href": "slides/01_basics.html#schedule",
     "title": "Introduction to Bayesian regression models",
     "section": "Schedule",
-    "text": "Schedule\n\n\n\nTimes\nTopic"
+    "text": "Schedule\n\n\n\nTimes\nTopic\n\n\n\n\n9.00-10.30\nIntroduction to Bayesian modelling\n\n\n10.30-11.00\nBreak\n\n\n11.00-12.30\nBayesian regression + Diagnostics\n\n\n12.30-14.30\nLunch break\n\n\n14.30-16.00\nCategorical predictors + Interactions\n\n\n16.00-16.30\nBreak\n\n\n16.30-18.00\nBayesian modelling Q&A"
   },
   {
     "objectID": "slides/01_basics.html#section",
@@ -354,7 +354,7 @@
     "href": "slides/01_basics.html#uncertainty-of-parameters",
     "title": "Introduction to Bayesian regression models",
     "section": "Uncertainty of parameters",
-    "text": "Uncertainty of parameters\n\\[\n\\begin{align}\nRT & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim Student(\\mu_1, \\sigma_1)\\\\\n\\sigma & \\sim Student(\\mu_2, \\sigma_2)\n\\end{align}\n\\]\n\n\n\nUncertainty can be expressed with probability distributions, here Student-t distributions (the default in brms).\nThe Gaussian model estimates the probability distributions of \\(\\mu\\) and \\(\\sigma\\) from the data.\nThese probability distributions are called posterior probability distributions.\nThey can be summarised with \\(\\mu_1, \\sigma_1, \\mu_2, \\sigma_2\\)."
+    "text": "Uncertainty of parameters\n\\[\n\\begin{align}\nRT & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\mu & \\sim \\mathcal{P}(\\mu_1, \\sigma_1)\\\\\n\\sigma & \\sim \\mathcal{P}(\\mu_2, \\sigma_2)\n\\end{align}\n\\]\n\n\n\nUncertainty can be expressed with probability distributions. We use \\(\\mathcal{P}\\) as a generic (undetermined) probability distribution.\nThe Gaussian model estimates the probability distributions \\(\\mathcal{P}\\) of \\(\\mu\\) and \\(\\sigma\\) from the data.\nThese probability distributions \\(\\mathcal{P}\\) are called posterior probability distributions.\nThey can be summarised with \\(\\mu_1, \\sigma_1, \\mu_2, \\sigma_2\\)."
   },
   {
     "objectID": "slides/01_basics.html#gaussian-model-of-rts",
@@ -585,7 +585,7 @@
     "href": "slides/02_regression.html#interpret-the-summary-phonlev",
     "title": "Introduction to Bayesian regression models",
     "section": "Interpret the summary: PhonLev",
-    "text": "Interpret the summary: PhonLev\n\n\nRegression Coefficients:\n          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept   861.62     35.11   793.25   929.05 1.00     4139     2815\nPhonLev      26.05      4.85    16.70    35.40 1.00     4169     2866\n\n\n\nPhonLev is \\(\\beta_1\\).\n\n\\(\\beta_1\\) is the expected difference in RT for each unit change of PhonLev.\nThe posterior probability distribution of \\(\\beta_1\\) is \\(\\mathcal{P}(26, 5)\\).\nThere is a 95% probability that each unit change of PhonLev corresponds to a change in mean RT between +17 and +34 ms, conditional on the model and data. This is the 95% Credible Interval (CrI) of \\(\\mathcal{P}(26, 5)\\)."
+    "text": "Interpret the summary: PhonLev\n\n\nRegression Coefficients:\n          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept   861.62     35.11   793.25   929.05 1.00     4139     2815\nPhonLev      26.05      4.85    16.70    35.40 1.00     4169     2866\n\n\n\nPhonLev is \\(\\beta_1\\).\n\n\\(\\beta_1\\) is the expected difference in RT for each unit change of PhonLev.\nThe posterior probability distribution of \\(\\beta_1\\) is \\(\\mathcal{P}(26, 5)\\).\nThere is a 95% probability that each unit change of PhonLev corresponds to a change in mean RT between +17 and +35 ms, conditional on the model and data. This is the 95% Credible Interval (CrI) of \\(\\mathcal{P}(26, 5)\\)."
   },
   {
     "objectID": "slides/02_regression.html#effect-of-phonlev-on-rts",
@@ -606,7 +606,7 @@
     "href": "slides/02_regression.html#predicted-rts-at-representative-values-of-phonlev",
     "title": "Introduction to Bayesian regression models",
     "section": "Predicted RTs at representative values of PhonLev",
-    "text": "Predicted RTs at representative values of PhonLev\n\nrange(mald$PhonLev)\n\n[1]  5.608767 14.186571\n\nbrm_lev_draws &lt;- brm_lev_draws |&gt; \n  mutate(\n    # RTs when PhonLev is 5\n    rt_05 = b_Intercept + b_PhonLev * 5,\n    # RTs when PhonLev is 10\n    rt_10 = b_Intercept + b_PhonLev * 10,\n    # RTs when PhonLev is 15\n    rt_15 = b_Intercept + b_PhonLev * 15,\n  )"
+    "text": "Predicted RTs at representative values of PhonLev\n\nrange(mald$PhonLev)\n\n[1]  5.608767 14.186571\n\nbrm_lev_draws &lt;- brm_lev_draws |&gt; \n  mutate(\n    # RTs when PhonLev is 5\n    rt_05 = b_Intercept + b_PhonLev * 5,\n    # RTs when PhonLev is 10\n    rt_10 = b_Intercept + b_PhonLev * 10,\n    # RTs when PhonLev is 15\n    rt_15 = b_Intercept + b_PhonLev * 15,\n  )\n\nbrm_lev_draws |&gt; \n  select(rt_05, rt_10, rt_15)\n\n# A tibble: 4,000 × 3\n   rt_05 rt_10 rt_15\n   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1 1002. 1127. 1251.\n 2 1004. 1128. 1252.\n 3  998. 1123. 1249.\n 4  980. 1140. 1299.\n 5  990. 1142. 1293.\n 6  985. 1111. 1236.\n 7  987. 1112. 1238.\n 8  999. 1138. 1276.\n 9 1015. 1113. 1211.\n10  990. 1137. 1284.\n# ℹ 3,990 more rows"
   },
   {
     "objectID": "slides/02_regression.html#predicted-rts-at-representative-values-of-phonlev-plot",
@@ -641,7 +641,7 @@
     "href": "slides/02_regression.html#reporting",
     "title": "Introduction to Bayesian regression models",
     "section": "Reporting",
-    "text": "Reporting\n\nWe fitted a Bayesian Gaussian regression model with brms (Bürkner 2017) in R 4.5.0 (R Core Team 2025). The model had reaction times as the outcome variable and mean phone-level distance as the only predictor. The model was fitted with 4 MCMC chains and 2000 iterations per chains. The default brms priors were used.\nAccording to the model results, for every increase of mean phone-level distance by 1 unit, reaction times increase by 17-34 ms, at 95% probability (\\(\\beta\\) = 26.05, SD = 4.85). The 95% CrIs of the predicted reaction times at representative values of mean distance are: 968-976 ms for mean distance = 5, 1092-1103 ms for mean distance = 10, 1177-1203 for mean distance = 15."
+    "text": "Reporting\n\nWe fitted a Bayesian Gaussian regression model with brms (Bürkner 2017) in R 4.5.0 (R Core Team 2025). The model had reaction times as the outcome variable and mean phone-level distance as the only predictor. The model was fitted with 4 MCMC chains and 2000 iterations per chains. The default brms priors were used.\nAccording to the model results, for every increase of mean phone-level distance by 1 unit, reaction times increase by 17-35 ms, at 95% probability (\\(\\beta\\) = 26.05, SD = 4.85). The 95% CrIs of the predicted reaction times at representative values of mean distance are: 968-976 ms for mean distance = 5, 1092-1103 ms for mean distance = 10, 1177-1203 for mean distance = 15."
   },
   {
     "objectID": "slides/02_regression.html#references",

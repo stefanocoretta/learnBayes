@@ -248,36 +248,32 @@ Stefano Coretta
 </thead>
 <tbody>
 <tr class="odd">
-<td></td>
-<td></td>
+<td>9.00-10.30</td>
+<td>Introduction to Bayesian modelling</td>
 </tr>
 <tr class="even">
-<td></td>
-<td></td>
+<td>10.30-11.00</td>
+<td><em>Break</em></td>
 </tr>
 <tr class="odd">
-<td></td>
-<td></td>
+<td>11.00-12.30</td>
+<td>Bayesian regression + Diagnostics</td>
 </tr>
 <tr class="even">
-<td></td>
-<td></td>
+<td>12.30-14.30</td>
+<td><em>Lunch break</em></td>
 </tr>
 <tr class="odd">
-<td></td>
-<td></td>
+<td>14.30-16.00</td>
+<td>Categorical predictors + Interactions</td>
 </tr>
 <tr class="even">
-<td></td>
-<td></td>
+<td>16.00-16.30</td>
+<td><em>Break</em></td>
 </tr>
 <tr class="odd">
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
+<td>16.30-18.00</td>
+<td>Bayesian modelling Q&amp;A</td>
 </tr>
 </tbody>
 </table>
@@ -580,16 +576,16 @@ RT \sim Gaussian(\mu, \sigma)
 <p><span class="math display">\[
 \begin{align}
 RT &amp; \sim Gaussian(\mu, \sigma)\\
-\mu &amp; \sim Student(\mu_1, \sigma_1)\\
-\sigma &amp; \sim Student(\mu_2, \sigma_2)
+\mu &amp; \sim \mathcal{P}(\mu_1, \sigma_1)\\
+\sigma &amp; \sim \mathcal{P}(\mu_2, \sigma_2)
 \end{align}
 \]</span></p>
 <div class="fragment">
 <div class="box-note">
 <ul>
-<li><p>Uncertainty can be expressed with probability distributions, here Student-t distributions (the default in brms).</p></li>
-<li><p>The Gaussian model estimates the probability distributions of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> from the data.</p></li>
-<li><p>These probability distributions are called <strong>posterior probability distributions</strong>.</p></li>
+<li><p>Uncertainty can be expressed with probability distributions. We use <span class="math inline">\(\mathcal{P}\)</span> as a generic (undetermined) probability distribution.</p></li>
+<li><p>The Gaussian model estimates the probability distributions <span class="math inline">\(\mathcal{P}\)</span> of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> from the data.</p></li>
+<li><p>These probability distributions <span class="math inline">\(\mathcal{P}\)</span> are called <strong>posterior probability distributions</strong>.</p></li>
 <li><p>They can be summarised with <span class="math inline">\(\mu_1, \sigma_1, \mu_2, \sigma_2\)</span>.</p></li>
 </ul>
 </div>

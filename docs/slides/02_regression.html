@@ -366,7 +366,7 @@ PhonLev      26.05      4.85    16.70    35.40 1.00     4169     2866</code></pr
 <ul>
 <li><p><span class="math inline">\(\beta_1\)</span> is the expected difference in RT <em>for each unit change</em> of <code>PhonLev</code>.</p></li>
 <li><p>The posterior probability distribution of <span class="math inline">\(\beta_1\)</span> is <span class="math inline">\(\mathcal{P}(26, 5)\)</span>.</p></li>
-<li><p>There is a <strong>95% probability</strong> that each unit change of <code>PhonLev</code> corresponds to a change in mean RT <strong>between +17 and +34 ms</strong>, conditional on the model and data. This is the 95% Credible Interval (CrI) of <span class="math inline">\(\mathcal{P}(26, 5)\)</span>.</p></li>
+<li><p>There is a <strong>95% probability</strong> that each unit change of <code>PhonLev</code> corresponds to a change in mean RT <strong>between +17 and +35 ms</strong>, conditional on the model and data. This is the 95% Credible Interval (CrI) of <span class="math inline">\(\mathcal{P}(26, 5)\)</span>.</p></li>
 </ul>
 </div>
 </section>
@@ -422,28 +422,47 @@ Figure&nbsp;2: Predicted effect of mean phone-level distance on RTs from a Bayes
 <span id="cb10-6"><a></a>    <span class="at">rt_10 =</span> b_Intercept <span class="sc">+</span> b_PhonLev <span class="sc">*</span> <span class="dv">10</span>,</span>
 <span id="cb10-7"><a></a>    <span class="co"># RTs when PhonLev is 15</span></span>
 <span id="cb10-8"><a></a>    <span class="at">rt_15 =</span> b_Intercept <span class="sc">+</span> b_PhonLev <span class="sc">*</span> <span class="dv">15</span>,</span>
-<span id="cb10-9"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-9"><a></a>  )</span>
+<span id="cb10-10"><a></a></span>
+<span id="cb10-11"><a></a>brm_lev_draws <span class="sc">|&gt;</span> </span>
+<span id="cb10-12"><a></a>  <span class="fu">select</span>(rt_05, rt_10, rt_15)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,000 × 3
+   rt_05 rt_10 rt_15
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 1002. 1127. 1251.
+ 2 1004. 1128. 1252.
+ 3  998. 1123. 1249.
+ 4  980. 1140. 1299.
+ 5  990. 1142. 1293.
+ 6  985. 1111. 1236.
+ 7  987. 1112. 1238.
+ 8  999. 1138. 1276.
+ 9 1015. 1113. 1211.
+10  990. 1137. 1284.
+# ℹ 3,990 more rows</code></pre>
+</div>
 </div>
 </section>
 <section id="predicted-rts-at-representative-values-of-phonlev-plot" class="slide level2">
 <h2>Predicted RTs at representative values of <code>PhonLev</code>: plot</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">library</span>(ggdist)</span>
-<span id="cb11-2"><a></a></span>
-<span id="cb11-3"><a></a>brm_lev_draws <span class="sc">|&gt;</span> </span>
-<span id="cb11-4"><a></a>  <span class="fu">select</span>(rt_05, rt_10, rt_15) <span class="sc">|&gt;</span> </span>
-<span id="cb11-5"><a></a>  </span>
-<span id="cb11-6"><a></a>  <span class="co"># Pivot so to make plotting easier</span></span>
-<span id="cb11-7"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb11-8"><a></a>  <span class="co"># Pivot creates a name column with values `rt_05, rt_10, rt_15`</span></span>
-<span id="cb11-9"><a></a>  <span class="co"># and a value column with the draws values</span></span>
-<span id="cb11-10"><a></a>  </span>
-<span id="cb11-11"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(value, name)) <span class="sc">+</span></span>
-<span id="cb11-12"><a></a>  <span class="co"># Stat halfeye from ggdist</span></span>
-<span id="cb11-13"><a></a>  <span class="fu">stat_halfeye</span>() <span class="sc">+</span></span>
-<span id="cb11-14"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb11-15"><a></a>    <span class="at">caption =</span> <span class="st">"Point = median, thick line = 66% CrI, thin line = 95% CrI."</span></span>
-<span id="cb11-16"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">library</span>(ggdist)</span>
+<span id="cb12-2"><a></a></span>
+<span id="cb12-3"><a></a>brm_lev_draws <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a></a>  <span class="fu">select</span>(rt_05, rt_10, rt_15) <span class="sc">|&gt;</span> </span>
+<span id="cb12-5"><a></a>  </span>
+<span id="cb12-6"><a></a>  <span class="co"># Pivot so to make plotting easier</span></span>
+<span id="cb12-7"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb12-8"><a></a>  <span class="co"># Pivot creates a name column with values `rt_05, rt_10, rt_15`</span></span>
+<span id="cb12-9"><a></a>  <span class="co"># and a value column with the draws values</span></span>
+<span id="cb12-10"><a></a>  </span>
+<span id="cb12-11"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(value, name)) <span class="sc">+</span></span>
+<span id="cb12-12"><a></a>  <span class="co"># Stat halfeye from ggdist</span></span>
+<span id="cb12-13"><a></a>  <span class="fu">stat_halfeye</span>() <span class="sc">+</span></span>
+<span id="cb12-14"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-15"><a></a>    <span class="at">caption =</span> <span class="st">"Point = median, thick line = 66% CrI, thin line = 95% CrI."</span></span>
+<span id="cb12-16"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 </section>
@@ -463,19 +482,19 @@ Figure&nbsp;3: Predicted RTs at representative values of mean phon-level distanc
 </div></section><section id="calculating-cris-from-the-draws" class="slide level2">
 <h2>Calculating CrIs from the draws</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">library</span>(posterior)</span>
-<span id="cb12-2"><a></a></span>
-<span id="cb12-3"><a></a>brm_lev_cri <span class="ot">&lt;-</span> brm_lev_draws <span class="sc">|&gt;</span> </span>
-<span id="cb12-4"><a></a>  <span class="fu">select</span>(rt_05, rt_10, rt_15) <span class="sc">|&gt;</span> </span>
-<span id="cb12-5"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb12-6"><a></a>  <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span> </span>
-<span id="cb12-7"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb12-8"><a></a>    <span class="co"># Use quantile2() from posterior package</span></span>
-<span id="cb12-9"><a></a>    <span class="at">lo_95 =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(value, <span class="fl">0.025</span>)),</span>
-<span id="cb12-10"><a></a>    <span class="at">hi_95 =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(value, <span class="fl">0.0975</span>))</span>
-<span id="cb12-11"><a></a>  )</span>
-<span id="cb12-12"><a></a></span>
-<span id="cb12-13"><a></a>brm_lev_cri</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">library</span>(posterior)</span>
+<span id="cb13-2"><a></a></span>
+<span id="cb13-3"><a></a>brm_lev_cri <span class="ot">&lt;-</span> brm_lev_draws <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a></a>  <span class="fu">select</span>(rt_05, rt_10, rt_15) <span class="sc">|&gt;</span> </span>
+<span id="cb13-5"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb13-6"><a></a>  <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span> </span>
+<span id="cb13-7"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb13-8"><a></a>    <span class="co"># Use quantile2() from posterior package</span></span>
+<span id="cb13-9"><a></a>    <span class="at">lo_95 =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(value, <span class="fl">0.025</span>)),</span>
+<span id="cb13-10"><a></a>    <span class="at">hi_95 =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(value, <span class="fl">0.0975</span>))</span>
+<span id="cb13-11"><a></a>  )</span>
+<span id="cb13-12"><a></a></span>
+<span id="cb13-13"><a></a>brm_lev_cri</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   name  lo_95 hi_95
@@ -489,10 +508,10 @@ Figure&nbsp;3: Predicted RTs at representative values of mean phon-level distanc
 <section id="width-of-the-cris" class="slide level2">
 <h2>Width of the CrIs</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>brm_lev_cri <span class="sc">|&gt;</span> </span>
-<span id="cb14-2"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb14-3"><a></a>    <span class="at">cri_width =</span> hi_95 <span class="sc">-</span> lo_95</span>
-<span id="cb14-4"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>brm_lev_cri <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-3"><a></a>    <span class="at">cri_width =</span> hi_95 <span class="sc">-</span> lo_95</span>
+<span id="cb15-4"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 4
   name  lo_95 hi_95 cri_width
@@ -507,7 +526,7 @@ Figure&nbsp;3: Predicted RTs at representative values of mean phon-level distanc
 <h2>Reporting</h2>
 <blockquote>
 <p>We fitted a Bayesian Gaussian regression model with brms <span class="citation" data-cites="burkner2017">(<a href="#/references" role="doc-biblioref" onclick="">Bürkner 2017</a>)</span> in R 4.5.0 <span class="citation" data-cites="rcoreteam2025">(<a href="#/references" role="doc-biblioref" onclick="">R Core Team 2025</a>)</span>. The model had reaction times as the outcome variable and mean phone-level distance as the only predictor. The model was fitted with 4 MCMC chains and 2000 iterations per chains. The default brms priors were used.</p>
-<p>According to the model results, for every increase of mean phone-level distance by 1 unit, reaction times increase by 17-34 ms, at 95% probability (\(\beta\) = 26.05, SD = 4.85). The 95% CrIs of the predicted reaction times at representative values of mean distance are: 968-976 ms for mean distance = 5, 1092-1103 ms for mean distance = 10, 1177-1203 for mean distance = 15.</p>
+<p>According to the model results, for every increase of mean phone-level distance by 1 unit, reaction times increase by 17-35 ms, at 95% probability (\(\beta\) = 26.05, SD = 4.85). The 95% CrIs of the predicted reaction times at representative values of mean distance are: 968-976 ms for mean distance = 5, 1092-1103 ms for mean distance = 10, 1177-1203 for mean distance = 15.</p>
 </blockquote>
 </section>
 <section id="references" class="slide level2 smaller scrollable">

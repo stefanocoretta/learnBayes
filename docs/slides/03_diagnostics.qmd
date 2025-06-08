@@ -121,6 +121,12 @@ mod <- brm(
 pp_check(brm_lev, ndraws = 20)
 ```
 
+## 
+
+```{=html}
+<iframe allowfullscreen frameborder="0" height="100%" mozallowfullscreen style="min-width: 500px; min-height: 355px" src="https://app.wooclap.com/events/JEJPPA/questions/6845f80083e39365d3765fa2" width="100%"></iframe>
+```
+
 ## Log-normal regression
 
 $$

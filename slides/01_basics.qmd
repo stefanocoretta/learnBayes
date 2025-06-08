@@ -39,16 +39,15 @@ library(bayesplot)
 
 ## Schedule
 
-| Times | Topic |
-|-------|-------|
-|       |       |
-|       |       |
-|       |       |
-|       |       |
-|       |       |
-|       |       |
-|       |       |
-|       |       |
+| Times       | Topic                                 |
+|-------------|---------------------------------------|
+| 9.00-10.30  | Introduction to Bayesian modelling    |
+| 10.30-11.00 | *Break*                               |
+| 11.00-12.30 | Bayesian regression + Diagnostics     |
+| 12.30-14.30 | *Lunch break*                         |
+| 14.30-16.00 | Categorical predictors + Interactions |
+| 16.00-16.30 | *Break*                               |
+| 16.30-18.00 | Bayesian modelling Q&A                |
 
 ## 
 
@@ -337,19 +336,19 @@ We start with a Gaussian model for pedagogical reasons. You would usually start 
 $$
 \begin{align}
 RT & \sim Gaussian(\mu, \sigma)\\
-\mu & \sim Student(\mu_1, \sigma_1)\\
-\sigma & \sim Student(\mu_2, \sigma_2)
+\mu & \sim \mathcal{P}(\mu_1, \sigma_1)\\
+\sigma & \sim \mathcal{P}(\mu_2, \sigma_2)
 \end{align}
 $$
 
 . . .
 
 ::: box-note
--   Uncertainty can be expressed with probability distributions, here Student-t distributions (the default in brms).
+-   Uncertainty can be expressed with probability distributions. We use $\mathcal{P}$ as a generic (undetermined) probability distribution.
 
--   The Gaussian model estimates the probability distributions of $\mu$ and $\sigma$ from the data.
+-   The Gaussian model estimates the probability distributions $\mathcal{P}$ of $\mu$ and $\sigma$ from the data.
 
--   These probability distributions are called **posterior probability distributions**.
+-   These probability distributions $\mathcal{P}$ are called **posterior probability distributions**.
 
 -   They can be summarised with $\mu_1, \sigma_1, \mu_2, \sigma_2$.
 :::
